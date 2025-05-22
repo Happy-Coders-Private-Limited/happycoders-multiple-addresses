@@ -1,0 +1,42 @@
+/* assets/css/checkout.css */
+.hc-wcma-checkout-selector {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+.hc-wcma-checkout-selector h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+.hc-wcma-checkout-selector .form-row {
+    margin-bottom: 0; /* Reduce margin if needed */
+}
+ul.hc-wcma-address-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.hc-wcma-address-list li {
+    margin-bottom: 5px;
+}
+ul.hc-wcma-address-list label {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+/* Style for the formatted address block */
+.hc-wcma-formatted-address-block {
+    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 1.5em;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+.hc-wcma-formatted-address-block br {
+    margin-bottom: 0.3em; /* Add slight space after line breaks */
+    display: block; /* Ensure <br> acts as block */
+    content: ""; /* Required for margin on <br> */
+}

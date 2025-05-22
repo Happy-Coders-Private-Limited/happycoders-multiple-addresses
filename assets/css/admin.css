@@ -1,0 +1,20 @@
+/* assets/css/admin.css */
+.hc-wcma-admin-addresses th {
+    width: 25%; /* Adjust as needed */
+}
+.hc-wcma-admin-addresses ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+.hc-wcma-admin-addresses li {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.hc-wcma-admin-addresses address {
+    font-style: normal;
+    color: #555;
+    margin: 5px 0;
+}
+.hc-wcma-admin-addresses .default { font-weight: bold; color: green; }
+.hc-wcma-admin-addresses button { margin-right: 5px; }

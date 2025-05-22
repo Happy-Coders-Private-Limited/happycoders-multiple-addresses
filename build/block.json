@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "hc-wcma/address-selector",
+  "title": "Checkout Address Selector (HC)",
+  "category": "woocommerce",
+  "description": "Allows selection of saved billing/shipping addresses on block checkout.",
+  "icon": "location-alt",
+  "keywords": [
+    "address",
+    "checkout",
+    "woocommerce",
+    "selector",
+    "happycoders"
+  ],
+  "parent": [
+    "woocommerce/checkout-fields-block"
+  ],
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "inserter": true
+  },
+  "attributes": {
+    "addressType": {
+      "type": "string",
+      "default": "billing"
+    }
+  },
+  "textdomain": "happycoders-multiple-addresses",
+  "editorScript": "file:./block-editor.js",
+  "script": "file:./block-frontend.js"
+}
