@@ -101,27 +101,13 @@ Yes. The plugin settings include options to set a maximum number of saved billin
 
 The plugin aims to use standard WooCommerce hooks and APIs where possible. However, themes or plugins that heavily modify the "My Account" page structure or the Checkout process (especially Block Checkout customizations beyond the standard blocks) could potentially cause conflicts. If you experience issues, try temporarily switching to a default theme (like Storefront) and deactivating other plugins to identify a conflict.
 
-
+== Screenshots ==
 
 1.  The "Multi Address Book" section in the My Account page showing saved addresses.
 2.  The "Add New Address" form in the Multi Address Book.
 3.  The Checkout page showing the billing address selector (Dropdown style).
 4.  The Checkout page showing the shipping address selector (List style).
 5.  The Plugin Settings page (WooCommerce > Settings > HC Multiple Addresses).
-
-
-== Screenshots ==
-
-1. Admin settings screen  
-   ![Admin Settings Screen](assets/images/admin-settings.png)
-   ![Admin Settings Screen](assets/images/admin-settings-2.png)
-
-== Video Demo ==
-
-Check out how the plugin works in action:
-
-[Watch on YouTube](https://www.youtube.com/watch?v=m_l467YmOr8)
-
 
 == Changelog ==
 
@@ -136,8 +122,5 @@ Check out how the plugin works in action:
 
 = [1.0.0] =
 Initial stable release.
-
-📺 **Demo Video**: [https://www.youtube.com/watch?v=m_l467YmOr8](https://www.youtube.com/watch?v=m_l467YmOr8)
-
 
 *Developed by HappyCoders*
