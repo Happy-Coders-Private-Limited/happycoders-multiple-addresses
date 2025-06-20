@@ -32,15 +32,13 @@ class HC_WCMA_Checkout {
 	 * This function checks if the user is logged in before displaying
 	 * the billing address selector. It calls the generic address selector
 	 * display function with 'billing' as the address type.
-	 *
-	 * @param WC_Checkout $checkout WooCommerce checkout object.
 	 */
-	public static function display_billing_address_selector( $checkout ) {
+	public static function display_billing_address_selector() {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
 
-		self::display_address_selector( 'billing', $checkout );
+		self::display_address_selector( 'billing' );
 	}
 
 	/**
@@ -49,15 +47,13 @@ class HC_WCMA_Checkout {
 	 * This function checks if the user is logged in and if shipping is needed
 	 * before displaying the shipping address selector. It calls the generic
 	 * address selector display function with 'shipping' as the address type.
-	 *
-	 * @param WC_Checkout $checkout WooCommerce checkout object.
 	 */
-	public static function display_shipping_address_selector( $checkout ) {
+	public static function display_shipping_address_selector() {
 		if ( ! is_user_logged_in() || ! WC()->cart->needs_shipping_address() ) {
 			return;
 		}
 
-		self::display_address_selector( 'shipping', $checkout );
+		self::display_address_selector( 'shipping' );
 	}
 
 	/**
@@ -68,10 +64,9 @@ class HC_WCMA_Checkout {
 	 * and displays them in a dropdown or list, depending on the settings.
 	 * An option to enter a new address is displayed if allowed.
 	 *
-	 * @param string      $type     The type of address to display (billing or shipping).
-	 * @param WC_Checkout $checkout WooCommerce checkout object.
+	 * @param string $type     The type of address to display (billing or shipping).
 	 */
-	private static function display_address_selector( $type, $checkout ) {
+	private static function display_address_selector( $type ) {
 
 		$is_block_checkout = false;
 
