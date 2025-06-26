@@ -40,3 +40,12 @@ ul.hc-wcma-address-list label {
     display: block; /* Ensure <br> acts as block */
     content: ""; /* Required for margin on <br> */
 }
+
+/* Style for the address block when displayed on checkout */
+.hc-wcma-address-display-block {
+    display: none;
+    margin-bottom: 1em;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+}
