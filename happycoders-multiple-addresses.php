@@ -33,16 +33,16 @@ define( 'HC_WCMA_ENDPOINT_SLUG', 'hc-address-book' );
  *
  * @since 1.0.0
  */
-final class HappyCoders_Multiple_Addresses {
+final class HC_WCMA_Main {
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @var   HappyCoders_Multiple_Addresses|null $instance
+	 * @var   HC_WCMA_Main|null $instance
 	 * @static
 	 * @access private
 	 */
-	private static ?HappyCoders_Multiple_Addresses $instance = null;
+	private static ?HC_WCMA_Main $instance = null;
 
 	/**
 	 * Plugin version.
@@ -61,10 +61,10 @@ final class HappyCoders_Multiple_Addresses {
 	public $address_book_endpoint = HC_WCMA_ENDPOINT_SLUG;
 
 	/**
-	 * Get the single instance of HappyCoders_Multiple_Addresses.
+	 * Get the single instance of HC_WCMA_Main.
 	 *
 	 * @since 1.0.0
-	 * @return HappyCoders_Multiple_Addresses
+	 * @return HC_WCMA_Main
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
@@ -305,7 +305,7 @@ function hc_wcma_woocommerce_missing_notice() {
  *
  * @return void
  */
-function hc_wc_multiple_addresses_init() {
+function hc_wcma_init() {
 
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		add_action( 'admin_notices', 'hc_wcma_woocommerce_missing_notice' );
@@ -319,9 +319,9 @@ function hc_wc_multiple_addresses_init() {
 		}
 	);
 
-	HappyCoders_Multiple_Addresses::instance();
+	HC_WCMA_Main::instance();
 }
-add_action( 'plugins_loaded', 'hc_wc_multiple_addresses_init' );
+add_action( 'plugins_loaded', 'hc_wcma_init' );
 
 register_activation_hook( __FILE__, 'hc_wcma_activate' );
 
@@ -349,7 +349,7 @@ function hc_wcma_activate() {
 
 		flush_rewrite_rules();
 
-		update_option( 'hc_wcma_checkout_display_mode', 'dropdown', true );
+		update_option( 'hc_wcma_checkout_selector_style', 'dropdown', true );
 
 	} else {
 		wp_die( 'Plugin activation failed: Required class HC_WCMA_My_Account could not be loaded. Path constant defined: ' . ( defined( 'HC_WCMA_PLUGIN_PATH' ) ? 'Yes' : 'No' ) );
@@ -407,7 +407,7 @@ add_action( 'after_switch_theme', 'hc_wcma_on_switch_theme' );
  *
  * @return boolean True if the checkout page uses the block-based checkout, false otherwise.
  */
-function is_checkout_block() {
+function hc_wcma_is_checkout_block() {
 	return WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' );
 }
 
@@ -418,7 +418,7 @@ function is_checkout_block() {
  * @param string $plugin_file Path to the plugin file relative to the plugins directory.
  * @return array Modified action links.
  */
-function hc_mam_add_action_links( $links, $plugin_file ) {
+function hc_wcma_add_action_links( $links, $plugin_file ) {
 	static $this_plugin;
 	if ( ! $this_plugin ) {
 		$this_plugin = plugin_basename( __FILE__ );
@@ -434,4 +434,4 @@ function hc_mam_add_action_links( $links, $plugin_file ) {
 
 	return $links;
 }
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'hc_mam_add_action_links', 10, 2 );
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'hc_wcma_add_action_links', 10, 2 );

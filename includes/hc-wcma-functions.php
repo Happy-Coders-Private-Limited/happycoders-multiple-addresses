@@ -1,26 +1,24 @@
 <?php
 /**
- * HappyCoders Multiple Addresses Functions.
+ * HappyCoders Multiple Addresses Helper Functions.
  *
- * This file contains helper functions used throughout the plugin.
- *
- * @package     happycoders-multiple-addresses
+ * @package happycoders-multiple-addresses
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit; // Exit if accessed directly.
 }
 
 /**
- * Get all addresses for a user.
+ * Get all addresses for a user for a specific type, or all types.
  *
  * @since 1.0.0
- *
- * @param int    $user_id User ID.
- * @param string $type 'billing' or 'shipping'. Omit for both.
- * @return array Array of addresses.
+ * @param int    $user_id The ID of the user.
+ * @param string $type Optional. The address type ('billing' or 'shipping'). Default is empty string.
+ * @return array An array of addresses. If $type is specified, returns addresses for that type.
+ *               Otherwise, returns an array with 'billing' and 'shipping' keys.
  */
-function hc_wcma_get_user_addresses( $user_id, $type = '' ) {
+function hc_wcma_get_user_addresses( int $user_id, string $type = '' ): array {
 	if ( ! $user_id ) {
 		return array();
 	}
@@ -33,27 +31,28 @@ function hc_wcma_get_user_addresses( $user_id, $type = '' ) {
 
 	if ( 'billing' === $type ) {
 		return $billing_addresses;
-	} elseif ( 'shipping' === $type ) {
-		return $shipping_addresses;
-	} else {
-		return array(
-			'billing'  => $billing_addresses,
-			'shipping' => $shipping_addresses,
-		);
 	}
+
+	if ( 'shipping' === $type ) {
+		return $shipping_addresses;
+	}
+
+	return array(
+		'billing'  => $billing_addresses,
+		'shipping' => $shipping_addresses,
+	);
 }
 
 /**
- * Save addresses for a user.
+ * Save an array of addresses for a user.
  *
  * @since 1.0.0
- *
- * @param int    $user_id User ID.
- * @param array  $addresses Array of addresses for the specified type.
- * @param string $type 'billing' or 'shipping'.
+ * @param int    $user_id   The ID of the user.
+ * @param array  $addresses The array of addresses to save.
+ * @param string $type      The address type ('billing' or 'shipping').
  * @return bool True on success, false on failure.
  */
-function hc_wcma_save_user_addresses( $user_id, $addresses, $type ) {
+function hc_wcma_save_user_addresses( int $user_id, array $addresses, string $type ): bool {
 	if ( ! $user_id || ! in_array( $type, array( 'billing', 'shipping' ), true ) ) {
 		return false;
 	}
