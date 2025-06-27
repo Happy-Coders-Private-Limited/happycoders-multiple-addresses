@@ -40,5 +40,31 @@ add_action(
 
 add_action( 'plugins_loaded', array( 'HC_WCMA_Main', 'instance' ) );
 
+/**
+ * Add Settings link to the plugin actions row.
+ *
+ * @since 1.0.0
+ * @param array  $links       Existing action links.
+ * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+ * @return array Modified action links.
+ */
+function hc_wcma_add_action_links( array $links, string $plugin_file ): array {
+	static $this_plugin;
+	if ( ! $this_plugin ) {
+		$this_plugin = plugin_basename( __FILE__ );
+	}
+
+	if ( $plugin_file === $this_plugin ) {
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=hc_wcma' );
+
+		$settings_link = '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'happycoders-multiple-addresses' ) . '</a>';
+
+		array_unshift( $links, $settings_link );
+	}
+
+	return $links;
+}
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'hc_wcma_add_action_links', 10, 2 );
+
 register_activation_hook( __FILE__, array( 'HC_WCMA_Main', 'hc_wcma_activate' ) );
 register_deactivation_hook( __FILE__, array( 'HC_WCMA_Main', 'hc_wcma_deactivate' ) );
