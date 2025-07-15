@@ -1,0 +1,24 @@
+{
+  "name": "happycoders-multiple-addresses",
+  "version": "1.0.0",
+  "description": "Adds multiple address functionality and block checkout integration for WooCommerce.",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build src/block-editor.js src/block-frontend.js --output-path=build",
+    "start": "wp-scripts start src/block-editor.js src/block-frontend.js --output-path=build"
+  },
+  "keywords": [
+    "wordpress",
+    "woocommerce",
+    "plugin",
+    "checkout",
+    "address",
+    "gutenberg",
+    "block"
+  ],
+  "author": "HappyCoders",
+  "license": "GPL-2.0-or-later", 
+  "devDependencies": {
+    "@wordpress/scripts": "^30.15.0" 
+  }
+}

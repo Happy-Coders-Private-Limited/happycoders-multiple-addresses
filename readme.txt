@@ -1,5 +1,5 @@
 === HappyCoders Multiple Addresses ===
-Contributors: kombiahrk, muthupandi2002, gopiananthc, sureshkumar22
+Contributors: happycoders, kombiahrk, muthupandi2002, imgopi2002, sureshkumar22
 Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
@@ -100,6 +100,31 @@ Yes. The plugin settings include options to set a maximum number of saved billin
 = Will this conflict with my theme or other plugins? =
 
 The plugin aims to use standard WooCommerce hooks and APIs where possible. However, themes or plugins that heavily modify the "My Account" page structure or the Checkout process (especially Block Checkout customizations beyond the standard blocks) could potentially cause conflicts. If you experience issues, try temporarily switching to a default theme (like Storefront) and deactivating other plugins to identify a conflict.
+
+== Building from Source ==
+
+This plugin uses modern JavaScript tools for development. The source code is included for transparency and to allow developers to contribute or modify the code. You do not need to follow these steps to use the plugin; the pre-built files are included.
+
+If you wish to modify the JavaScript or CSS source files (`/src` directory), you will need to have Node.js and npm installed on your machine.
+
+1.  **Navigate to the Plugin Directory:**
+    Open your terminal and navigate to the plugin's root directory:
+    `cd path/to/wp-content/plugins/happycoders-multiple-addresses/`
+
+2.  **Install Dependencies:**
+    Run the following command to install the necessary development packages listed in `package.json`:
+    `npm install`
+
+3.  **Build for Production:**
+    To compile and minify the source files for a production environment, run:
+    `npm run build`
+    This will generate the final JavaScript and CSS files in the `/build` directory.
+
+4.  **Run in Development Mode:**
+    For active development, use this command to watch for changes in the `/src` directory and automatically re-compile the files:
+    `npm run start`
+
+The source files for the block integration can be found in the `/src` directory.
 
 == Screenshots ==
 
