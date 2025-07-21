@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'HC_WCMA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'HC_WCMA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'HC_WCMA_VERSION', '1.0.0' );
+define( 'HC_WCMA_VERSION', '1.0.1' );
 define( 'HC_WCMA_ENDPOINT_SLUG', 'hc-address-book' );
 
 require_once HC_WCMA_PLUGIN_PATH . 'includes/class-hc-wcma-main.php';
