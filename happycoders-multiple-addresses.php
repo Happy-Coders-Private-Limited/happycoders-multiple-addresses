@@ -3,16 +3,16 @@
  * Plugin Name:       HappyCoders Multiple Addresses
  * Plugin URI:        https://happycoders.in/happycoders-multiple-addresses
  * Description:       Allows customers to save and manage multiple billing and shipping addresses.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            HappyCoders
  * Author URI:        https://happycoders.in
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       happycoders-multiple-addresses
  * Requires at least: 5.6
- * Tested up to:      6.4
+ * Tested up to:      6.8.2
  * WC requires at least: 6.0
- * WC tested up to:     8.5
+ * WC tested up to:     10.0.0
  * Requires Plugins: woocommerce
  *
  * @package happycoders-multiple-addresses
