@@ -136,6 +136,9 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.2] =
+*   Fix: General bug fixes and performance improvements.
+
 = [1.0.1] =
 *   Fix: General bug fixes and performance improvements.
 
@@ -148,10 +151,7 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Upgrade Notice ==
 
-= 1.0.1 =
+= 1.0.2 =
 General bug fixes and performance improvements.
-
-= [1.0.0] =
-Initial stable release.
 
 *Developed by HappyCoders*
