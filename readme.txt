@@ -1,10 +1,10 @@
-=== HappyCoders Multi Addresses for WooCommerce ===
+=== Happy Coders Multi Address for WooCommerce ===
 Contributors: happycoders, kombiahrk, muthupandi2002, imgopi2002, sureshkumar22
 Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -136,6 +136,9 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.3] =
+*   Fix: General bug fixes and performance improvements.
+
 = [1.0.2] =
 *   Fix: General bug fixes and performance improvements.
 
@@ -151,7 +154,7 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Upgrade Notice ==
 
-= 1.0.2 =
+= 1.0.3 =
 General bug fixes and performance improvements.
 
 *Developed by HappyCoders*
