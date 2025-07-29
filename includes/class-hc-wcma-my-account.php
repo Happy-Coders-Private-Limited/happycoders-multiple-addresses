@@ -67,6 +67,11 @@ class HC_WCMA_My_Account {
 	public static function render_endpoint_content() {
 		$user_id = get_current_user_id();
 
+		// --- *** START: Auto-Import Logic *** ---
+		self::maybe_import_default_wc_address( $user_id, 'billing' );
+		self::maybe_import_default_wc_address( $user_id, 'shipping' );
+		// --- *** END: Auto-Import Logic *** ---
+
 		// --- Get Addresses and Defaults ---
 		$all_billing_addresses  = hc_wcma_get_user_addresses( $user_id, 'billing' );
 		$all_shipping_addresses = hc_wcma_get_user_addresses( $user_id, 'shipping' );
@@ -386,5 +391,60 @@ class HC_WCMA_My_Account {
 			<div id="hc_wcma_edit_form_feedback"></div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Checks if a user's address book is empty and, if so, attempts to import
+	 * their standard WooCommerce default address into the address book.
+	 *
+	 * @since 1.0.4
+	 * @param int    $user_id The ID of the user to check.
+	 * @param string $type    The address type, 'billing' or 'shipping'.
+	 */
+	private static function maybe_import_default_wc_address( $user_id, $type ) {
+		if ( ! $user_id || ! in_array( $type, array( 'billing', 'shipping' ), true ) ) {
+			return;
+		}
+
+		// 1. Check if our address book for this type is empty.
+		$address_book = hc_wcma_get_user_addresses( $user_id, $type );
+		if ( ! empty( $address_book ) ) {
+			return; // Address book already has entries, do nothing.
+		}
+
+		// 2. Get the standard WooCommerce address for this user.
+		$customer = new WC_Customer( $user_id );
+		if ( ! $customer ) {
+			return;
+		}
+
+		$wc_address = ( 'billing' === $type ) ? $customer->get_billing() : $customer->get_shipping();
+
+		// Remove the prefix from the keys (e.g., 'billing_first_name' -> 'first_name').
+		$wc_address_clean = array();
+		foreach ( $wc_address as $key => $value ) {
+			$clean_key                      = str_replace( $type . '_', '', $key );
+			$wc_address_clean[ $clean_key ] = $value;
+		}
+
+		// 3. Check if the standard address has enough data to be considered valid for import.
+		// A check for first_name and address_1 is usually sufficient.
+		if ( empty( $wc_address_clean['first_name'] ) && empty( $wc_address_clean['address_1'] ) ) {
+			return; // No meaningful default address to import.
+		}
+
+		// 4. Prepare and save the imported address to our system.
+		$imported_address = $wc_address_clean;
+		// Add a default nickname.
+		$imported_address['nickname'] = __( 'Default Address', 'happycoders-multiple-addresses' );
+
+		$new_address_key                  = hc_wcma_generate_address_key();
+		$address_book[ $new_address_key ] = $imported_address;
+
+		// Save the new address book containing the imported address.
+		hc_wcma_save_user_addresses( $user_id, $address_book, $type );
+
+		// Set this newly imported address as the default for our system.
+		hc_wcma_set_default_address_key( $user_id, $new_address_key, $type );
 	}
 }

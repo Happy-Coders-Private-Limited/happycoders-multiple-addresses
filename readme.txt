@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -24,6 +24,7 @@ During checkout, customers can quickly select from their saved addresses using a
 **Key Features:**
 
 *   **Multi Address Book:** A dedicated section in the "My Account" page.
+*   **Automatic Import:** Seamlessly imports a customer's existing default WooCommerce address into the address book on their first visit.
 *   **Save Multiple Addresses:** Customers can save distinct billing and shipping addresses.
 *   **Address Nicknames:** Easily label and identify saved addresses.
 *   **Set Default Addresses:** Designate default billing and shipping addresses.
@@ -49,7 +50,7 @@ During checkout, customers can quickly select from their saved addresses using a
 
 1.  Log in to your WordPress admin dashboard.
 2.  Navigate to Plugins > Add New.
-3.  Search for "HappyCoders Multiple Addresses for WooCommerce".
+3.  Search for "Happy Coders Multi Address for WooCommerce".
 4.  Click "Install Now" and then "Activate".
 
 **Manual Installation:**
@@ -80,6 +81,10 @@ During checkout, customers can quickly select from their saved addresses using a
 = Does this work with the new Block Checkout? =
 
 Yes! The plugin includes integration for both the Classic (`[woocommerce_checkout]` shortcode) and the modern Block-Based Checkout experience introduced in recent WooCommerce versions. The address selectors will appear automatically in the appropriate sections.
+
+= What happens to my existing customers' addresses?
+
+When an existing customer visits their "Multi Address Book" page for the first time after you install the plugin, their current default billing and shipping addresses (from the standard WooCommerce "Addresses" tab) will be automatically imported into the new address book. This provides a seamless experience so they don't have to re-enter their primary address.
 
 = How do customers manage their addresses? =
 
@@ -136,6 +141,10 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= 1.0.4 =
+*   New Feature: Automatically imports a customer's existing default WooCommerce address into the address book on their first visit for a seamless experience.
+*   Tweak: Minor code enhancements and improved PHPDoc comments.
+
 = [1.0.3] =
 *   Fix: General bug fixes and performance improvements.
 
@@ -153,6 +162,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+This update adds a great new feature! For existing customers, their default address is now automatically added to the address book. Update for a better user experience.
 
 = 1.0.3 =
 General bug fixes and performance improvements.
