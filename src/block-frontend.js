@@ -100,7 +100,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                     .catch(() => { setLoading(false); setEditingState(addressType, true) });
                  // TODO: Signal parent block to HIDE fields if needed
             } else {
-                console.error(`[HCMA Block Frontend ${addressType}] Could not find address data for key:`, newKey);
+                // console.error(`[HCMA Block Frontend ${addressType}] Could not find address data for key:`, newKey);
                 setEditingState(addressType, true);
                 setLoading(false); 
             }
@@ -135,7 +135,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                 .catch(() => setEditingState(addressType, true));
         } else {
             // No valid default key, ensure form is shown initially
-            console.log(`[HCMA Blocks ${addressType}] No valid default key found. Ensuring form is visible.`);
+            // console.log(`[HCMA Blocks ${addressType}] No valid default key found. Ensuring form is visible.`);
              setSelectedKey(''); // Ensure dropdown shows '-- Select --'
              setEditingState(addressType, true);
         }
@@ -153,7 +153,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
      savedAddresses.forEach(addr => {
         // Use addr.key which PHP added
         if (!addr.key) {
-             console.warn(`[HCMA Blocks Frontend ${addressType}] Address missing 'key':`, addr);
+            //  console.warn(`[HCMA Blocks Frontend ${addressType}] Address missing 'key':`, addr);
              return; // Skip if key is missing
         }
         let label = addr.nickname || addr.address_1 || addr.city || addr.key; // Improved label fallback
@@ -172,7 +172,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
     // --- Check if component should render ---
     if (options.length < 1) {
-        console.log(`[HCMA Blocks Frontend ${addressType}] Conditions not met for display (options.length=${options.length}, allowNew=${allowNew}). Returning null.`);
+        // console.log(`[HCMA Blocks Frontend ${addressType}] Conditions not met for display (options.length=${options.length}, allowNew=${allowNew}). Returning null.`);
         return null; // Render nothing if no actual addresses to choose from
     }
 
@@ -206,7 +206,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
             </div>
         );
     } catch (error) {
-        console.error(`[HCMA Blocks Frontend ${addressType}] Error during render:`, error);
+        // console.error(`[HCMA Blocks Frontend ${addressType}] Error during render:`, error);
         return <p style={{color: 'red', border: '1px solid red', padding: '5px'}}>Error rendering HCMA selector!</p>; // Render an error message
     }
 };
@@ -241,7 +241,7 @@ function mountAddressSelectors() {
                  } catch (error) { console.error('[HCMA Blocks Frontend] Error mounting billing component:', error); }
              }
          } else {
-              console.warn('[HCMA Blocks Frontend] Billing parent target not found.');
+            //   console.warn('[HCMA Blocks Frontend] Billing parent target not found.');
          }
     } else {
          console.log('[HCMA Blocks Frontend] Skipping Billing selector - no addresses and new not allowed.');
@@ -270,7 +270,7 @@ function mountAddressSelectors() {
                   } catch (error) { console.error('[HCMA Blocks Frontend] Error mounting shipping component:', error); }
               }
           } else {
-               console.warn('[HCMA Blocks Frontend] Shipping parent target not found.');
+            //    console.warn('[HCMA Blocks Frontend] Shipping parent target not found.');
           }
      } else {
           console.log('[HCMA Blocks Frontend] Skipping Shipping selector.');
@@ -361,7 +361,10 @@ let checkoutObserver = null;
 function startCheckoutObserver() {
     // Target an element guaranteed to contain the checkout blocks
     const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout'); // Or 'form.woocommerce-checkout' ?
-    if (!checkoutContainer) { console.warn('[HCMA Blocks] Checkout container not found for observer.'); return; }
+    if (!checkoutContainer) { 
+        // console.warn('[HCMA Blocks] Checkout container not found for observer.'); 
+        return; 
+    }
     if (checkoutObserver) { logWithTimestamp('Checkout observer already running.'); return; } // Prevent multiple observers
 
     // logWithTimestamp('Starting checkout DOM observer...');

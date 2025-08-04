@@ -24,6 +24,7 @@ class HC_WCMA_Checkout {
 		add_action( 'woocommerce_before_checkout_billing_form', array( __CLASS__, 'display_billing_address_selector' ), 5 );
 		add_action( 'woocommerce_before_checkout_shipping_form', array( __CLASS__, 'display_shipping_address_selector' ), 5 );
 		add_action( 'woocommerce_checkout_update_order_meta', array( __CLASS__, 'save_selected_address_to_order' ), 10, 2 );
+		add_action( 'woocommerce_new_order', array( __CLASS__, 'save_new_address_from_order' ), 10, 1 );
 	}
 
 	/**
@@ -151,41 +152,81 @@ class HC_WCMA_Checkout {
 	}
 
 	/**
-	 * Saves the selected address to the order metadata.
+	 * UNIVERSAL handler called after a new order is created.
+	 * It checks the order's addresses and saves them if they are new.
+	 * This function now handles BOTH Classic and Block checkouts.
 	 *
-	 * This function checks if the user is logged in and retrieves the selected
-	 * billing and shipping addresses from the posted data. If a valid address
-	 * key is provided and the key is not 'new', it retrieves the address
-	 * details and saves them as a snapshot in the order's metadata.
-	 *
-	 * @param int   $order_id    The ID of the order.
-	 * @param array $posted_data The posted data containing selected address keys.
+	 * @param int $order_id The ID of the newly created order.
 	 */
-	public static function save_selected_address_to_order( $order_id, $posted_data ) {
-		if ( ! is_user_logged_in() ) {
+	public static function save_new_address_from_order( $order_id ) {
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
 			return;
 		}
 
-		$user_id = get_current_user_id();
+		$customer_id = $order->get_customer_id();
 
-		if ( isset( $posted_data['hc_wcma_select_billing_address'] ) ) {
-			$selected_key = wc_clean( $posted_data['hc_wcma_select_billing_address'] );
-			if ( $selected_key && 'new' !== $selected_key ) {
-				$address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'billing' );
-				if ( $address ) {
-					update_post_meta( $order_id, '_hc_wcma_selected_billing_address_snapshot', $address );
-				}
+		if ( ! $customer_id || 0 === $customer_id ) {
+			return;
+		}
+
+		self::process_order_address( $customer_id, $order, 'billing' );
+
+		if ( $order->has_shipping_address() ) {
+			self::process_order_address( $customer_id, $order, 'shipping' );
+		}
+	}
+
+	/**
+	 * Helper function to process and save a single address type from a WC_Order object.
+	 *
+	 * @param int      $customer_id The customer ID.
+	 * @param WC_Order $order       The order object.
+	 * @param string   $type        'billing' or 'shipping'.
+	 */
+	private static function process_order_address( $customer_id, $order, $type ) {
+		$limit             = (int) get_option( 'hc_wcma_limit_max_' . $type . '_addresses', 0 );
+		$current_addresses = hc_wcma_get_user_addresses( $customer_id, $type );
+		if ( $limit > 0 && count( $current_addresses ) >= $limit ) {
+			return;
+		}
+
+		$new_address = array();
+		$fields      = hc_wcma_get_address_fields( $type );
+
+		foreach ( $fields as $key => $field_config ) {
+			$getter_method = 'get_' . $type . '_' . $key;
+			if ( method_exists( $order, $getter_method ) ) {
+				$value = $order->{$getter_method}();
+				if ( 'email' === $key ) {
+					$new_address[ $key ] = sanitize_email( $value ); } elseif ( 'phone' === $key ) {
+					$new_address[ $key ] = wc_sanitize_phone_number( $value ); } else {
+						$new_address[ $key ] = sanitize_text_field( $value ); }
 			}
 		}
 
-		if ( isset( $posted_data['hc_wcma_select_shipping_address'] ) && WC()->cart->needs_shipping_address() ) {
-			$selected_key = wc_clean( $posted_data['hc_wcma_select_shipping_address'] );
-			if ( $selected_key && 'new' !== $selected_key ) {
-				$address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'shipping' );
-				if ( $address ) {
-					update_post_meta( $order_id, '_hc_wcma_selected_shipping_address_snapshot', $address );
-				}
+		if ( empty( $new_address['first_name'] ) && empty( $new_address['address_1'] ) ) {
+			return;
+		}
+
+		$temp_new_address = $new_address;
+		unset( $temp_new_address['nickname'] );
+
+		foreach ( $current_addresses as $existing_address ) {
+			$temp_existing_address = $existing_address;
+			unset( $temp_existing_address['nickname'] );
+			if ( $temp_new_address === $temp_existing_address ) {
+				return;
 			}
 		}
+
+		$new_address['nickname']           = ! empty( $new_address['first_name'] ) ? $new_address['first_name'] . ' ' . $new_address['last_name'] : $new_address['address_1'];
+		$address_key                       = hc_wcma_generate_address_key();
+		$current_addresses[ $address_key ] = $new_address;
+
+		hc_wcma_save_user_addresses( $customer_id, $current_addresses, $type );
+		hc_wcma_set_default_address_key( $customer_id, $address_key, $type );
 	}
 }

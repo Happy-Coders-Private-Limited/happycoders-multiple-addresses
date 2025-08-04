@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -25,6 +25,7 @@ During checkout, customers can quickly select from their saved addresses using a
 
 *   **Multi Address Book:** A dedicated section in the "My Account" page.
 *   **Automatic Import:** Seamlessly imports a customer's existing default WooCommerce address into the address book on their first visit.
+*   **Automatic Saving of New Checkout Addresses:** Any new, unique address a customer enters during checkout is automatically saved to their address book and set as the new default for future use.
 *   **Save Multiple Addresses:** Customers can save distinct billing and shipping addresses.
 *   **Address Nicknames:** Easily label and identify saved addresses.
 *   **Set Default Addresses:** Designate default billing and shipping addresses.
@@ -37,6 +38,7 @@ During checkout, customers can quickly select from their saved addresses using a
 *   **Classic & Block Checkout Integration:** Works with both checkout types.
     *   *Classic:* Uses standard WooCommerce hooks.
     *   *Block:* Uses modern JavaScript integration with the WooCommerce Blocks API (`registerCheckoutBlock`).
+*   **Multisite Compatible:** Includes support for Multisite installations, ensuring endpoints and functionality work correctly across the network.
 
 == Installation ==
 
@@ -85,6 +87,10 @@ Yes! The plugin includes integration for both the Classic (`[woocommerce_checkou
 = What happens to my existing customers' addresses?
 
 When an existing customer visits their "Multi Address Book" page for the first time after you install the plugin, their current default billing and shipping addresses (from the standard WooCommerce "Addresses" tab) will be automatically imported into the new address book. This provides a seamless experience so they don't have to re-enter their primary address.
+
+= What happens when a customer uses a new address at checkout? =
+
+If a logged-in customer enters a new, unique address when placing an order, the plugin will **automatically save that address to their address book** and set it as their new default. This makes it instantly available for their next purchase without needing to manually add it first.
 
 = How do customers manage their addresses? =
 
@@ -141,10 +147,15 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.6] =
+*   New Feature: Any new, unique address used during checkout is now automatically saved to the customer's address book and set as the new default. Works for both Classic and Block checkouts.
+*   Fix: Improved Multisite compatibility to ensure the "Address Book" endpoint works correctly across all sites in a network and on new site creation.
+*   Tweak: Refined JavaScript for Block Checkout to improve reliability of selector mounting.
+
 = [1.0.5] =
 *   Fix: General bug fixes and performance improvements.
 
-= 1.0.4 =
+= [1.0.4] =
 *   New Feature: Automatically imports a customer's existing default WooCommerce address into the address book on their first visit for a seamless experience.
 *   Tweak: Minor code enhancements and improved PHPDoc comments.
 
@@ -165,6 +176,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+This is a feature and compatibility update. New addresses used at checkout are now automatically saved to the address book, and Multisite support has been improved.
 
 = 1.0.5 =
 General bug fixes and performance improvements.
