@@ -171,7 +171,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
 
     // --- Check if component should render ---
-    if (options.length <= (allowNew ? 2 : 1)) {
+    if (options.length < 1) {
         console.log(`[HCMA Blocks Frontend ${addressType}] Conditions not met for display (options.length=${options.length}, allowNew=${allowNew}). Returning null.`);
         return null; // Render nothing if no actual addresses to choose from
     }

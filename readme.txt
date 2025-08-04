@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -141,6 +141,9 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.5] =
+*   Fix: General bug fixes and performance improvements.
+
 = 1.0.4 =
 *   New Feature: Automatically imports a customer's existing default WooCommerce address into the address book on their first visit for a seamless experience.
 *   Tweak: Minor code enhancements and improved PHPDoc comments.
@@ -162,6 +165,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+General bug fixes and performance improvements.
 
 = 1.0.4 =
 This update adds a great new feature! For existing customers, their default address is now automatically added to the address book. Update for a better user experience.
