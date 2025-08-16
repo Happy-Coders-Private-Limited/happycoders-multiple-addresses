@@ -178,6 +178,45 @@ class HC_WCMA_Checkout {
 			self::process_order_address( $customer_id, $order, 'shipping' );
 		}
 	}
+	
+	/**
+     * Saves the selected address to the order metadata.
+     *
+     * This function checks if the user is logged in and retrieves the selected
+     * billing and shipping addresses from the posted data. If a valid address
+     * key is provided and the key is not 'new', it retrieves the address
+     * details and saves them as a snapshot in the order's metadata.
+     *
+     * @param int   $order_id    The ID of the order.
+     * @param array $posted_data The posted data containing selected address keys.
+     */
+    public static function save_selected_address_to_order( $order_id, $posted_data ) {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+
+        if ( isset( $posted_data['hc_wcma_select_billing_address'] ) ) {
+            $selected_key = wc_clean( $posted_data['hc_wcma_select_billing_address'] );
+            if ( $selected_key && 'new' !== $selected_key ) {
+                $address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'billing' );
+                if ( $address ) {
+                    update_post_meta( $order_id, '_hc_wcma_selected_billing_address_snapshot', $address );
+                }
+            }
+        }
+
+        if ( isset( $posted_data['hc_wcma_select_shipping_address'] ) && WC()->cart->needs_shipping_address() ) {
+            $selected_key = wc_clean( $posted_data['hc_wcma_select_shipping_address'] );
+            if ( $selected_key && 'new' !== $selected_key ) {
+                $address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'shipping' );
+                if ( $address ) {
+                    update_post_meta( $order_id, '_hc_wcma_selected_shipping_address_snapshot', $address );
+                }
+            }
+        }
+    }
 
 	/**
 	 * Helper function to process and save a single address type from a WC_Order object.
