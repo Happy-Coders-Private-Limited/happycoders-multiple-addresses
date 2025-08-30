@@ -246,18 +246,21 @@ class HC_WCMA_My_Account {
                     // Trigger country change handler in case fields were hidden
                     $(document.body).trigger('country_to_state_changed', ['billing', wrapper]);
                     $(document.body).trigger('country_to_state_changed', ['shipping', wrapper]);
-
+					
+					if ($('#hc_wcma_address_type').val() === 'both') {
+						shipping_same_as_billing_checkbox.on('change', function() {
+							if ($(this).is(':checked')) {
+								$(this).val('1');
+								shipping_fields.hide();
+							} else {
+								$(this).val('0');
+								shipping_fields.show();
+							}
+						}).trigger('change');
+					}
                 }).trigger('change'); // Trigger on load if needed
-
-                shipping_same_as_billing_checkbox.on('change', function() {
-                    if ($(this).is(':checked')) {
-						$(this).val('1');
-                        shipping_fields.hide();
-                    } else {
-						$(this).val('0');
-                        shipping_fields.show();
-                    }
-                }).trigger('change');
+				
+				    
 
                 // Ensure WC init runs on these fields after potential display changes
                 $(document.body).trigger('wc_address_i18n_ready');

@@ -92,28 +92,35 @@ jQuery(function ($) {
             if (selectedType === 'billing') {
                 billingFields.show();
             } else if (selectedType === 'shipping') {
+                console.log('shipping selected');
                 shippingFields.show();
             } else if (selectedType === 'both') {
                 billingFields.show();
                 wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper').show();
                 if (!shippingSameAsBillingCheckbox.is(':checked')) {
+                    console.log('shipping selected');
                     shippingFields.show();
                 }
             }
             // Trigger country change handler in case fields were hidden
             $(document.body).trigger('country_to_state_changed', ['billing', wrapper]);
             $(document.body).trigger('country_to_state_changed', ['shipping', wrapper]);
+            
+            if (addressTypeSelect.val() === 'both') {
+                shippingSameAsBillingCheckbox.on('change', function() {
+                    if ($(this).is(':checked')) {
+                        $(this).val('1');
+                        shippingFields.hide(); 
+                    } else {
+                        $(this).val('0');
+                        console.log('shipping selected1');
+                        shippingFields.show(); 
+                    }
+                }).trigger('change'); 
+            }  
         }).trigger('change');  
 
-        shippingSameAsBillingCheckbox.on('change', function() {
-            if ($(this).is(':checked')) {
-                $(this).val('1');
-                shippingFields.hide(); 
-            } else {
-                $(this).val('0');
-                shippingFields.show(); 
-            }
-        }).trigger('change'); 
+              
 
         $(document.body).trigger('wc_address_i18n_ready');
         $(document.body).trigger('wc_country_select_ready');
