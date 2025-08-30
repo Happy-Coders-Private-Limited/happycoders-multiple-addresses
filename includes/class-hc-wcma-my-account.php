@@ -101,7 +101,7 @@ class HC_WCMA_My_Account {
 		echo '<form id="hc_wcma_add_address_form" class="hc-wcma-address-form woocommerce-form">';
 
 		echo '<p class="form-row form-row-wide"><label for="hc_wcma_address_type">' . esc_html__( 'Address Type', 'happycoders-multiple-addresses' ) . ' <abbr class="required" title="required">*</abbr></label>
-        <select name="hc_wcma_address_type" id="hc_wcma_address_type" required><option value="">' . esc_html__( '-- Select Type --', 'happycoders-multiple-addresses' ) . '</option><option value="billing">' . esc_html__( 'Billing', 'happycoders-multiple-addresses' ) . '</option><option value="shipping">' . esc_html__( 'Shipping', 'happycoders-multiple-addresses' ) . '</option></select></p>';
+        <select name="hc_wcma_address_type" id="hc_wcma_address_type" required><option value="">' . esc_html__( '-- Select Type --', 'happycoders-multiple-addresses' ) . '</option><option value="billing">' . esc_html__( 'Billing', 'happycoders-multiple-addresses' ) . '</option><option value="shipping">' . esc_html__( 'Shipping', 'happycoders-multiple-addresses' ) . '</option><option value="both">' . esc_html__( 'Both', 'happycoders-multiple-addresses' ) . '</option></select></p>';
 
 		$billing_fields  = WC()->countries->get_address_fields( '', 'billing_' );
 		$shipping_fields = WC()->countries->get_address_fields( '', 'shipping_' );
@@ -168,6 +168,8 @@ class HC_WCMA_My_Account {
 		}
 		echo '</div>';
 
+		echo '<div class="hc_wcma_shipping_same_as_billing_wrapper" style="display: none;"><p class="form-row form-row-wide"><label for="shipping_same_as_billing"><input type="checkbox" name="shipping_same_as_billing" id="shipping_same_as_billing" value="1" checked> ' . esc_html__( 'Shipping address is the same as billing address', 'happycoders-multiple-addresses' ) . '</label></p></div>';
+
 		echo '<div class="hc_wcma_fields hc_wcma_shipping_fields" style="display:none;">';
 		echo '<h3>' . esc_attr( __( 'Shipping Details', 'happycoders-multiple-addresses' ) ) . '</h3>';
 		woocommerce_form_field( 'shipping_nickname', $nickname_field, '' );
@@ -193,23 +195,39 @@ class HC_WCMA_My_Account {
                 var wrapper = $('#hc_wcma_add_address_fields_wrapper');
                 var billing_fields = wrapper.find('.hc_wcma_billing_fields');
                 var shipping_fields = wrapper.find('.hc_wcma_shipping_fields');
+                var shipping_same_as_billing_wrapper = wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper');
+                var shipping_same_as_billing_checkbox = shipping_same_as_billing_wrapper.find('#shipping_same_as_billing');
 
                 $('#hc_wcma_address_type').on('change', function() {
                     var selected_type = $(this).val();
                     billing_fields.hide();
                     shipping_fields.hide();
+                    shipping_same_as_billing_wrapper.hide();
 
-                    if (selected_type === 'billing' || selected_type === 'both') {
+                    if (selected_type === 'billing') {
                         billing_fields.show();
-                    }
-                    if (selected_type === 'shipping' || selected_type === 'both') {
+                    } else if (selected_type === 'shipping') {
                         shipping_fields.show();
+                    } else if (selected_type === 'both') {
+                        billing_fields.show();
+                        shipping_same_as_billing_wrapper.show();
+                        if (!shipping_same_as_billing_checkbox.is(':checked')) {
+                            shipping_fields.show();
+                        }
                     }
                     // Trigger country change handler in case fields were hidden
                     $(document.body).trigger('country_to_state_changed', ['billing', wrapper]);
                     $(document.body).trigger('country_to_state_changed', ['shipping', wrapper]);
 
                 }).trigger('change'); // Trigger on load if needed
+
+                shipping_same_as_billing_checkbox.on('change', function() {
+                    if ($(this).is(':checked')) {
+                        shipping_fields.hide();
+                    } else {
+                        shipping_fields.show();
+                    }
+                }).trigger('change');
 
                 // Ensure WC init runs on these fields after potential display changes
                 $(document.body).trigger('wc_address_i18n_ready');

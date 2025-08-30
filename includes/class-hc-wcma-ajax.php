@@ -57,6 +57,7 @@ class HC_WCMA_AJAX {
 
 		$address_data           = isset( $_POST['address_data'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['address_data'] ) ) : array();
 		$address_type_selection = isset( $_POST['address_type_selection'] ) ? sanitize_text_field( wp_unslash( $_POST['address_type_selection'] ) ) : '';
+		$shipping_same_as_billing = isset( $address_data['shipping_same_as_billing'] ) && '1' === $address_data['shipping_same_as_billing'];
 
 		if ( empty( $address_type_selection ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please select an address type.', 'happycoders-multiple-addresses' ) ) );
@@ -69,6 +70,7 @@ class HC_WCMA_AJAX {
 		if ( 'shipping' === $address_type_selection || 'both' === $address_type_selection ) {
 			$types_to_save[] = 'shipping';
 		}
+
 
 		$errors                   = array();
 		$new_keys                 = array();
@@ -101,11 +103,25 @@ class HC_WCMA_AJAX {
 			$new_address = array();
 			$address_key = hc_wcma_generate_address_key();
 
+			$billing_address_for_shipping = array();
+				if ( 'shipping' === $type && $shipping_same_as_billing ) {
+					foreach ( $address_data as $key => $value ) {
+						if ( strpos( $key, 'billing_' ) === 0 ) {
+							$billing_address_for_shipping[ str_replace( 'billing_', 'shipping_', $key ) ] = $value;
+						}
+					}
+				}
+
+
 			foreach ( $fields as $key => $field_config ) {
 				$post_key  = $key;
 				$clean_key = str_replace( $prefix, '', $key );
 
-				$value = isset( $address_data[ $post_key ] ) ? sanitize_text_field( $address_data[ $post_key ] ) : '';
+				if ( 'shipping' === $type && $shipping_same_as_billing ) {
+					$value = isset( $billing_address_for_shipping[ $post_key ] ) ? sanitize_text_field( $billing_address_for_shipping[ $post_key ] ) : '';
+				} else {
+					$value = isset( $address_data[ $post_key ] ) ? sanitize_text_field( $address_data[ $post_key ] ) : '';
+				}
 
 				if ( 'email' === $clean_key ) {
 					$sanitized_value = sanitize_email( $value );
@@ -337,15 +353,15 @@ class HC_WCMA_AJAX {
 			$updated_address['nickname'] = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : '';
 		}
 
-		if ( ! isset( $new_address['company'] ) ) {
+		if ( ! isset( $updated_address['company'] ) ) {
 			$updated_address['company'] = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : '';
 		}
 
-		if ( ! isset( $new_address['email'] ) ) {
+		if ( ! isset( $updated_address['email'] ) ) {
 			$updated_address['email'] = isset( $address_data[ $prefix . 'email' ] ) ? sanitize_email( $address_data[ $prefix . 'email' ] ) : '';
 		}
 
-		if ( ! isset( $new_address['phone'] ) ) {
+		if ( ! isset( $updated_address['phone'] ) ) {
 			$updated_address['phone'] = isset( $address_data[ $prefix . 'phone' ] ) ? wc_sanitize_phone_number( $address_data[ $prefix . 'phone' ] ) : '';
 		}
 
