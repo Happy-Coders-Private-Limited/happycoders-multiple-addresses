@@ -108,13 +108,13 @@ final class HC_WCMA_Main {
 		$is_address_book_endpoint = $is_my_account_page && isset( $wp->query_vars[ $this->address_book_endpoint ] );
 
 		if ( $is_my_account_page && $is_address_book_endpoint ) {
-			wp_enqueue_style( 'hc-wcma-my-account', HC_WCMA_PLUGIN_URL . 'assets/css/my-account.css', array(), $this->version );
+			wp_enqueue_style( 'hc-wcma-my-account', HC_WCMA_PLUGIN_URL . 'assets/css/my-account.css', array(), $this->version . time() );
 			wp_enqueue_script( 'wc-country-select' );
 			wp_enqueue_script( 'wc-address-i18n' );
 			wp_enqueue_style( 'swiper-css', HC_WCMA_PLUGIN_URL . 'assets/vendor/swiper/swiper-bundle.min.css', array(), '11.2.6' );
 			wp_enqueue_script( 'swiper-js', HC_WCMA_PLUGIN_URL . 'assets/vendor/swiper/swiper-bundle.min.js', array(), '11.2.6', true );
 
-			wp_enqueue_script( 'hc-wcma-my-account-js', HC_WCMA_PLUGIN_URL . 'assets/js/my-account.js', array( 'jquery', 'wp-util', 'swiper-js' ), $this->version . '1', true );
+			wp_enqueue_script( 'hc-wcma-my-account-js', HC_WCMA_PLUGIN_URL . 'assets/js/my-account.js', array( 'jquery', 'wp-util', 'swiper-js' ), $this->version . time(), true );
 
 			$user_id        = get_current_user_id();
 			$billing_count  = count( hc_wcma_get_user_addresses( $user_id, 'billing' ) );

@@ -1,6 +1,38 @@
 /* global hc_wcma_params, jQuery, wp */
 jQuery(function ($) {
     'use strict';
+
+    function initializeNicknameFieldToggle() {
+        const formWrappers = ['#hc_wcma_add_address_form', '#hc_wcma_edit_address_form'];
+
+        formWrappers.forEach(function(formSelector) {
+            const $form = $(formSelector);
+            if (!$form.length) {
+                return;
+            }
+
+            const fieldPairs = [
+                { type: '[name="billing_nickname_type"]', other: '[name="billing_nickname"]' },
+                { type: '[name="shipping_nickname_type"]', other: '[name="shipping_nickname"]' }
+            ];
+
+            fieldPairs.forEach(function(pair) {
+                const $typeSelect = $form.find(pair.type);
+                const $otherField = $form.find(pair.other).closest('.form-row');
+
+                if ($typeSelect.length) {
+                    $typeSelect.on('change', function() {
+                        if ($(this).val() === 'Other') {
+                            $otherField.show();
+                        } else {
+                            $otherField.hide();
+                        }
+                    }).trigger('change');
+                }
+            });
+        });
+    }
+
     /**
      * Handles the logic for showing/hiding address fields based on the selected type in the "Add New Address" form.
      */
@@ -37,6 +69,7 @@ jQuery(function ($) {
 
     // Run the form field toggle logic on page load.
     initializeAddFormAddressTypeToggle();
+    initializeNicknameFieldToggle();
 
      // --- Swiper Initialization ---
     if (typeof Swiper === 'function') {
@@ -301,7 +334,24 @@ jQuery(function ($) {
         }
 
         const prefix = addressType + '_';
+
+        // Special handling for nickname
+        const nickname = addressData.nickname || '';
+        const $nicknameTypeField = $editForm.find('[name="' + prefix + 'nickname_type"]');
+        const $nicknameField = $editForm.find('[name="' + prefix + 'nickname"]');
+
+        if (nickname === 'Home' || nickname === 'Work') {
+            $nicknameTypeField.val(nickname);
+            $nicknameField.val('');
+        } else {
+            $nicknameTypeField.val('Other');
+            $nicknameField.val(nickname);
+        }
+
         $.each(addressData, function(key, value) {
+            if (key === 'nickname') {
+                return; // skip nickname as it's handled above
+            }
             const fieldName = prefix + key;
             const $field = $editForm.find('[name="' + fieldName + '"]').not('[type="hidden"]');
             if ($field.length) {
@@ -340,6 +390,9 @@ jQuery(function ($) {
                    }
                 }
            }, 1200);
+
+           // Trigger change on nickname type field
+           $nicknameTypeField.trigger('change');
        });
     });
 

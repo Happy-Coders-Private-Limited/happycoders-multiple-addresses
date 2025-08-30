@@ -181,20 +181,48 @@ class HC_WCMA_AJAX {
 				$new_address[ $clean_key ] = $sanitized_value;
 			}
 
-			if ( ! isset( $new_address['nickname'] ) ) {
-				$new_address['nickname'] = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : '';
+			// Handle nickname
+			$nickname_type_key  = $prefix . 'nickname_type';
+			$nickname_field_key = $prefix . 'nickname';
+			if ( 'shipping' === $type && $shipping_same_as_billing ) {
+				$nickname_type_key  = 'billing_nickname_type';
+				$nickname_field_key = 'billing_nickname';
 			}
 
-			if ( ! isset( $new_address['company'] ) ) {
-				$new_address['company'] = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : '';
+			$nickname_type = isset( $address_data[ $nickname_type_key ] ) ? $address_data[ $nickname_type_key ] : '';
+			$nickname      = '';
+			if ( 'Other' === $nickname_type ) {
+				$nickname = isset( $address_data[ $nickname_field_key ] ) ? sanitize_text_field( $address_data[ $nickname_field_key ] ) : '';
+			} elseif ( in_array( $nickname_type, array( 'Home', 'Work' ), true ) ) {
+				$nickname = $nickname_type;
 			}
 
-			if ( ! isset( $new_address['email'] ) ) {
-				$new_address['email'] = isset( $address_data[ $prefix . 'email' ] ) ? sanitize_email( $address_data[ $prefix . 'email' ] ) : '';
+			if ( empty( $nickname ) ) {
+				$errors[] = __( 'Address nickname is a required field.', 'happycoders-multiple-addresses' );
 			}
+			$new_address['nickname'] = $nickname;
 
-			if ( ! isset( $new_address['phone'] ) ) {
-				$new_address['phone'] = isset( $address_data[ $prefix . 'phone' ] ) ? wc_sanitize_phone_number( $address_data[ $prefix . 'phone' ] ) : '';
+			// Handle other extra fields
+			if ( 'shipping' === $type && $shipping_same_as_billing ) {
+				if ( ! isset( $new_address['company'] ) ) {
+					$new_address['company'] = isset( $address_data['billing_company'] ) ? sanitize_text_field( $address_data['billing_company'] ) : '';
+				}
+				if ( ! isset( $new_address['email'] ) ) {
+					$new_address['email'] = isset( $address_data['billing_email'] ) ? sanitize_email( $address_data['billing_email'] ) : '';
+				}
+				if ( ! isset( $new_address['phone'] ) ) {
+					$new_address['phone'] = isset( $address_data['billing_phone'] ) ? wc_sanitize_phone_number( $address_data['billing_phone'] ) : '';
+				}
+			} else {
+				if ( ! isset( $new_address['company'] ) ) {
+					$new_address['company'] = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : '';
+				}
+				if ( ! isset( $new_address['email'] ) ) {
+					$new_address['email'] = isset( $address_data[ $prefix . 'email' ] ) ? sanitize_email( $address_data[ $prefix . 'email' ] ) : '';
+				}
+				if ( ! isset( $new_address['phone'] ) ) {
+					$new_address['phone'] = isset( $address_data[ $prefix . 'phone' ] ) ? wc_sanitize_phone_number( $address_data[ $prefix . 'phone' ] ) : '';
+				}
 			}
 
 			if ( empty( $errors ) ) {
@@ -349,9 +377,19 @@ class HC_WCMA_AJAX {
 			$updated_address[ $clean_key ] = $sanitized_value;
 		}
 
-		if ( ! isset( $updated_address['nickname'] ) ) {
-			$updated_address['nickname'] = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : '';
+		// Handle nickname
+		$nickname_type = isset( $address_data[ $prefix . 'nickname_type' ] ) ? $address_data[ $prefix . 'nickname_type' ] : '';
+		$nickname      = '';
+		if ( 'Other' === $nickname_type ) {
+			$nickname = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : '';
+		} elseif ( in_array( $nickname_type, array( 'Home', 'Work' ), true ) ) {
+			$nickname = $nickname_type;
 		}
+
+		if ( empty( $nickname ) ) {
+			$errors[] = __( 'Address nickname is a required field.', 'happycoders-multiple-addresses' );
+		}
+		$updated_address['nickname'] = $nickname;
 
 		if ( ! isset( $updated_address['company'] ) ) {
 			$updated_address['company'] = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : '';
