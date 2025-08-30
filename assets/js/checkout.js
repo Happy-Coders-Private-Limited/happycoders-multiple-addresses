@@ -136,11 +136,39 @@ jQuery(function ($) {
 
         if (selectedKey === 'new' || selectedKey === '') {
             populateAddressFields(type, null);
+            // Enable and show nickname fields for new address
+            toggleNicknameFieldsRequired(type, true);
         } else if (addresses && addresses[selectedKey]) {
             const selectedAddress = addresses[selectedKey];
             populateAddressFields(type, selectedAddress);
+            // Disable and hide nickname fields for existing address
+            toggleNicknameFieldsRequired(type, false);
         } else {
             populateAddressFields(type, null);
+            toggleNicknameFieldsRequired(type, true);
+        }
+        updateNicknameOptionsCheckout(); // Call after fields are populated
+    }
+
+    // Function to toggle required status and visibility of nickname fields
+    function toggleNicknameFieldsRequired(type, isRequired) {
+        const $nicknameTypeField = $('[name="' + type + '_nickname_type"]');
+        const $nicknameTypeLabel = $nicknameTypeField.closest('.form-row').find('label'); 
+        const $nicknameField = $('[name="' + type + '_nickname"]');
+        const $nicknameLabel = $nicknameField.closest('.form-row').find('label');  
+
+        if (isRequired) {
+            $nicknameTypeField.prop('required', true).closest('.form-row').addClass('validate-required').show();          
+            // Re-trigger change to handle 'Other' nickname field visibility
+            $nicknameTypeLabel.find("span.optional").remove();
+            $nicknameTypeField.trigger('change');
+            $nicknameLabel.find("span.optional").remove();
+        } else {
+            $nicknameTypeField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
+            $nicknameField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
+            if (!$nicknameTypeLabel.html().includes(' (optional)')) { 
+                $nicknameTypeLabel.append(' (optional)'); 
+            }
         }
     }
 
@@ -178,11 +206,87 @@ jQuery(function ($) {
         });
 
         if (hc_wcma_checkout_params.selector_style === 'dropdown') {
-            $('.hc-wcma-address-select.select').filter(':not(.select2-hidden-accessible)').selectWoo().addClass('select2-hidden-accessible');
+            $('.hc-wcma-address-select').filter(':not(.select2-hidden-accessible)').selectWoo().addClass('select2-hidden-accessible');
         }
+        updateNicknameOptionsCheckout(); // Call after selectors are initialized
+    }
+
+    // Function to handle conditional display of "Other" nickname field
+    function initializeNicknameFieldToggleCheckout() {
+        const formWrappers = ['form.checkout'];
+
+        formWrappers.forEach(function(formSelector) {
+            const $form = $(formSelector);
+            if (!$form.length) {
+                return;
+            }
+
+            const fieldPairs = [
+                { type: '[name="billing_nickname_type"]', other: '[name="billing_nickname"]' },
+                { type: '[name="shipping_nickname_type"]', other: '[name="shipping_nickname"]' }
+            ];
+
+            fieldPairs.forEach(function(pair) {
+                const $typeSelect = $form.find(pair.type);
+                const $otherField = $form.find(pair.other).closest('.form-row');
+
+                if ($typeSelect.length) {
+                    $typeSelect.on('change', function() {
+                        // Only operate if the nickname type field is currently visible
+                        if ($(this).closest('.form-row').is(':visible')) {
+                            if ($(this).val() === 'Other') {
+                                $otherField.show();
+                                $otherField.addClass('validate-required');
+                                
+                            } else {
+                                $otherField.hide();
+                                $otherField.removeClass('validate-required');
+                            }
+                        }
+                    }).trigger('change');
+                }
+            });
+        });
+    }
+
+    // Function to disable "Home" and "Work" options if already in use
+    function updateNicknameOptionsCheckout() {
+        if (typeof hc_wcma_checkout_params === 'undefined' || typeof hc_wcma_checkout_params.existing_nicknames === 'undefined') {
+            console.log('hc_wcma_checkout_params or existing_nicknames not defined.');
+            return;
+        }
+
+        const { billing: billingNicknames = [], shipping: shippingNicknames = [] } = hc_wcma_checkout_params.existing_nicknames;
+        console.log('Checkout - Billing Nicknames:', billingNicknames);
+        console.log('Checkout - Shipping Nicknames:', shippingNicknames);
+
+        const $billingTypeSelect = $('[name="billing_nickname_type"]');
+        const $shippingTypeSelect = $('[name="shipping_nickname_type"]');
+
+        $billingTypeSelect.find('option').each(function() {
+            const $option = $(this);
+            const optionValue = $option.val();
+            if (optionValue === 'Home' || optionValue === 'Work') {
+                const isDisabled = billingNicknames.includes(optionValue);
+                $option.prop('disabled', isDisabled);
+                console.log('Billing - Option:', optionValue, 'Disabled:', isDisabled);
+            }
+        });
+
+        $shippingTypeSelect.find('option').each(function() {
+            const $option = $(this);
+            const optionValue = $option.val();
+            if (optionValue === 'Home' || optionValue === 'Work') {
+                const isDisabled = shippingNicknames.includes(optionValue);
+                $option.prop('disabled', isDisabled);
+                console.log('Shipping - Option:', optionValue, 'Disabled:', isDisabled);
+            }
+        });
     }
 
     checkoutForm.on('change', '.hc-wcma-address-select', handleAddressSelectionChange);
 
     initializeSelectors();
+    initializeNicknameFieldToggleCheckout(); // Call on page load
+    updateNicknameOptionsCheckout(); // Call on page load
 });

@@ -183,6 +183,10 @@ final class HC_WCMA_Main {
 					'select_shipping' => __( 'Select a shipping address', 'happycoders-multiple-addresses' ),
 					'new_address'     => __( 'Enter a new address', 'happycoders-multiple-addresses' ),
 				),
+				'existing_nicknames' => array(
+					'billing'  => array_column( $billing_addresses, 'nickname' ),
+					'shipping' => array_column( $shipping_addresses, 'nickname' ),
+				),
 			);
 			wp_localize_script( 'hc-wcma-checkout-js', 'hc_wcma_checkout_params', $checkout_params );
 		}

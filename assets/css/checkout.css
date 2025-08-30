@@ -49,3 +49,7 @@ ul.hc-wcma-address-list label {
     border: 1px solid #ddd;
     background: #f9f9f9;
 }
+
+.hc-wcma-nickname-other-field {
+    display: none;
+}

@@ -25,6 +25,94 @@ class HC_WCMA_Checkout {
 		add_action( 'woocommerce_before_checkout_shipping_form', array( __CLASS__, 'display_shipping_address_selector' ), 5 );
 		add_action( 'woocommerce_checkout_update_order_meta', array( __CLASS__, 'save_selected_address_to_order' ), 10, 2 );
 		add_action( 'woocommerce_new_order', array( __CLASS__, 'save_new_address_from_order' ), 10, 1 );
+		self::init_fields();
+		add_action( 'woocommerce_checkout_process', array( __CLASS__, 'validate_nickname_field' ) );
+	}
+
+	public static function validate_nickname_field() {
+		$billing_selected_address = isset( $_POST['hc_wcma_select_billing_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_billing_address'] ) ) : '';
+		$shipping_selected_address = isset( $_POST['hc_wcma_select_shipping_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_shipping_address'] ) ) : '';
+
+		// Validate billing nickname only if a new billing address is being entered
+		if ( 'new' === $billing_selected_address ) {
+			if ( empty( $_POST['billing_nickname_type'] ) ) {
+				wc_add_notice( __( 'Please select a nickname type for your billing address.', 'happycoders-multiple-addresses' ), 'error' );
+			}
+			if ( isset( $_POST['billing_nickname_type'] ) && $_POST['billing_nickname_type'] === 'Other' && empty( $_POST['billing_nickname'] ) ) {
+				wc_add_notice( __( 'Please enter a custom nickname for your billing address.', 'happycoders-multiple-addresses' ), 'error' );
+			}
+		}
+
+		// Validate shipping nickname only if a new shipping address is being entered
+		if ( 'new' === $shipping_selected_address ) {
+			if ( empty( $_POST['shipping_nickname_type'] ) ) {
+				wc_add_notice( __( 'Please select a nickname type for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
+			}
+			if ( isset( $_POST['shipping_nickname_type'] ) && $_POST['shipping_nickname_type'] === 'Other' && empty( $_POST['shipping_nickname'] ) ) {
+				wc_add_notice( __( 'Please enter a custom nickname for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
+			}
+		}
+	}
+
+	public static function init_fields() {
+		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'add_nickname_fields_to_checkout' ) );
+		add_filter( 'woocommerce_shipping_fields', array( __CLASS__, 'add_nickname_fields_to_checkout' ) );
+	}
+
+	public static function add_nickname_fields_to_checkout( $fields ) {
+		$nickname_type_field = array(
+			'type'     => 'select',
+			'label'    => __( 'Address Nickname Type', 'happycoders-multiple-addresses' ),
+			'required' => false,
+			'class'    => array( 'form-row-wide', 'hc-wcma-nickname-type-select' ),
+			'priority' => 5,
+			'options'  => array(
+				''      => __( 'Select an option...', 'happycoders-multiple-addresses' ),
+				'Home'  => __( 'Home', 'happycoders-multiple-addresses' ),
+				'Work'  => __( 'Work', 'happycoders-multiple-addresses' ),
+				'Other' => __( 'Other', 'happycoders-multiple-addresses' ),
+			),
+		);
+
+		$nickname_field = array(
+			'label'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
+			'placeholder' => __( 'e.g., Shipping Place', 'happycoders-multiple-addresses' ),
+			'required'    => false,
+			'class'       => array( 'form-row-wide', 'hc-wcma-nickname-other-field' ),
+			'priority'    => 6,
+			'type'        => 'text',
+		);
+
+		// Determine if it's billing or shipping fields
+		$prefix = '';
+		if ( isset( $fields['billing_first_name'] ) ) {
+			$prefix = 'billing_';
+		} elseif ( isset( $fields['shipping_first_name'] ) ) {
+			$prefix = 'shipping_';
+		}
+
+		$fields[ $prefix . 'nickname_type' ] = $nickname_type_field;
+		$fields[ $prefix . 'nickname' ]      = $nickname_field;
+
+		// Reorder fields to place nickname at the top
+		$new_fields = array();
+		foreach ( $fields as $key => $field ) {
+			if ( $key === $prefix . 'nickname_type' || $key === $prefix . 'nickname' ) {
+				continue;
+			}
+			$new_fields[ $key ] = $field;
+		}
+
+		// Insert nickname fields at the beginning
+		$fields = array_merge(
+			array(
+				$prefix . 'nickname_type' => $nickname_type_field,
+				$prefix . 'nickname'      => $nickname_field,
+			),
+			$new_fields
+		);
+
+		return $fields;
 	}
 
 	/**
@@ -172,10 +260,16 @@ class HC_WCMA_Checkout {
 			return;
 		}
 
-		self::process_order_address( $customer_id, $order, 'billing' );
+		// Get nickname data from $_POST
+		$billing_nickname_type = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : '';
+		$billing_nickname_custom = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : '';
+		$shipping_nickname_type = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '';
+		$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '';
+
+		self::process_order_address( $customer_id, $order, 'billing', $billing_nickname_type, $billing_nickname_custom );
 
 		if ( $order->has_shipping_address() ) {
-			self::process_order_address( $customer_id, $order, 'shipping' );
+			self::process_order_address( $customer_id, $order, 'shipping', $shipping_nickname_type, $shipping_nickname_custom );
 		}
 	}
 	
@@ -225,7 +319,7 @@ class HC_WCMA_Checkout {
 	 * @param WC_Order $order       The order object.
 	 * @param string   $type        'billing' or 'shipping'.
 	 */
-	private static function process_order_address( $customer_id, $order, $type ) {
+	private static function process_order_address( $customer_id, $order, $type, $nickname_type = '', $nickname_custom = '' ) {
 		$limit             = (int) get_option( 'hc_wcma_limit_max_' . $type . '_addresses', 0 );
 		$current_addresses = hc_wcma_get_user_addresses( $customer_id, $type );
 		if ( $limit > 0 && count( $current_addresses ) >= $limit ) {
@@ -261,7 +355,21 @@ class HC_WCMA_Checkout {
 			}
 		}
 
-		$new_address['nickname']           = ! empty( $new_address['first_name'] ) ? $new_address['first_name'] . ' ' . $new_address['last_name'] : $new_address['address_1'];
+		// Construct the nickname based on type and custom value
+		$submitted_nickname = '';
+		if ( 'Other' === $nickname_type ) {
+			$submitted_nickname = $nickname_custom;
+		} elseif ( in_array( $nickname_type, array( 'Home', 'Work' ), true ) ) {
+			$submitted_nickname = $nickname_type;
+		}
+
+		// Use submitted nickname if available, otherwise fall back to first/last name
+		if ( ! empty( $submitted_nickname ) ) {
+			$new_address['nickname'] = $submitted_nickname;
+		} else {
+			$new_address['nickname'] = ! empty( $new_address['first_name'] ) ? $new_address['first_name'] . ' ' . $new_address['last_name'] : $new_address['address_1'];
+		}
+
 		$address_key                       = hc_wcma_generate_address_key();
 		$current_addresses[ $address_key ] = $new_address;
 
