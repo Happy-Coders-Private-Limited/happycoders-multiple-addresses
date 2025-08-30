@@ -40,6 +40,8 @@ class HC_WCMA_AJAX {
 	 * Handle adding a new address.
 	 */
 	public static function handle_add_address() {
+		error_log( 'HC_WCMA_AJAX: handle_add_address started' );
+		error_log( 'HC_WCMA_AJAX: POST data: ' . print_r( $_POST, true ) );
 
 		$nonce_action     = 'hc_wcma_save_address_action';
 		$nonce_field_name = 'hc_wcma_save_address_nonce';
@@ -59,6 +61,10 @@ class HC_WCMA_AJAX {
 		$address_type_selection = isset( $_POST['address_type_selection'] ) ? sanitize_text_field( wp_unslash( $_POST['address_type_selection'] ) ) : '';
 		$shipping_same_as_billing = isset( $address_data['shipping_same_as_billing'] ) && '1' === $address_data['shipping_same_as_billing'];
 
+		error_log( 'HC_WCMA_AJAX: Address data after sanitization: ' . print_r( $address_data, true ) );
+		error_log( 'HC_WCMA_AJAX: Address type selection: ' . $address_type_selection );
+		error_log( 'HC_WCMA_AJAX: Shipping same as billing: ' . ( $shipping_same_as_billing ? 'true' : 'false' ) );
+
 		if ( empty( $address_type_selection ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please select an address type.', 'happycoders-multiple-addresses' ) ) );
 		}
@@ -71,6 +77,7 @@ class HC_WCMA_AJAX {
 			$types_to_save[] = 'shipping';
 		}
 
+		error_log( 'HC_WCMA_AJAX: Types to save: ' . print_r( $types_to_save, true ) );
 
 		$errors                   = array();
 		$new_keys                 = array();
@@ -78,6 +85,7 @@ class HC_WCMA_AJAX {
 		$limit_reached_messages   = array();
 
 		foreach ( $types_to_save as $type ) {
+			error_log( 'HC_WCMA_AJAX: Processing type: ' . $type );
 			$prefix = $type . '_';
 
 			$limit_option_key = 'hc_wcma_limit_max_' . $type . '_addresses';
@@ -131,26 +139,6 @@ class HC_WCMA_AJAX {
 					$sanitized_value = sanitize_text_field( $value );
 				}
 
-				if ( 'nickname' === $clean_key ) {
-					$value           = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : $sanitized_value;
-					$sanitized_value = $value;
-				}
-
-				if ( 'company' === $clean_key ) {
-					$value           = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : $sanitized_value;
-					$sanitized_value = $value;
-				}
-
-				if ( 'email' === $clean_key ) {
-					$value           = isset( $address_data[ $prefix . 'email' ] ) ? sanitize_email( $address_data[ $prefix . 'email' ] ) : $sanitized_value;
-					$sanitized_value = $value;
-				}
-
-				if ( 'phone' === $clean_key ) {
-					$value           = isset( $address_data[ $prefix . 'phone' ] ) ? wc_sanitize_phone_number( $address_data[ $prefix . 'phone' ] ) : $sanitized_value;
-					$sanitized_value = $value;
-				}
-
 				if ( 'postcode' === $clean_key ) {
 					$country          = '';
 					$country_post_key = $prefix . 'country';
@@ -199,6 +187,20 @@ class HC_WCMA_AJAX {
 
 			if ( empty( $nickname ) ) {
 				$errors[] = __( 'Address nickname is a required field.', 'happycoders-multiple-addresses' );
+			} else {
+				// Check for duplicate 'Home' or 'Work' nicknames
+				if ( in_array( $nickname, array( 'Home', 'Work' ), true ) ) {
+					$existing_addresses = hc_wcma_get_user_addresses( $user_id, $type );
+					$existing_nicknames = ! empty( $existing_addresses ) ? array_column( $existing_addresses, 'nickname' ) : array();
+					if ( in_array( $nickname, $existing_nicknames, true ) ) {
+						$errors[] = sprintf(
+							/* translators: 1: Nickname, 2: Address type */
+							__( 'An address with the nickname "%1$s" already exists for %2$s.', 'happycoders-multiple-addresses' ),
+							$nickname,
+							$type
+						);
+					}
+				}
 			}
 			$new_address['nickname'] = $nickname;
 
@@ -225,6 +227,8 @@ class HC_WCMA_AJAX {
 				}
 			}
 
+			error_log( 'HC_WCMA_AJAX: New address before saving: ' . print_r( $new_address, true ) );
+
 			if ( empty( $errors ) ) {
 				$addresses                 = hc_wcma_get_user_addresses( $user_id, $type );
 				$addresses[ $address_key ] = $new_address;
@@ -246,6 +250,7 @@ class HC_WCMA_AJAX {
 					}
 				}
 			} else {
+				error_log( 'HC_WCMA_AJAX: Errors found: ' . print_r( $errors, true ) );
 				$errors[] = sprintf(
 					/* translators: %s: Address type */
 					__( 'Failed to save %s address.', 'happycoders-multiple-addresses' ),
@@ -328,26 +333,6 @@ class HC_WCMA_AJAX {
 					$sanitized_value = sanitize_text_field( $value );
 			}
 
-			if ( 'nickname' === $clean_key ) {
-				$value           = isset( $address_data[ $prefix . 'nickname' ] ) ? sanitize_text_field( $address_data[ $prefix . 'nickname' ] ) : $sanitized_value;
-				$sanitized_value = $value;
-			}
-
-			if ( 'company' === $clean_key ) {
-				$value           = isset( $address_data[ $prefix . 'company' ] ) ? sanitize_text_field( $address_data[ $prefix . 'company' ] ) : $sanitized_value;
-				$sanitized_value = $value;
-			}
-
-			if ( 'email' === $clean_key ) {
-				$value           = isset( $address_data[ $prefix . 'email' ] ) ? sanitize_email( $address_data[ $prefix . 'email' ] ) : $sanitized_value;
-				$sanitized_value = $value;
-			}
-
-			if ( 'phone' === $clean_key ) {
-				$value           = isset( $address_data[ $prefix . 'phone' ] ) ? wc_sanitize_phone_number( $address_data[ $prefix . 'phone' ] ) : $sanitized_value;
-				$sanitized_value = $value;
-			}
-
 			if ( 'postcode' === $clean_key ) {
 				$country          = '';
 				$country_post_key = $prefix . 'country';
@@ -388,6 +373,21 @@ class HC_WCMA_AJAX {
 
 		if ( empty( $nickname ) ) {
 			$errors[] = __( 'Address nickname is a required field.', 'happycoders-multiple-addresses' );
+		} else {
+			// Check for duplicate 'Home' or 'Work' nicknames
+			if ( in_array( $nickname, array( 'Home', 'Work' ), true ) ) {
+				$existing_addresses = hc_wcma_get_user_addresses( $user_id, $address_type );
+				if ( isset( $existing_addresses[ $address_key ] ) ) {
+					unset( $existing_addresses[ $address_key ] ); // Exclude the address being edited
+				}
+				$existing_nicknames = ! empty( $existing_addresses ) ? array_column( $existing_addresses, 'nickname' ) : array();
+				if ( in_array( $nickname, $existing_nicknames, true ) ) {
+					$errors[] = sprintf(
+						__( 'An address with the nickname "%s" already exists.', 'happycoders-multiple-addresses' ),
+						$nickname
+					);
+				}
+			}
 		}
 		$updated_address['nickname'] = $nickname;
 

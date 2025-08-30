@@ -1,6 +1,41 @@
-/* global hc_wcma_params, jQuery, wp */
+/* global hc_wcma_params, jQuery, wp, hc_wcma_existing_nicknames */
 jQuery(function ($) {
     'use strict';
+
+    function updateNicknameOptions() {
+        if (typeof hc_wcma_existing_nicknames === 'undefined') {
+            return;
+        }
+
+        const { billing: billingNicknames = [], shipping: shippingNicknames = [] } = hc_wcma_existing_nicknames;
+        const $addForm = $('#hc_wcma_add_address_form');
+        const $billingTypeSelect = $addForm.find('#billing_nickname_type');
+        const $shippingTypeSelect = $addForm.find('#shipping_nickname_type');
+        const addressType = $('#hc_wcma_address_type').val();
+        const isSameAsBilling = $('#shipping_same_as_billing').is(':checked');
+
+        // For billing nickname dropdown
+        $billingTypeSelect.find('option').each(function() {
+            const $option = $(this);
+            const optionValue = $option.val();
+            if (optionValue === 'Home' || optionValue === 'Work') {
+                let isDisabled = billingNicknames.includes(optionValue);
+                if (addressType === 'both' && isSameAsBilling) {
+                    isDisabled = isDisabled || shippingNicknames.includes(optionValue);
+                }
+                $option.prop('disabled', isDisabled);
+            }
+        });
+
+        // For shipping nickname dropdown
+        $shippingTypeSelect.find('option').each(function() {
+            const $option = $(this);
+            const optionValue = $option.val();
+            if (optionValue === 'Home' || optionValue === 'Work') {
+                $option.prop('disabled', shippingNicknames.includes(optionValue));
+            }
+        });
+    }
 
     function initializeNicknameFieldToggle() {
         const formWrappers = ['#hc_wcma_add_address_form', '#hc_wcma_edit_address_form'];
@@ -45,23 +80,40 @@ jQuery(function ($) {
         const billingFields = wrapper.find('.hc_wcma_billing_fields');
         const shippingFields = wrapper.find('.hc_wcma_shipping_fields');
         const addressTypeSelect = $('#hc_wcma_address_type');
+        
+        const shippingSameAsBillingCheckbox = $('#shipping_same_as_billing');
 
         addressTypeSelect.on('change', function () {
             const selectedType = $(this).val();
             billingFields.hide();
             shippingFields.hide();
+            $(shippingSameAsBillingCheckbox).val('0');
 
-            if (selectedType === 'billing' || selectedType === 'both') {
+            if (selectedType === 'billing') {
                 billingFields.show();
-            }
-            if (selectedType === 'shipping' || selectedType === 'both') {
+            } else if (selectedType === 'shipping') {
                 shippingFields.show();
+            } else if (selectedType === 'both') {
+                billingFields.show();
+                wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper').show();
+                if (!shippingSameAsBillingCheckbox.is(':checked')) {
+                    shippingFields.show();
+                }
             }
             // Trigger country change handler in case fields were hidden
             $(document.body).trigger('country_to_state_changed', ['billing', wrapper]);
             $(document.body).trigger('country_to_state_changed', ['shipping', wrapper]);
+        }).trigger('change');  
 
-        }).trigger('change');
+        shippingSameAsBillingCheckbox.on('change', function() {
+            if ($(this).is(':checked')) {
+                $(this).val('1');
+                shippingFields.hide(); 
+            } else {
+                $(this).val('0');
+                shippingFields.show(); 
+            }
+        }).trigger('change'); 
 
         $(document.body).trigger('wc_address_i18n_ready');
         $(document.body).trigger('wc_country_select_ready');
@@ -70,6 +122,8 @@ jQuery(function ($) {
     // Run the form field toggle logic on page load.
     initializeAddFormAddressTypeToggle();
     initializeNicknameFieldToggle();
+    updateNicknameOptions();
+    $('#hc_wcma_address_type, #shipping_same_as_billing').on('change', updateNicknameOptions);
 
      // --- Swiper Initialization ---
     if (typeof Swiper === 'function') {
@@ -339,6 +393,10 @@ jQuery(function ($) {
         const nickname = addressData.nickname || '';
         const $nicknameTypeField = $editForm.find('[name="' + prefix + 'nickname_type"]');
         const $nicknameField = $editForm.find('[name="' + prefix + 'nickname"]');
+        const currentNicknames = (addressType === 'billing') ? hc_wcma_existing_nicknames.billing : hc_wcma_existing_nicknames.shipping;
+
+        // Temporarily enable all options to set the value
+        $nicknameTypeField.find('option').prop('disabled', false);
 
         if (nickname === 'Home' || nickname === 'Work') {
             $nicknameTypeField.val(nickname);
@@ -347,6 +405,17 @@ jQuery(function ($) {
             $nicknameTypeField.val('Other');
             $nicknameField.val(nickname);
         }
+
+        // Now disable the options that are already used by other addresses
+        $nicknameTypeField.find('option').each(function() {
+            const $option = $(this);
+            const optionValue = $option.val();
+            if ((optionValue === 'Home' || optionValue === 'Work') && optionValue !== nickname) {
+                if (currentNicknames.includes(optionValue)) {
+                    $option.prop('disabled', true);
+                }
+            }
+        });
 
         $.each(addressData, function(key, value) {
             if (key === 'nickname') {

@@ -78,6 +78,18 @@ class HC_WCMA_My_Account {
 		$default_billing_key    = hc_wcma_get_default_address_key( $user_id, 'billing' );
 		$default_shipping_key   = hc_wcma_get_default_address_key( $user_id, 'shipping' );
 
+		$billing_nicknames  = ! empty( $all_billing_addresses ) ? array_column( $all_billing_addresses, 'nickname' ) : array();
+		$shipping_nicknames = ! empty( $all_shipping_addresses ) ? array_column( $all_shipping_addresses, 'nickname' ) : array();
+
+		echo '<script>';
+		echo 'var hc_wcma_existing_nicknames = ' . wp_json_encode(
+			array(
+				'billing'  => $billing_nicknames,
+				'shipping' => $shipping_nicknames,
+			)
+		) . ';';
+		echo '</script>';
+
 		// --- Function to Reorder Addresses ---
 		$reorder_addresses = function ( $addresses, $default_key ) {
 			if ( empty( $addresses ) ) {
@@ -148,7 +160,7 @@ class HC_WCMA_My_Account {
 
 		$nickname_type_field = array(
 			'type'     => 'select',
-			'label'    => __( 'Address Nickname', 'happycoders-multiple-addresses' ),
+			'label'    => __( 'Address Nickname Type', 'happycoders-multiple-addresses' ),
 			'required' => true,
 			'class'    => array( 'form-row-wide', 'hc-wcma-nickname-type-select' ),
 			'priority' => 5,
@@ -156,13 +168,13 @@ class HC_WCMA_My_Account {
 				''      => __( 'Select an option...', 'happycoders-multiple-addresses' ),
 				'Home'  => __( 'Home', 'happycoders-multiple-addresses' ),
 				'Work'  => __( 'Work', 'happycoders-multiple-addresses' ),
-				'Other' => __( 'Other (enter below)', 'happycoders-multiple-addresses' ),
+				'Other' => __( 'Other', 'happycoders-multiple-addresses' ),
 			),
 		);
 
 		$nickname_field = array(
 			'label'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
-			'placeholder' => __( 'e.g., Weekend Place', 'happycoders-multiple-addresses' ),
+			'placeholder' => __( 'e.g., Place of Shipping', 'happycoders-multiple-addresses' ),
 			'required'    => true,
 			'class'       => array( 'form-row-wide', 'hc-wcma-nickname-other-field' ),
 			'priority'    => 6,
@@ -183,7 +195,7 @@ class HC_WCMA_My_Account {
 		}
 		echo '</div>';
 
-		echo '<div class="hc_wcma_shipping_same_as_billing_wrapper" style="display: none;"><p class="form-row form-row-wide"><label for="shipping_same_as_billing"><input type="checkbox" name="shipping_same_as_billing" id="shipping_same_as_billing" value="1" checked> ' . esc_html__( 'Shipping address is the same as billing address', 'happycoders-multiple-addresses' ) . '</label></p></div>';
+		echo '<div class="hc_wcma_shipping_same_as_billing_wrapper" style="display: none;"><p class="form-row form-row-wide"><label for="shipping_same_as_billing"><input type="checkbox" name="shipping_same_as_billing" id="shipping_same_as_billing" value="0"> ' . esc_html__( 'Shipping address is the same as billing address', 'happycoders-multiple-addresses' ) . '</label></p></div>';
 
 		echo '<div class="hc_wcma_fields hc_wcma_shipping_fields" style="display:none;">';
 		echo '<h3>' . esc_attr( __( 'Shipping Details', 'happycoders-multiple-addresses' ) ) . '</h3>';
@@ -239,8 +251,10 @@ class HC_WCMA_My_Account {
 
                 shipping_same_as_billing_checkbox.on('change', function() {
                     if ($(this).is(':checked')) {
+						$(this).val('1');
                         shipping_fields.hide();
                     } else {
+						$(this).val('0');
                         shipping_fields.show();
                     }
                 }).trigger('change');
