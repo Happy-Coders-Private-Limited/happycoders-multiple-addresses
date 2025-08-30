@@ -166,9 +166,6 @@ jQuery(function ($) {
         } else {
             $nicknameTypeField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
             $nicknameField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
-            if (!$nicknameTypeLabel.html().includes(' (optional)')) { 
-                $nicknameTypeLabel.append(' (optional)'); 
-            }
         }
     }
 

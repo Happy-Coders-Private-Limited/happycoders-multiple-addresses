@@ -263,8 +263,16 @@ class HC_WCMA_Checkout {
 		// Get nickname data from $_POST
 		$billing_nickname_type = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : '';
 		$billing_nickname_custom = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : '';
-		$shipping_nickname_type = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '';
-		$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '';
+		
+		if ( isset( $_POST['ship_to_different_address'] ) && $_POST['ship_to_different_address'] ) {
+			// Customer ticked "Ship to a different address"
+			$shipping_nickname_type   = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '';
+			$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '';
+		} else {
+			// No separate shipping address → use billing nickname
+			$shipping_nickname_type   = $billing_nickname_type;
+			$shipping_nickname_custom = $billing_nickname_custom;
+		}
 
 		self::process_order_address( $customer_id, $order, 'billing', $billing_nickname_type, $billing_nickname_custom );
 
