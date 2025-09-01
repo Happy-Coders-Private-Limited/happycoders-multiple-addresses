@@ -249,13 +249,10 @@ jQuery(function ($) {
     // Function to disable "Home" and "Work" options if already in use
     function updateNicknameOptionsCheckout() {
         if (typeof hc_wcma_checkout_params === 'undefined' || typeof hc_wcma_checkout_params.existing_nicknames === 'undefined') {
-            console.log('hc_wcma_checkout_params or existing_nicknames not defined.');
             return;
         }
 
         const { billing: billingNicknames = [], shipping: shippingNicknames = [] } = hc_wcma_checkout_params.existing_nicknames;
-        console.log('Checkout - Billing Nicknames:', billingNicknames);
-        console.log('Checkout - Shipping Nicknames:', shippingNicknames);
 
         const $billingTypeSelect = $('[name="billing_nickname_type"]');
         const $shippingTypeSelect = $('[name="shipping_nickname_type"]');
@@ -266,7 +263,6 @@ jQuery(function ($) {
             if (optionValue === 'Home' || optionValue === 'Work') {
                 const isDisabled = billingNicknames.includes(optionValue);
                 $option.prop('disabled', isDisabled);
-                console.log('Billing - Option:', optionValue, 'Disabled:', isDisabled);
             }
         });
 
@@ -276,7 +272,6 @@ jQuery(function ($) {
             if (optionValue === 'Home' || optionValue === 'Work') {
                 const isDisabled = shippingNicknames.includes(optionValue);
                 $option.prop('disabled', isDisabled);
-                console.log('Shipping - Option:', optionValue, 'Disabled:', isDisabled);
             }
         });
     }

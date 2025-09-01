@@ -44,13 +44,15 @@ class HC_WCMA_Checkout {
 	 */
 	public static function validate_nickname_field() {
 
-		if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
-			! wp_verify_nonce(
-				sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
-				'hc_wcma_checkout_action'
-			)
-		) {
-			return; // Nonce check failed → bail.
+		if ( ! self::hc_wcma_is_block_checkout() ) {
+			if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
+				! wp_verify_nonce(
+					sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
+					'hc_wcma_checkout_action'
+				)
+			) {
+				return;
+			}
 		}
 
 		$billing_selected_address  = isset( $_POST['hc_wcma_select_billing_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_billing_address'] ) ) : '';
@@ -281,13 +283,15 @@ class HC_WCMA_Checkout {
 	 */
 	public static function save_new_address_from_order( $order_id ) {
 
-		if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
-			! wp_verify_nonce(
-				sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
-				'hc_wcma_checkout_action'
-			)
-		) {
-			return;
+		if ( ! self::hc_wcma_is_block_checkout() ) {
+			if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
+				! wp_verify_nonce(
+					sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
+					'hc_wcma_checkout_action'
+				)
+			) {
+				return;
+			}
 		}
 
 		$order = wc_get_order( $order_id );
@@ -333,10 +337,10 @@ class HC_WCMA_Checkout {
 
 		if ( $billing_for_compare === $shipping_for_compare ) {
 			$shipping_nickname_type = $stored_shipping_nickname_type ?? $stored_billing_nickname_type;
-			$billing_nickname_type  = $shipping_nickname_type;
+			$billing_nickname_type  = $stored_billing_nickname_type ?? $stored_shipping_nickname_type;
 
 			$shipping_nickname_custom = $stored_shipping_nickname_custom ?? $stored_billing_nickname_custom;
-			$billing_nickname_custom  = $shipping_nickname_custom;
+			$billing_nickname_custom  = $stored_billing_nickname_custom ?? $stored_shipping_nickname_custom;
 		} else {
 			$billing_nickname_type    = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : $stored_shipping_nickname_type;
 			$billing_nickname_custom  = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : $stored_billing_nickname_custom;
@@ -455,5 +459,19 @@ class HC_WCMA_Checkout {
 
 		hc_wcma_save_user_addresses( $customer_id, $current_addresses, $type );
 		hc_wcma_set_default_address_key( $customer_id, $address_key, $type );
+	}
+
+	/**
+	 * Checks if the current checkout is a block-based checkout.
+	 *
+	 * @return bool True if it's a block checkout, false otherwise.
+	 */
+	private static function hc_wcma_is_block_checkout() {
+
+		if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

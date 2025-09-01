@@ -39,7 +39,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     // console.log(`[HCMA Blocks Frontend ${addressType}] Current Selected Key (State):`, selectedKey);
 
     const updateWcAddress = useCallback((addressData) => {
-        console.log(`[HCMA Blocks ${addressType}] updateWcAddress called with data:`, addressData);
+        // console.log(`[HCMA Blocks ${addressType}] updateWcAddress called with data:`, addressData);
         setLoading(true);
         const actionPayload = { [addressType + '_address']: addressData };
         // console.log(`[HCMA Blocks ${addressType}] Dispatching action with payload:`, actionPayload);
