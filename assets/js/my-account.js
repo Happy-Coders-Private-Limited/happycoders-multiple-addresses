@@ -36,6 +36,25 @@ jQuery(function ($) {
             }
         });
     }
+    
+    function toggleNicknameFieldsRequired(type, isRequired) {
+        const $nicknameTypeField = $('[name="' + type + '_nickname_type"]');
+        const $nicknameTypeLabel = $nicknameTypeField.closest('.form-row').find('label'); 
+        const $nicknameField = $('[name="' + type + '_nickname"]');
+        const $nicknameLabel = $nicknameField.closest('.form-row').find('label');  
+
+        if (isRequired) {
+            $nicknameTypeField.prop('required', true).closest('.form-row').addClass('validate-required').show();          
+            // Re-trigger change to handle 'Other' nickname field visibility
+            $nicknameTypeLabel.find("span.optional").remove();
+            $nicknameTypeField.trigger('change');
+            $nicknameLabel.find("span.optional").remove();
+        } else {
+            $nicknameTypeField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
+            $nicknameField.prop('required', false).closest('.form-row').removeClass('validate-required').hide();
+        }
+    }
+
 
     function initializeNicknameFieldToggle() {
         const formWrappers = ['#hc_wcma_add_address_form', '#hc_wcma_edit_address_form'];
@@ -91,14 +110,18 @@ jQuery(function ($) {
 
             if (selectedType === 'billing') {
                 billingFields.show();
+                toggleNicknameFieldsRequired(selectedType, true);
             } else if (selectedType === 'shipping') {
                 console.log('shipping selected');
                 shippingFields.show();
+                toggleNicknameFieldsRequired(selectedType, true);
             } else if (selectedType === 'both') {
                 billingFields.show();
+                toggleNicknameFieldsRequired('billing', true);
                 wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper').show();
                 if (!shippingSameAsBillingCheckbox.is(':checked')) {
                     console.log('shipping selected');
+                    toggleNicknameFieldsRequired('shipping', false);
                     shippingFields.show();
                 }
             }
@@ -111,9 +134,11 @@ jQuery(function ($) {
                     if ($(this).is(':checked')) {
                         $(this).val('1');
                         shippingFields.hide(); 
+                        toggleNicknameFieldsRequired('shipping', false);
                     } else {
                         $(this).val('0');
                         console.log('shipping selected1');
+                        toggleNicknameFieldsRequired('shipping', true);
                         shippingFields.show(); 
                     }
                 }).trigger('change'); 
@@ -386,9 +411,11 @@ jQuery(function ($) {
         if (addressType === 'billing') {
             $editForm.find('.hc_wcma_edit_billing_fields').show();
             $editForm.find('.hc_wcma_edit_shipping_fields').hide();
+            toggleNicknameFieldsRequired('billing', true);
         } else if (addressType === 'shipping') {
             $editForm.find('.hc_wcma_edit_billing_fields').hide();
             $editForm.find('.hc_wcma_edit_shipping_fields').show();
+            toggleNicknameFieldsRequired('shipping', true);
         } else {
             $editForm.find('.hc_wcma_edit_billing_fields').show();
             $editForm.find('.hc_wcma_edit_shipping_fields').show();
