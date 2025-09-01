@@ -158,33 +158,8 @@ class HC_WCMA_My_Account {
 
 		$customer = WC()->customer;
 
-		// $nickname_type_field = array(
-		// 	'type'     => 'select',
-		// 	'label'    => __( 'Address Nickname Type', 'happycoders-multiple-addresses' ),
-		// 	'required' => true,
-		// 	'class'    => array( 'form-row-wide', 'hc-wcma-nickname-type-select' ),
-		// 	'priority' => 5,
-		// 	'options'  => array(
-		// 		''      => __( 'Select an option...', 'happycoders-multiple-addresses' ),
-		// 		'Home'  => __( 'Home', 'happycoders-multiple-addresses' ),
-		// 		'Work'  => __( 'Work', 'happycoders-multiple-addresses' ),
-		// 		'Other' => __( 'Other', 'happycoders-multiple-addresses' ),
-		// 	),
-		// );
-
-		// $nickname_field = array(
-		// 	'label'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
-		// 	'placeholder' => __( 'e.g., Place of Shipping', 'happycoders-multiple-addresses' ),
-		// 	'required'    => true,
-		// 	'class'       => array( 'form-row-wide', 'hc-wcma-nickname-other-field' ),
-		// 	'priority'    => 6,
-		// 	'type'        => 'text',
-		// );
-
 		echo '<div class="hc_wcma_fields hc_wcma_billing_fields">';
 		echo '<h3>' . esc_attr( __( 'Billing Details', 'happycoders-multiple-addresses' ) ) . '</h3>';
-		// woocommerce_form_field( 'billing_nickname_type', $nickname_type_field, '' );
-		// woocommerce_form_field( 'billing_nickname', $nickname_field, '' );
 		foreach ( $billing_fields as $key => $field ) {
 			$clean_key = str_replace( 'billing_', '', $key );
 			if ( empty( $field['label'] ) ) {
@@ -199,8 +174,6 @@ class HC_WCMA_My_Account {
 
 		echo '<div class="hc_wcma_fields hc_wcma_shipping_fields" style="display:none;">';
 		echo '<h3>' . esc_attr( __( 'Shipping Details', 'happycoders-multiple-addresses' ) ) . '</h3>';
-		// woocommerce_form_field( 'shipping_nickname_type', $nickname_type_field, '' );
-		// woocommerce_form_field( 'shipping_nickname', $nickname_field, '' );
 		foreach ( $shipping_fields as $key => $field ) {
 			$clean_key = str_replace( 'shipping_', '', $key );
 			if ( empty( $field['label'] ) ) {
@@ -392,29 +365,6 @@ class HC_WCMA_My_Account {
 
 		uasort( $shipping_fields, 'wc_checkout_fields_uasort_comparison' );
 
-		// $nickname_type_field = array(
-		// 	'type'     => 'select',
-		// 	'label'    => __( 'Address Nickname', 'happycoders-multiple-addresses' ),
-		// 	'required' => true,
-		// 	'class'    => array( 'form-row-wide', 'hc-wcma-nickname-type-select' ),
-		// 	'priority' => 5,
-		// 	'options'  => array(
-		// 		''      => __( 'Select an option...', 'happycoders-multiple-addresses' ),
-		// 		'Home'  => __( 'Home', 'happycoders-multiple-addresses' ),
-		// 		'Work'  => __( 'Work', 'happycoders-multiple-addresses' ),
-		// 		'Other' => __( 'Other (enter below)', 'happycoders-multiple-addresses' ),
-		// 	),
-		// );
-
-		// $nickname_field = array(
-		// 	'label'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
-		// 	'placeholder' => __( 'e.g., Weekend Place', 'happycoders-multiple-addresses' ),
-		// 	'required'    => true,
-		// 	'class'       => array( 'form-row-wide', 'hc-wcma-nickname-other-field' ),
-		// 	'priority'    => 6,
-		// 	'type'        => 'text',
-		// );
-
 		?>
 		<div id="hc_wcma_edit_modal_overlay"></div>
 		<div id="hc_wcma_edit_modal">
@@ -425,8 +375,6 @@ class HC_WCMA_My_Account {
 
 				<div class="hc_wcma_edit_fields hc_wcma_edit_billing_fields">
 					<h3><?php esc_html_e( 'Billing Details', 'happycoders-multiple-addresses' ); ?></h3>
-					<?php //woocommerce_form_field( 'billing_nickname_type', $nickname_type_field, '' ); ?>
-					<?php //woocommerce_form_field( 'billing_nickname', $nickname_field, '' ); ?>
 					<?php
 					foreach ( $billing_fields as $key => $field ) :
 						if ( empty( $field['label'] ) ) {
@@ -438,8 +386,6 @@ class HC_WCMA_My_Account {
 				</div>
 				<div class="hc_wcma_edit_fields hc_wcma_edit_shipping_fields">
 					<h3><?php esc_html_e( 'Shipping Details', 'happycoders-multiple-addresses' ); ?></h3>
-					<?php //woocommerce_form_field( 'shipping_nickname_type', $nickname_type_field, '' ); ?>
-					<?php //woocommerce_form_field( 'shipping_nickname', $nickname_field, '' ); ?>
 					<?php
 					foreach ( $shipping_fields as $key => $field ) :
 						if ( empty( $field['label'] ) ) {
