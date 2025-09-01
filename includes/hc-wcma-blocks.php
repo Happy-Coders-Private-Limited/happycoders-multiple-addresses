@@ -86,17 +86,18 @@ function hc_wcma_enqueue_checkout_dom_injection_scripts() {
 				$script_handle,
 				'hc_wcma_block_params',
 				array(
-					'userId'         => $user_id,
-					'addresses'      => $checkout_addresses,
-					'selector_style' => get_option( 'hc_wcma_checkout_selector_style', 'dropdown' ),
-					'saved_display'  => get_option( 'hc_wcma_checkout_saved_address_display', 'block' ),
-					'allow_new'      => get_option( 'hc_wcma_checkout_allow_new_address', 'yes' ),
-					'defaultKeys'    => array(
+					'userId'             => $user_id,
+					'addresses'          => $checkout_addresses,
+					'selector_style'     => get_option( 'hc_wcma_checkout_selector_style', 'dropdown' ),
+					'saved_display'      => get_option( 'hc_wcma_checkout_saved_address_display', 'block' ),
+					'allow_new'          => get_option( 'hc_wcma_checkout_allow_new_address', 'yes' ),
+					'defaultKeys'        => array(
 						'billing'  => $default_billing_key,
 						'shipping' => $default_shipping_key,
 					),
-					'nonce'          => wp_create_nonce( 'wp_rest' ),
-					'i18n'           => array( /* ... translations ... */ ),
+					'nonce'              => wp_create_nonce( 'wp_rest' ),
+					'i18n'               => array( /* ... translations ... */ ),
+					'existing_nicknames' => hc_wcma_get_existing_nicknames( $user_id ),
 				)
 			);
 

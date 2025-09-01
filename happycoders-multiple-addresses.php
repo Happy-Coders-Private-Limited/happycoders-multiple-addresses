@@ -28,6 +28,9 @@ define( 'HC_WCMA_VERSION', '1.0.6' );
 define( 'HC_WCMA_ENDPOINT_SLUG', 'hc-address-book' );
 
 require_once HC_WCMA_PLUGIN_PATH . 'includes/class-hc-wcma-main.php';
+require_once HC_WCMA_PLUGIN_PATH . 'includes/class-hc-wcma-rest-api.php';
+
+add_action( 'plugins_loaded', array( 'HC_WCMA_REST_API', 'init' ) );
 
 add_action(
 	'before_woocommerce_init',

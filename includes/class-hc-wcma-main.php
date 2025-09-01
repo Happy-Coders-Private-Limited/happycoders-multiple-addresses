@@ -172,13 +172,13 @@ final class HC_WCMA_Main {
 			$allow_new      = get_option( 'hc_wcma_checkout_allow_new_address', 'yes' );
 
 			$checkout_params = array(
-				'ajax_url'       => admin_url( 'admin-ajax.php' ),
-				'nonce'          => wp_create_nonce( 'hc_wcma_checkout_nonce' ),
-				'addresses'      => $checkout_addresses,
-				'selector_style' => $selector_style,
-				'saved_display'  => $saved_display,
-				'allow_new'      => $allow_new,
-				'i18n'           => array(
+				'ajax_url'           => admin_url( 'admin-ajax.php' ),
+				'nonce'              => wp_create_nonce( 'hc_wcma_checkout_nonce' ),
+				'addresses'          => $checkout_addresses,
+				'selector_style'     => $selector_style,
+				'saved_display'      => $saved_display,
+				'allow_new'          => $allow_new,
+				'i18n'               => array(
 					'select_billing'  => __( 'Select a billing address', 'happycoders-multiple-addresses' ),
 					'select_shipping' => __( 'Select a shipping address', 'happycoders-multiple-addresses' ),
 					'new_address'     => __( 'Enter a new address', 'happycoders-multiple-addresses' ),
@@ -232,6 +232,7 @@ final class HC_WCMA_Main {
 
 		if ( class_exists( 'HC_WCMA_My_Account' ) ) {
 			HC_WCMA_My_Account::add_endpoint();
+			HC_WCMA_REST_API::register_routes();
 
 			flush_rewrite_rules();
 			// Set a default value for a new option on activation.

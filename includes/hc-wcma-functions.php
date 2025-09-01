@@ -184,3 +184,34 @@ function hc_wcma_format_address_for_display( $address, $separator = '<br/>' ) {
 
 	return WC()->countries->get_formatted_address( $address_components, $separator );
 }
+
+/**
+ * Get existing nicknames for a user.
+ *
+ * @since 1.0.7
+ *
+ * @param int $user_id User ID.
+ * @return array Array of existing nicknames for billing and shipping.
+ */
+function hc_wcma_get_existing_nicknames( $user_id ) {
+	$nicknames = array(
+		'billing'  => array(),
+		'shipping' => array(),
+	);
+
+	$billing_addresses = hc_wcma_get_user_addresses( $user_id, 'billing' );
+	foreach ( $billing_addresses as $address ) {
+		if ( ! empty( $address['nickname'] ) ) {
+			$nicknames['billing'][] = $address['nickname'];
+		}
+	}
+
+	$shipping_addresses = hc_wcma_get_user_addresses( $user_id, 'shipping' );
+	foreach ( $shipping_addresses as $address ) {
+		if ( ! empty( $address['nickname'] ) ) {
+			$nicknames['shipping'][] = $address['nickname'];
+		}
+	}
+
+	return $nicknames;
+}

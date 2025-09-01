@@ -27,38 +27,71 @@ class HC_WCMA_Checkout {
 		add_action( 'woocommerce_new_order', array( __CLASS__, 'save_new_address_from_order' ), 10, 1 );
 		self::init_fields();
 		add_action( 'woocommerce_checkout_process', array( __CLASS__, 'validate_nickname_field' ) );
+		add_action(
+			'woocommerce_after_order_notes',
+			function () {
+				wp_nonce_field( 'hc_wcma_checkout_action', 'hc_wcma_checkout_nonce' );
+			}
+		);
 	}
 
+	/**
+	 * Validates the nickname fields during checkout.
+	 * Ensures that if a new address is being entered, the nickname type is selected,
+	 * and if 'Other' is selected, a custom nickname is provided.
+	 * Adds error notices if validation fails.
+	 * This function is hooked into 'woocommerce_checkout_process'.
+	 */
 	public static function validate_nickname_field() {
-		$billing_selected_address = isset( $_POST['hc_wcma_select_billing_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_billing_address'] ) ) : '';
+
+		if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
+			! wp_verify_nonce(
+				sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
+				'hc_wcma_checkout_action'
+			)
+		) {
+			return; // Nonce check failed → bail.
+		}
+
+		$billing_selected_address  = isset( $_POST['hc_wcma_select_billing_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_billing_address'] ) ) : '';
 		$shipping_selected_address = isset( $_POST['hc_wcma_select_shipping_address'] ) ? sanitize_text_field( wp_unslash( $_POST['hc_wcma_select_shipping_address'] ) ) : '';
 
-		// Validate billing nickname only if a new billing address is being entered
+		// Validate billing nickname only if a new billing address is being entered.
 		if ( 'new' === $billing_selected_address ) {
 			if ( empty( $_POST['billing_nickname_type'] ) ) {
 				wc_add_notice( __( 'Please select a nickname type for your billing address.', 'happycoders-multiple-addresses' ), 'error' );
 			}
-			if ( isset( $_POST['billing_nickname_type'] ) && $_POST['billing_nickname_type'] === 'Other' && empty( $_POST['billing_nickname'] ) ) {
+			if ( isset( $_POST['billing_nickname_type'] ) && 'Other' === $_POST['billing_nickname_type'] && empty( $_POST['billing_nickname'] ) ) {
 				wc_add_notice( __( 'Please enter a custom nickname for your billing address.', 'happycoders-multiple-addresses' ), 'error' );
 			}
 		}
 
-		// Validate shipping nickname only if a new shipping address is being entered
+		// Validate shipping nickname only if a new shipping address is being entered.
 		if ( 'new' === $shipping_selected_address ) {
 			if ( empty( $_POST['shipping_nickname_type'] ) ) {
 				wc_add_notice( __( 'Please select a nickname type for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
 			}
-			if ( isset( $_POST['shipping_nickname_type'] ) && $_POST['shipping_nickname_type'] === 'Other' && empty( $_POST['shipping_nickname'] ) ) {
+			if ( isset( $_POST['shipping_nickname_type'] ) && 'Other' === $_POST['shipping_nickname_type'] && empty( $_POST['shipping_nickname'] ) ) {
 				wc_add_notice( __( 'Please enter a custom nickname for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
 			}
 		}
 	}
 
+	/**
+	 * Initializes the custom fields for billing and shipping addresses.
+	 * Hooks into WooCommerce filters to add nickname type and custom nickname fields.
+	 */
 	public static function init_fields() {
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'add_nickname_fields_to_checkout' ) );
 		add_filter( 'woocommerce_shipping_fields', array( __CLASS__, 'add_nickname_fields_to_checkout' ) );
 	}
 
+	/**
+	 * Adds the nickname type and custom nickname fields to the checkout form.
+	 *
+	 * @param array $fields The existing checkout fields.
+	 * @return array The modified checkout fields.
+	 */
 	public static function add_nickname_fields_to_checkout( $fields ) {
 		$nickname_type_field = array(
 			'type'     => 'select',
@@ -83,7 +116,7 @@ class HC_WCMA_Checkout {
 			'type'        => 'text',
 		);
 
-		// Determine if it's billing or shipping fields
+		// Determine if it's billing or shipping fields.
 		$prefix = '';
 		if ( isset( $fields['billing_first_name'] ) ) {
 			$prefix = 'billing_';
@@ -94,7 +127,7 @@ class HC_WCMA_Checkout {
 		$fields[ $prefix . 'nickname_type' ] = $nickname_type_field;
 		$fields[ $prefix . 'nickname' ]      = $nickname_field;
 
-		// Reorder fields to place nickname at the top
+		// Reorder fields to place nickname at the top.
 		$new_fields = array();
 		foreach ( $fields as $key => $field ) {
 			if ( $key === $prefix . 'nickname_type' || $key === $prefix . 'nickname' ) {
@@ -103,7 +136,7 @@ class HC_WCMA_Checkout {
 			$new_fields[ $key ] = $field;
 		}
 
-		// Insert nickname fields at the beginning
+		// Insert nickname fields at the beginning.
 		$fields = array_merge(
 			array(
 				$prefix . 'nickname_type' => $nickname_type_field,
@@ -248,6 +281,15 @@ class HC_WCMA_Checkout {
 	 */
 	public static function save_new_address_from_order( $order_id ) {
 
+		if ( ! isset( $_POST['hc_wcma_checkout_nonce'] ) ||
+			! wp_verify_nonce(
+				sanitize_text_field( wp_unslash( $_POST['hc_wcma_checkout_nonce'] ) ),
+				'hc_wcma_checkout_action'
+			)
+		) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -260,18 +302,46 @@ class HC_WCMA_Checkout {
 			return;
 		}
 
-		// Get nickname data from $_POST
-		$billing_nickname_type = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : '';
-		$billing_nickname_custom = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : '';
-		
-		if ( isset( $_POST['ship_to_different_address'] ) && $_POST['ship_to_different_address'] ) {
-			// Customer ticked "Ship to a different address"
-			$shipping_nickname_type   = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '';
-			$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '';
+		$stored_billing_nickname_type = WC()->session->get( 'hc_wcma_billing_nickname_type' )
+			?? ( isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : '' );
+
+		$stored_billing_nickname_custom = WC()->session->get( 'hc_wcma_billing_nickname' )
+			?? ( isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : '' );
+
+		$stored_shipping_nickname_type = WC()->session->get( 'hc_wcma_shipping_nickname_type' )
+			?? ( isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '' );
+
+		$stored_shipping_nickname_custom = WC()->session->get( 'hc_wcma_shipping_nickname' )
+			?? ( isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '' );
+
+		// Clear the session data.
+		WC()->session->set( 'hc_wcma_billing_nickname_type', '' );
+		WC()->session->set( 'hc_wcma_billing_nickname', '' );
+		WC()->session->set( 'hc_wcma_shipping_nickname_type', '' );
+		WC()->session->set( 'hc_wcma_shipping_nickname', '' );
+
+		$billing  = $order->get_address( 'billing' );
+		$shipping = $order->get_address( 'shipping' );
+
+		// Compare only address-related fields, not email/phone.
+		$billing_for_compare  = $billing;
+		$shipping_for_compare = $shipping;
+
+		// Remove fields you don’t want in the comparison (like email, phone, company if irrelevant).
+		unset( $billing_for_compare['email'], $billing_for_compare['phone'] );
+		unset( $shipping_for_compare['email'], $shipping_for_compare['phone'] );
+
+		if ( $billing_for_compare === $shipping_for_compare ) {
+			$shipping_nickname_type = $stored_shipping_nickname_type ?? $stored_billing_nickname_type;
+			$billing_nickname_type  = $shipping_nickname_type;
+
+			$shipping_nickname_custom = $stored_shipping_nickname_custom ?? $stored_billing_nickname_custom;
+			$billing_nickname_custom  = $shipping_nickname_custom;
 		} else {
-			// No separate shipping address → use billing nickname
-			$shipping_nickname_type   = $billing_nickname_type;
-			$shipping_nickname_custom = $billing_nickname_custom;
+			$billing_nickname_type    = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : $stored_shipping_nickname_type;
+			$billing_nickname_custom  = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : $stored_billing_nickname_custom;
+			$shipping_nickname_type   = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : $stored_shipping_nickname_type;
+			$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : $stored_shipping_nickname_custom;
 		}
 
 		self::process_order_address( $customer_id, $order, 'billing', $billing_nickname_type, $billing_nickname_custom );
@@ -280,45 +350,45 @@ class HC_WCMA_Checkout {
 			self::process_order_address( $customer_id, $order, 'shipping', $shipping_nickname_type, $shipping_nickname_custom );
 		}
 	}
-	
+
 	/**
-     * Saves the selected address to the order metadata.
-     *
-     * This function checks if the user is logged in and retrieves the selected
-     * billing and shipping addresses from the posted data. If a valid address
-     * key is provided and the key is not 'new', it retrieves the address
-     * details and saves them as a snapshot in the order's metadata.
-     *
-     * @param int   $order_id    The ID of the order.
-     * @param array $posted_data The posted data containing selected address keys.
-     */
-    public static function save_selected_address_to_order( $order_id, $posted_data ) {
-        if ( ! is_user_logged_in() ) {
-            return;
-        }
+	 * Saves the selected address to the order metadata.
+	 *
+	 * This function checks if the user is logged in and retrieves the selected
+	 * billing and shipping addresses from the posted data. If a valid address
+	 * key is provided and the key is not 'new', it retrieves the address
+	 * details and saves them as a snapshot in the order's metadata.
+	 *
+	 * @param int   $order_id    The ID of the order.
+	 * @param array $posted_data The posted data containing selected address keys.
+	 */
+	public static function save_selected_address_to_order( $order_id, $posted_data ) {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
-        $user_id = get_current_user_id();
+		$user_id = get_current_user_id();
 
-        if ( isset( $posted_data['hc_wcma_select_billing_address'] ) ) {
-            $selected_key = wc_clean( $posted_data['hc_wcma_select_billing_address'] );
-            if ( $selected_key && 'new' !== $selected_key ) {
-                $address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'billing' );
-                if ( $address ) {
-                    update_post_meta( $order_id, '_hc_wcma_selected_billing_address_snapshot', $address );
-                }
-            }
-        }
+		if ( isset( $posted_data['hc_wcma_select_billing_address'] ) ) {
+			$selected_key = wc_clean( $posted_data['hc_wcma_select_billing_address'] );
+			if ( $selected_key && 'new' !== $selected_key ) {
+				$address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'billing' );
+				if ( $address ) {
+					update_post_meta( $order_id, '_hc_wcma_selected_billing_address_snapshot', $address );
+				}
+			}
+		}
 
-        if ( isset( $posted_data['hc_wcma_select_shipping_address'] ) && WC()->cart->needs_shipping_address() ) {
-            $selected_key = wc_clean( $posted_data['hc_wcma_select_shipping_address'] );
-            if ( $selected_key && 'new' !== $selected_key ) {
-                $address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'shipping' );
-                if ( $address ) {
-                    update_post_meta( $order_id, '_hc_wcma_selected_shipping_address_snapshot', $address );
-                }
-            }
-        }
-    }
+		if ( isset( $posted_data['hc_wcma_select_shipping_address'] ) && WC()->cart->needs_shipping_address() ) {
+			$selected_key = wc_clean( $posted_data['hc_wcma_select_shipping_address'] );
+			if ( $selected_key && 'new' !== $selected_key ) {
+				$address = hc_wcma_get_address_by_key( $user_id, $selected_key, 'shipping' );
+				if ( $address ) {
+					update_post_meta( $order_id, '_hc_wcma_selected_shipping_address_snapshot', $address );
+				}
+			}
+		}
+	}
 
 	/**
 	 * Helper function to process and save a single address type from a WC_Order object.
@@ -326,6 +396,8 @@ class HC_WCMA_Checkout {
 	 * @param int      $customer_id The customer ID.
 	 * @param WC_Order $order       The order object.
 	 * @param string   $type        'billing' or 'shipping'.
+	 * @param string   $nickname_type The type of nickname ('Home', 'Work', 'Other', or '').
+	 * @param string   $nickname_custom The custom nickname if 'Other' is selected.
 	 */
 	private static function process_order_address( $customer_id, $order, $type, $nickname_type = '', $nickname_custom = '' ) {
 		$limit             = (int) get_option( 'hc_wcma_limit_max_' . $type . '_addresses', 0 );
@@ -363,7 +435,7 @@ class HC_WCMA_Checkout {
 			}
 		}
 
-		// Construct the nickname based on type and custom value
+		// Construct the nickname based on type and custom value.
 		$submitted_nickname = '';
 		if ( 'Other' === $nickname_type ) {
 			$submitted_nickname = $nickname_custom;
@@ -371,7 +443,7 @@ class HC_WCMA_Checkout {
 			$submitted_nickname = $nickname_type;
 		}
 
-		// Use submitted nickname if available, otherwise fall back to first/last name
+		// Use submitted nickname if available, otherwise fall back to first/last name.
 		if ( ! empty( $submitted_nickname ) ) {
 			$new_address['nickname'] = $submitted_nickname;
 		} else {

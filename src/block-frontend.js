@@ -1,7 +1,8 @@
 import { render, useState, useEffect, useCallback, Fragment } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { useSelect, dispatch, useDispatch } from '@wordpress/data';
-import { SelectControl, RadioControl } from '@wordpress/components';
+import { SelectControl, RadioControl, TextControl } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 import './style.scss';
 
 // Get localized params (check if available)
@@ -21,6 +22,8 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     // Find the specific default key for this instance type
     const initialDefaultKey = params.defaultKeys?.[addressType] || '';
     const [selectedKey, setSelectedKey] = useState(initialDefaultKey);
+    const [nicknameType, setNicknameType] = useState('');
+    const [nickname, setNickname] = useState('');
     const [loading, setLoading] = useState(false);
     const allAddresses = params.addresses || {};
 
@@ -30,11 +33,13 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
     const allowNew = params.allow_new === 'yes';
     const selectorStyle = params.selector_style || 'dropdown';
+    const existingNicknames = params.existing_nicknames || {};
 
     // console.log(`[HCMA Blocks Frontend ${addressType}] Initial Default Key:`, initialDefaultKey);
     // console.log(`[HCMA Blocks Frontend ${addressType}] Current Selected Key (State):`, selectedKey);
 
     const updateWcAddress = useCallback((addressData) => {
+        console.log(`[HCMA Blocks ${addressType}] updateWcAddress called with data:`, addressData);
         setLoading(true);
         const actionPayload = { [addressType + '_address']: addressData };
         // console.log(`[HCMA Blocks ${addressType}] Dispatching action with payload:`, actionPayload);
@@ -72,6 +77,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                 clearAddress.country = '';
                 clearAddress.phone = '';
                 clearAddress.email = '';
+                clearAddress.nickname = ''; // Set nickname if provided
                 updateWcAddress(clearAddress)
                 .then(() => { setLoading(false); setEditingState(addressType, true); }) // Show form on success
                 .catch(() => { setLoading(false); setEditingState(addressType, true) }); // Show form on error too
@@ -93,6 +99,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                  addressForStore.country = selectedAddress.country || '';
                  addressForStore.phone = selectedAddress.phone || '';
                  addressForStore.email = selectedAddress.email || '';
+                 addressForStore.nickname = selectedAddress.nickname || '';
                 // --- End Formatting ---
                 // console.log(`[HCMA Block Frontend ${addressType}] Dispatching update to store:`, addressForStore);
                 updateWcAddress(addressForStore)
@@ -128,6 +135,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
               addressForStore.country = defaultAddressData.country || '';
               addressForStore.phone = defaultAddressData.phone || '';
               addressForStore.email = defaultAddressData.email || '';
+              addressForStore.nickname = defaultAddressData.nickname || '';
 
              // Dispatch the update to overwrite WC's default (e.g., last order address)
              updateWcAddress(addressForStore)
@@ -140,7 +148,38 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
              setEditingState(addressType, true);
         }
     // Run only once on initial mount (or if initialDefaultKey/address data somehow changes)
-    }, [initialDefaultKey, addressType, addressesForType, updateWcAddress]); 
+    }, [initialDefaultKey, addressType, addressesForType, updateWcAddress]);
+
+    useEffect(() => {
+        // Only run if a new address is being added
+        if (selectedKey === 'new') {
+            const data = {
+                address_type: addressType,
+                nickname_type: nicknameType,
+                nickname: nickname,                
+            };
+
+            // Use fetch to send the data to the new endpoint
+            apiFetch({
+                path: '/hc-wcma/v1/save-nickname',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: data,
+            })
+            .then((response) => {
+                if (!response.success) {
+                    console.error('Error saving nickname:', response.message);
+                } else {
+                    // console.log('Nickname saved:', response);
+                }
+            })
+            .catch((error) => {
+                console.error('Error saving nickname:', error);
+            });
+        }
+    }, [nicknameType, nickname, selectedKey, addressType]); 
 
     // --- Prepare options ---
     // console.log(`[HCMA Blocks Frontend ${addressType}] Preparing options. Saved Addresses Count:`, savedAddresses.length);
@@ -176,6 +215,13 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
         return null; // Render nothing if no actual addresses to choose from
     }
 
+    const nicknameOptions = [
+        { label: __('Select Nickname', 'happycoders-multiple-addresses'), value: '' },
+        { label: __('Home', 'happycoders-multiple-addresses'), value: 'Home', disabled: existingNicknames[addressType]?.includes('Home') },
+        { label: __('Work', 'happycoders-multiple-addresses'), value: 'Work', disabled: existingNicknames[addressType]?.includes('Work') },
+        { label: __('Other', 'happycoders-multiple-addresses'), value: 'Other' },
+    ];
+
     // --- Render the component ---
     // console.log(`[HCMA Blocks Frontend ${addressType}] Rendering Select/Radio control. Selected Key: ${selectedKey}`);
     try {
@@ -183,24 +229,42 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
             // Added CSS class from block.json name for styling wrapper
             <div className={`hc-wcma-block-checkout-selector hc-wcma-${addressType}-selector ${loading ? 'is-loading' : ''} wp-block-hc-wcma-address-selector`}>
                 <div style={{ marginBottom: '1em', opacity: loading ? 0.5 : 1, pointerEvents: loading ? 'none' : 'auto' }}>
-                {selectorStyle === 'list' ? (
-                    <RadioControl
-                        // label={selectLabel} // Label often redundant if header exists
-                        selected={selectedKey}
-                        options={options}
-                        onChange={handleSelectionChange}
-                        className="hc-wcma-address-radio-list"
-                    />
-                ) : (
-                    <SelectControl
-                        // label={selectLabel} // Label often redundant if header exists
-                        value={selectedKey}
-                        options={options}
-                        onChange={handleSelectionChange}
-                        className="hc-wcma-address-select"
+                    {selectorStyle === 'list' ? (
+                        <RadioControl
+                            // label={selectLabel} // Label often redundant if header exists
+                            selected={selectedKey}
+                            options={options}
+                            onChange={handleSelectionChange}
+                            className="hc-wcma-address-radio-list"
+                        />
+                    ) : (
+                        <SelectControl
+                            // label={selectLabel} // Label often redundant if header exists
+                            value={selectedKey}
+                            options={options}
+                            onChange={handleSelectionChange}
+                            className="hc-wcma-address-select"
                         // Help text if needed: __experimental__help={ __('Select a saved address or enter a new one.', 'happycoders-multiple-addresses')}
-                    />
-                )}
+                        />
+                    )}
+
+                    {selectedKey === 'new' && (
+                        <div className="hc-wcma-nickname-fields">
+                            <SelectControl
+                                label={__('Address Nickname Type', 'happycoders-multiple-addresses')}
+                                value={nicknameType}
+                                options={nicknameOptions}
+                                onChange={(value) => setNicknameType(value)}
+                            />
+                            {nicknameType === 'Other' && (
+                                <TextControl
+                                    label={__('Custom Nickname', 'happycoders-multiple-addresses')}
+                                    value={nickname}
+                                    onChange={(value) => setNickname(value)}
+                                />
+                            )}
+                        </div>
+                    )}
                 </div>
                 {loading && <p className="hc-wcma-loading-text">{i18n.loading || 'Loading...'}</p>}
             </div>
@@ -363,7 +427,7 @@ function startCheckoutObserver() {
     const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout'); // Or 'form.woocommerce-checkout' ?
     if (!checkoutContainer) { 
         // console.warn('[HCMA Blocks] Checkout container not found for observer.'); 
-        return; 
+        return;
     }
     if (checkoutObserver) { logWithTimestamp('Checkout observer already running.'); return; } // Prevent multiple observers
 
@@ -409,3 +473,21 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(mountAddressSelectors, 750); // Wait 500ms for WC Blocks to potentially render
     setTimeout(startCheckoutObserver, 1500);
 });
+
+// --- HMR (Hot Module Replacement) Support for Development ---
+if (module.hot) {
+    module.hot.accept('./block-frontend.js', () => {
+        // console.log('[HCMA Blocks HMR] Hot-reloading frontend script. Re-mounting...');
+        // Find and remove existing mount points before re-adding
+        document.querySelectorAll('.hc-wcma-billing-mount-point, .hc-wcma-shipping-mount-point').forEach(el => el.remove());
+        // Disconnect observer if it exists
+        if (checkoutObserver) {
+            checkoutObserver.disconnect();
+            checkoutObserver = null;
+            // console.log('[HCMA Blocks HMR] Disconnected old observer.');
+        }
+        // Re-run the setup
+        setTimeout(mountAddressSelectors, 500);
+        setTimeout(startCheckoutObserver, 1500);
+    });
+}
