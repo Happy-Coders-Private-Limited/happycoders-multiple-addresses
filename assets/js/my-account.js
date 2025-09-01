@@ -112,7 +112,6 @@ jQuery(function ($) {
                 billingFields.show();
                 toggleNicknameFieldsRequired(selectedType, true);
             } else if (selectedType === 'shipping') {
-                console.log('shipping selected');
                 shippingFields.show();
                 toggleNicknameFieldsRequired(selectedType, true);
             } else if (selectedType === 'both') {
@@ -120,7 +119,6 @@ jQuery(function ($) {
                 toggleNicknameFieldsRequired('billing', true);
                 wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper').show();
                 if (!shippingSameAsBillingCheckbox.is(':checked')) {
-                    console.log('shipping selected');
                     toggleNicknameFieldsRequired('shipping', false);
                     shippingFields.show();
                 }
@@ -137,7 +135,6 @@ jQuery(function ($) {
                         toggleNicknameFieldsRequired('shipping', false);
                     } else {
                         $(this).val('0');
-                        console.log('shipping selected1');
                         toggleNicknameFieldsRequired('shipping', true);
                         shippingFields.show(); 
                     }
