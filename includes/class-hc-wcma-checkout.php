@@ -229,7 +229,7 @@ class HC_WCMA_Checkout {
 			echo '<p class="form-row form-row-wide">';
 			echo '<label for="' . esc_attr( $field_id ) . '">' . sprintf( /* translators: %s = address type */ esc_html__( 'Choose %s address', 'happycoders-multiple-addresses' ), esc_attr( $type ) ) . '…</label>';
 			echo '<select name="' . esc_attr( $field_id ) . '" id="' . esc_attr( $field_id ) . '" class="hc-wcma-address-select" data-address-type="' . esc_attr( $type ) . '">';
-			echo '<option value="">' . esc_html__( '-- Select --', 'happycoders-multiple-addresses' ) . '</option>';
+			// echo '<option value="">' . esc_html__( '-- Select --', 'happycoders-multiple-addresses' ) . '</option>';
 			if ( $default_key && isset( $addresses[ $default_key ] ) ) {
 				echo '<option value="' . esc_attr( $default_key ) . '" selected="selected">' . esc_html( $addresses[ $default_key ]['nickname'] ?? $default_key ) . ' ' . esc_html__( '(Default)', 'happycoders-multiple-addresses' ) . '</option>';
 			}
