@@ -147,8 +147,8 @@ final class HC_WCMA_Main {
 
 		if ( is_checkout() && ! is_order_received_page() && ! hc_wcma_is_checkout_block() ) {
 
-			wp_enqueue_style( 'hc-wcma-checkout', HC_WCMA_PLUGIN_URL . 'assets/css/checkout.css', array(), $this->version );
-			wp_enqueue_script( 'hc-wcma-checkout-js', HC_WCMA_PLUGIN_URL . 'assets/js/checkout.js', array( 'jquery', 'wc-checkout', 'selectWoo' ), $this->version, true );
+			wp_enqueue_style( 'hc-wcma-checkout', HC_WCMA_PLUGIN_URL . 'assets/css/checkout.css', array(), $this->version . time() );
+			wp_enqueue_script( 'hc-wcma-checkout-js', HC_WCMA_PLUGIN_URL . 'assets/js/checkout.js', array( 'jquery', 'wc-checkout', 'selectWoo' ), $this->version . time(), true );
 
 			$user_id = get_current_user_id();
 
@@ -232,7 +232,6 @@ final class HC_WCMA_Main {
 
 		if ( class_exists( 'HC_WCMA_My_Account' ) ) {
 			HC_WCMA_My_Account::add_endpoint();
-			HC_WCMA_REST_API::register_routes();
 
 			flush_rewrite_rules();
 			// Set a default value for a new option on activation.

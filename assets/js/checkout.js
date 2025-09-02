@@ -198,6 +198,8 @@ jQuery(function ($) {
                      populateAddressFields(type, null);
                 } else if (initialValue !== 'new' && hc_wcma_checkout_params.allow_new !== 'yes') {
                     populateAddressFields(type, null);
+                } else {
+                    toggleNicknameFieldsRequired(type, true);
                 }
             }
         });

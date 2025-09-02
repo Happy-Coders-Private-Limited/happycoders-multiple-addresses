@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -147,6 +147,9 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.7] =
+*  Address Nickname Type support (Home, Work, Other) on My Account and Checkout pages.
+
 = [1.0.6] =
 *   New Feature: Any new, unique address used during checkout is now automatically saved to the customer's address book and set as the new default. Works for both Classic and Block checkouts.
 *   Fix: Improved Multisite compatibility to ensure the "Address Book" endpoint works correctly across all sites in a network and on new site creation.
@@ -176,6 +179,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Address Nickname Type support (Home, Work, Other) on My Account and Checkout pages.
 
 = 1.0.6 =
 This is a feature and compatibility update. New addresses used at checkout are now automatically saved to the address book, and Multisite support has been improved.

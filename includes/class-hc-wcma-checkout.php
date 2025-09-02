@@ -69,12 +69,14 @@ class HC_WCMA_Checkout {
 		}
 
 		// Validate shipping nickname only if a new shipping address is being entered.
-		if ( 'new' === $shipping_selected_address ) {
-			if ( empty( $_POST['shipping_nickname_type'] ) ) {
-				wc_add_notice( __( 'Please select a nickname type for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
-			}
-			if ( isset( $_POST['shipping_nickname_type'] ) && 'Other' === $_POST['shipping_nickname_type'] && empty( $_POST['shipping_nickname'] ) ) {
-				wc_add_notice( __( 'Please enter a custom nickname for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
+		if ( isset( $_POST['ship_to_different_address'] ) ) {
+			if ( 'new' === $shipping_selected_address ) {
+				if ( empty( $_POST['shipping_nickname_type'] ) ) {
+					wc_add_notice( __( 'Please select a nickname type for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
+				}
+				if ( isset( $_POST['shipping_nickname_type'] ) && 'Other' === $_POST['shipping_nickname_type'] && empty( $_POST['shipping_nickname'] ) ) {
+					wc_add_notice( __( 'Please enter a custom nickname for your shipping address.', 'happycoders-multiple-addresses' ), 'error' );
+				}
 			}
 		}
 	}
@@ -273,6 +275,22 @@ class HC_WCMA_Checkout {
 
 		echo '</div>';
 	}
+	
+	/**
+	 * Get the value of a session or post variable.
+	 * 	
+	 * @param string $session_key The key of the session variable.
+	 * @param string $post_key The key of the post variable.
+	 * @return string The value of the variable.
+	 * 	
+	 */
+	private static function hc_wcma_get_session_or_post( $session_key, $post_key ) {
+		$value = WC()->session->get( $session_key );
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+		return isset( $_POST[ $post_key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) : '';
+	}
 
 	/**
 	 * UNIVERSAL handler called after a new order is created.
@@ -306,17 +324,28 @@ class HC_WCMA_Checkout {
 			return;
 		}
 
-		$stored_billing_nickname_type = WC()->session->get( 'hc_wcma_billing_nickname_type' )
-			?? ( isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : '' );
-
-		$stored_billing_nickname_custom = WC()->session->get( 'hc_wcma_billing_nickname' )
-			?? ( isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : '' );
-
-		$stored_shipping_nickname_type = WC()->session->get( 'hc_wcma_shipping_nickname_type' )
-			?? ( isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : '' );
-
-		$stored_shipping_nickname_custom = WC()->session->get( 'hc_wcma_shipping_nickname' )
-			?? ( isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : '' );
+		$stored_billing_nickname_type   = self::hc_wcma_get_session_or_post( 'hc_wcma_billing_nickname_type', 'billing_nickname_type' );
+		$stored_billing_nickname_custom = self::hc_wcma_get_session_or_post( 'hc_wcma_billing_nickname', 'billing_nickname' );
+		if ( isset( $_POST['ship_to_different_address'] ) ) {
+			error_log( 'Classic checkout' );
+			$stored_shipping_nickname_type  = self::hc_wcma_get_session_or_post( 'hc_wcma_shipping_nickname_type', 'shipping_nickname_type' );
+			$stored_shipping_nickname_custom= self::hc_wcma_get_session_or_post( 'hc_wcma_shipping_nickname', 'shipping_nickname' );
+		} elseif ( self::hc_wcma_is_block_checkout() ) {
+			error_log( 'Block checkout' );
+			$stored_shipping_nickname_type  = self::hc_wcma_get_session_or_post( 'hc_wcma_shipping_nickname_type', 'shipping_nickname_type' );
+			$stored_shipping_nickname_custom= self::hc_wcma_get_session_or_post( 'hc_wcma_shipping_nickname', 'shipping_nickname' );
+			$stored_billing_nickname_type   = ! empty($stored_billing_nickname_type) ? $stored_billing_nickname_type : 	$stored_shipping_nickname_type;
+			$stored_billing_nickname_custom = ! empty($stored_billing_nickname_custom) ? $stored_billing_nickname_custom : $stored_shipping_nickname_custom;
+		} elseif ( self::hc_wcma_is_block_checkout() === false || ! isset( $_POST['ship_to_different_address'] ) ) {
+			error_log( 'No shipping address' );
+			$stored_shipping_nickname_type  = $stored_billing_nickname_type;
+			$stored_shipping_nickname_custom= $stored_billing_nickname_custom;
+		}
+			
+		error_log( 'Stored billing nickname type: ' . $stored_billing_nickname_type );
+		error_log( 'Stored billing nickname: ' . $stored_billing_nickname_custom );
+		error_log( 'Stored shipping nickname type: ' . $stored_shipping_nickname_type );
+		error_log( 'Stored shipping nickname: ' . $stored_shipping_nickname_custom );
 
 		// Clear the session data.
 		WC()->session->set( 'hc_wcma_billing_nickname_type', '' );
@@ -324,34 +353,40 @@ class HC_WCMA_Checkout {
 		WC()->session->set( 'hc_wcma_shipping_nickname_type', '' );
 		WC()->session->set( 'hc_wcma_shipping_nickname', '' );
 
-		$billing  = $order->get_address( 'billing' );
-		$shipping = $order->get_address( 'shipping' );
+		// $billing  = $order->get_address( 'billing' );
+		// $shipping = $order->get_address( 'shipping' );
 
-		// Compare only address-related fields, not email/phone.
-		$billing_for_compare  = $billing;
-		$shipping_for_compare = $shipping;
+		// // Compare only address-related fields, not email/phone.
+		// $billing_for_compare  = $billing;
+		// $shipping_for_compare = $shipping;
 
-		// Remove fields you don’t want in the comparison (like email, phone, company if irrelevant).
-		unset( $billing_for_compare['email'], $billing_for_compare['phone'] );
-		unset( $shipping_for_compare['email'], $shipping_for_compare['phone'] );
+		// // Remove fields you don’t want in the comparison (like email, phone, company if irrelevant).
+		// unset( $billing_for_compare['email'], $billing_for_compare['phone'] );
+		// unset( $shipping_for_compare['email'], $shipping_for_compare['phone'] );
 
-		if ( $billing_for_compare === $shipping_for_compare ) {
-			$shipping_nickname_type = $stored_shipping_nickname_type ?? $stored_billing_nickname_type;
-			$billing_nickname_type  = $stored_billing_nickname_type ?? $stored_shipping_nickname_type;
+		// if ( $billing_for_compare === $shipping_for_compare ) {
+		// 	error_log( 'Addresses are the same' );
+		// 	$shipping_nickname_type = $stored_shipping_nickname_type ?? $stored_billing_nickname_type;
+		// 	error_log( 'Shipping nickname type: ' . $shipping_nickname_type );
+		// 	$billing_nickname_type  = $stored_billing_nickname_type ?? $stored_shipping_nickname_type;
+		// 	error_log( 'Billing nickname type: ' . $billing_nickname_type );
 
-			$shipping_nickname_custom = $stored_shipping_nickname_custom ?? $stored_billing_nickname_custom;
-			$billing_nickname_custom  = $stored_billing_nickname_custom ?? $stored_shipping_nickname_custom;
-		} else {
-			$billing_nickname_type    = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : $stored_shipping_nickname_type;
-			$billing_nickname_custom  = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : $stored_billing_nickname_custom;
-			$shipping_nickname_type   = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : $stored_shipping_nickname_type;
-			$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : $stored_shipping_nickname_custom;
-		}
+		// 	$shipping_nickname_custom = $stored_shipping_nickname_custom ?? $stored_billing_nickname_custom;
+		// 	error_log( 'Shipping nickname custom: ' . $shipping_nickname_custom );
+		// 	$billing_nickname_custom  = $stored_billing_nickname_custom ?? $stored_shipping_nickname_custom;
+		// 	error_log( 'Billing nickname custom: ' . $billing_nickname_custom );
+		// } else {
+		// 	error_log( 'Addresses are different' );
+		// 	$billing_nickname_type    = isset( $_POST['billing_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname_type'] ) ) : $stored_shipping_nickname_type;
+		// 	$billing_nickname_custom  = isset( $_POST['billing_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nickname'] ) ) : $stored_billing_nickname_custom;
+		// 	$shipping_nickname_type   = isset( $_POST['shipping_nickname_type'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname_type'] ) ) : $stored_shipping_nickname_type;
+		// 	$shipping_nickname_custom = isset( $_POST['shipping_nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nickname'] ) ) : $stored_shipping_nickname_custom;
+		// }
 
-		self::process_order_address( $customer_id, $order, 'billing', $billing_nickname_type, $billing_nickname_custom );
+		self::process_order_address( $customer_id, $order, 'billing', $stored_billing_nickname_type, $stored_billing_nickname_custom );
 
 		if ( $order->has_shipping_address() ) {
-			self::process_order_address( $customer_id, $order, 'shipping', $shipping_nickname_type, $shipping_nickname_custom );
+			self::process_order_address( $customer_id, $order, 'shipping', $stored_shipping_nickname_type, $stored_shipping_nickname_custom );
 		}
 	}
 
