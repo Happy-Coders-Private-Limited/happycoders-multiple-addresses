@@ -25,6 +25,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     const [nicknameType, setNicknameType] = useState('');
     const [nickname, setNickname] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isNewCustomer, setIsNewCustomer] = useState(false);
     const allAddresses = params.addresses || {};
 
     // Ensure savedAddresses is an array, handling potential empty object from PHP
@@ -53,7 +54,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                 // console.error(`[HCMA Blocks ${addressType}] Dispatch ERROR:`, err);
                 setLoading(false);
                 // Rethrow or handle error appropriately
-                throw err; 
+                throw err;
             });
     }, [dispatch, addressType]); // Add dispatch as dependency
 
@@ -65,51 +66,51 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
         if (newKey === 'new' || newKey === '') {
             // console.log(`[HCMA Block Frontend ${addressType}] Clearing address in store.`);
-                const clearAddress = { /* ... map fields EXACTLY as required by updateAddressAction ... */ };
-                clearAddress.first_name = '';
-                clearAddress.last_name = '';
-                clearAddress.company = '';
-                clearAddress.address_1 = '';
-                clearAddress.address_2 = '';
-                clearAddress.city = '';
-                clearAddress.state = '';
-                clearAddress.postcode = '';
-                clearAddress.country = '';
-                clearAddress.phone = '';
-                clearAddress.email = '';
-                clearAddress.nickname = ''; // Set nickname if provided
-                updateWcAddress(clearAddress)
+            const clearAddress = { /* ... map fields EXACTLY as required by updateAddressAction ... */ };
+            clearAddress.first_name = '';
+            clearAddress.last_name = '';
+            clearAddress.company = '';
+            clearAddress.address_1 = '';
+            clearAddress.address_2 = '';
+            clearAddress.city = '';
+            clearAddress.state = '';
+            clearAddress.postcode = '';
+            clearAddress.country = '';
+            clearAddress.phone = '';
+            clearAddress.email = '';
+            clearAddress.nickname = ''; // Set nickname if provided
+            updateWcAddress(clearAddress)
                 .then(() => { setLoading(false); setEditingState(addressType, true); }) // Show form on success
                 .catch(() => { setLoading(false); setEditingState(addressType, true) }); // Show form on error too
-            
+
         } else {
             const selectedAddress = allAddresses[addressType]?.[newKey];
             if (selectedAddress) {
                 // console.log(`[HCMA Block Frontend ${addressType}] Found saved address:`, selectedAddress);
                 // --- Format address for store ---
                 const addressForStore = { /* ... map fields EXACTLY as required by updateAddressAction ... */ };
-                 addressForStore.first_name = selectedAddress.first_name || '';
-                 addressForStore.last_name = selectedAddress.last_name || '';
-                 addressForStore.company = selectedAddress.company || '';
-                 addressForStore.address_1 = selectedAddress.address_1 || '';
-                 addressForStore.address_2 = selectedAddress.address_2 || '';
-                 addressForStore.city = selectedAddress.city || '';
-                 addressForStore.state = selectedAddress.state || '';
-                 addressForStore.postcode = selectedAddress.postcode || '';
-                 addressForStore.country = selectedAddress.country || '';
-                 addressForStore.phone = selectedAddress.phone || '';
-                 addressForStore.email = selectedAddress.email || '';
-                 addressForStore.nickname = selectedAddress.nickname || '';
+                addressForStore.first_name = selectedAddress.first_name || '';
+                addressForStore.last_name = selectedAddress.last_name || '';
+                addressForStore.company = selectedAddress.company || '';
+                addressForStore.address_1 = selectedAddress.address_1 || '';
+                addressForStore.address_2 = selectedAddress.address_2 || '';
+                addressForStore.city = selectedAddress.city || '';
+                addressForStore.state = selectedAddress.state || '';
+                addressForStore.postcode = selectedAddress.postcode || '';
+                addressForStore.country = selectedAddress.country || '';
+                addressForStore.phone = selectedAddress.phone || '';
+                addressForStore.email = selectedAddress.email || '';
+                addressForStore.nickname = selectedAddress.nickname || '';
                 // --- End Formatting ---
                 // console.log(`[HCMA Block Frontend ${addressType}] Dispatching update to store:`, addressForStore);
                 updateWcAddress(addressForStore)
                     .then(() => { setLoading(false); setEditingState(addressType, false) }) // Show card on success
                     .catch(() => { setLoading(false); setEditingState(addressType, true) });
-                 // TODO: Signal parent block to HIDE fields if needed
+                // TODO: Signal parent block to HIDE fields if needed
             } else {
                 // console.error(`[HCMA Block Frontend ${addressType}] Could not find address data for key:`, newKey);
                 setEditingState(addressType, true);
-                setLoading(false); 
+                setLoading(false);
             }
         }
     }, [addressType, allAddresses, updateWcAddress]); // Dependencies
@@ -119,44 +120,47 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
         // Check if initialDefaultKey exists and is valid in the saved addresses
         if (initialDefaultKey && addressesForType[initialDefaultKey]) {
             //  console.log(`[HCMA Blocks ${addressType}] Valid default key found. Setting state and dispatching update.`);
-             setSelectedKey(initialDefaultKey); // Set dropdown state
+            setSelectedKey(initialDefaultKey); // Set dropdown state
 
-             // Format the default address for the store
-             const defaultAddressData = addressesForType[initialDefaultKey];
-             const addressForStore = { /* ... map fields from defaultAddressData ... */ };
-              addressForStore.first_name = defaultAddressData.first_name || '';
-              addressForStore.last_name = defaultAddressData.last_name || '';
-              addressForStore.company = defaultAddressData.company || '';
-              addressForStore.address_1 = defaultAddressData.address_1 || '';
-              addressForStore.address_2 = defaultAddressData.address_2 || '';
-              addressForStore.city = defaultAddressData.city || '';
-              addressForStore.state = defaultAddressData.state || '';
-              addressForStore.postcode = defaultAddressData.postcode || '';
-              addressForStore.country = defaultAddressData.country || '';
-              addressForStore.phone = defaultAddressData.phone || '';
-              addressForStore.email = defaultAddressData.email || '';
-              addressForStore.nickname = defaultAddressData.nickname || '';
+            // Format the default address for the store
+            const defaultAddressData = addressesForType[initialDefaultKey];
+            const addressForStore = { /* ... map fields from defaultAddressData ... */ };
+            addressForStore.first_name = defaultAddressData.first_name || '';
+            addressForStore.last_name = defaultAddressData.last_name || '';
+            addressForStore.company = defaultAddressData.company || '';
+            addressForStore.address_1 = defaultAddressData.address_1 || '';
+            addressForStore.address_2 = defaultAddressData.address_2 || '';
+            addressForStore.city = defaultAddressData.city || '';
+            addressForStore.state = defaultAddressData.state || '';
+            addressForStore.postcode = defaultAddressData.postcode || '';
+            addressForStore.country = defaultAddressData.country || '';
+            addressForStore.phone = defaultAddressData.phone || '';
+            addressForStore.email = defaultAddressData.email || '';
+            addressForStore.nickname = defaultAddressData.nickname || '';
 
-             // Dispatch the update to overwrite WC's default (e.g., last order address)
-             updateWcAddress(addressForStore)
+            // Dispatch the update to overwrite WC's default (e.g., last order address)
+            updateWcAddress(addressForStore)
                 .then(() => setEditingState(addressType, false)) // Show form on success
                 .catch(() => setEditingState(addressType, true));
         } else {
             // No valid default key, ensure form is shown initially
             // console.log(`[HCMA Blocks ${addressType}] No valid default key found. Ensuring form is visible.`);
-             setSelectedKey(''); // Ensure dropdown shows '-- Select --'
-             setEditingState(addressType, true);
+            if (savedAddresses.length === 0) {
+                setIsNewCustomer(true);                
+            }
+            setSelectedKey(''); // Ensure dropdown shows '-- Select --'
+            setEditingState(addressType, true);
         }
-    // Run only once on initial mount (or if initialDefaultKey/address data somehow changes)
+        // Run only once on initial mount (or if initialDefaultKey/address data somehow changes)
     }, [initialDefaultKey, addressType, addressesForType, updateWcAddress]);
 
     useEffect(() => {
         // Only run if a new address is being added
-        if (selectedKey === 'new') {
+        if (selectedKey === 'new' || isNewCustomer) {
             const data = {
                 address_type: addressType,
                 nickname_type: nicknameType,
-                nickname: nickname,                
+                nickname: nickname,
             };
 
             // Use fetch to send the data to the new endpoint
@@ -168,18 +172,18 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                 },
                 data: data,
             })
-            .then((response) => {
-                if (!response.success) {
-                    console.error('Error saving nickname:', response.message);
-                } else {
-                    // console.log('Nickname saved:', response);
-                }
-            })
-            .catch((error) => {
-                console.error('Error saving nickname:', error);
-            });
+                .then((response) => {
+                    if (!response.success) {
+                        console.error('Error saving nickname:', response.message);
+                    } else {
+                        // console.log('Nickname saved:', response);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error saving nickname:', error);
+                });
         }
-    }, [nicknameType, nickname, selectedKey, addressType]); 
+    }, [nicknameType, nickname, selectedKey, addressType, isNewCustomer]); 
 
     // --- Prepare options ---
     // console.log(`[HCMA Blocks Frontend ${addressType}] Preparing options. Saved Addresses Count:`, savedAddresses.length);
@@ -188,12 +192,12 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     const options = [];
     // const selectLabel = addressType === 'billing' ? (i18n.select_billing || '-- Select Billing Address --') : (i18n.select_shipping || '-- Select Shipping Address --');
     // options.push({ label: selectLabel, value: '' });
-     // Add saved addresses
-     savedAddresses.forEach(addr => {
+    // Add saved addresses
+    savedAddresses.forEach(addr => {
         // Use addr.key which PHP added
         if (!addr.key) {
             //  console.warn(`[HCMA Blocks Frontend ${addressType}] Address missing 'key':`, addr);
-             return; // Skip if key is missing
+            return; // Skip if key is missing
         }
         let label = addr.nickname || addr.address_1 || addr.city || addr.key; // Improved label fallback
         if (addr.key === initialDefaultKey) {
@@ -210,7 +214,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
 
     // --- Check if component should render ---
-    if (options.length < 1) {
+    if (options.length < 1 && !isNewCustomer) {
         // console.log(`[HCMA Blocks Frontend ${addressType}] Conditions not met for display (options.length=${options.length}, allowNew=${allowNew}). Returning null.`);
         return null; // Render nothing if no actual addresses to choose from
     }
@@ -248,7 +252,7 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                         />
                     )}
 
-                    {selectedKey === 'new' && (
+                    {(selectedKey === 'new' || isNewCustomer) && (
                         <div className="hc-wcma-nickname-fields">
                             <SelectControl
                                 label={__('Address Nickname Type', 'happycoders-multiple-addresses')}
