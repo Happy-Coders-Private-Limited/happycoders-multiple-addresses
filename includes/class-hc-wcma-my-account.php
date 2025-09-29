@@ -52,7 +52,8 @@ class HC_WCMA_My_Account {
 	 */
 	public static function add_menu_item( $items ) {
 		$endpoint = HC_WCMA_ENDPOINT_SLUG;
-		$new_item = array( $endpoint => __( 'Multi Address Book', 'happycoders-multiple-addresses' ) );
+		$menu_text = get_option( 'hc_wcma_my_account_menu_item_text', __( 'Multi Address Book', 'happycoders-multiple-addresses' ) );
+		$new_item = array( $endpoint => $menu_text );
 
 		$items = array_slice( $items, 0, 3, true ) + $new_item + array_slice( $items, 3, null, true );
 
@@ -102,6 +103,9 @@ class HC_WCMA_My_Account {
 			}
 			return $addresses;
 		};
+
+		$menu_text = get_option( 'hc_wcma_my_account_menu_item_text', __( 'Multi Address Book', 'happycoders-multiple-addresses' ) );
+		echo '<h1>' . esc_html( $menu_text ) . '</h1>';
 
 		$ordered_billing_addresses  = $reorder_addresses( $all_billing_addresses, $default_billing_key );
 		$ordered_shipping_addresses = $reorder_addresses( $all_shipping_addresses, $default_shipping_key );

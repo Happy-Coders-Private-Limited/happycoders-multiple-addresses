@@ -34,6 +34,7 @@ During checkout, customers can quickly select from their saved addresses using a
     *   Admin option for Dropdown or Radio List display.
     *   Admin option to allow/disallow entering a brand new address at checkout.
 *   **Address Limits:** Admin can set maximum number of billing/shipping addresses per user.
+*   **Customizable Menu Text:** Admin can change the "Multi Address Book" menu item text.
 *   **Auto-Default New Address:** Newly added addresses automatically become the default.
 *   **Classic & Block Checkout Integration:** Works with both checkout types.
     *   *Classic:* Uses standard WooCommerce hooks.
@@ -146,6 +147,9 @@ The source files for the block integration can be found in the `/src` directory.
 5.  The Plugin Settings page (WooCommerce > Settings > HC Multiple Addresses).
 
 == Changelog ==
+
+= [1.0.8] =
+*   New Feature: Added an option in the plugin settings to allow administrators to change the text of the "Multi Address Book" menu item on the My Account page.
 
 = [1.0.7] =
 *  Address Nickname Type support (Home, Work, Other) on My Account and Checkout pages.

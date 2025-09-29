@@ -61,6 +61,24 @@ class HC_WCMA_Admin {
 	 */
 	public static function get_settings(): array {
 		$settings = array(
+			'section_title_my_account'       => array(
+				'name' => __( 'My Account Menu', 'happycoders-multiple-addresses' ),
+				'type' => 'title',
+				'desc' => '',
+				'id'   => 'hc_wcma_my_account_options_title',
+			),
+			'my_account_menu_item_text'      => array(
+				'name'     => __( 'Address Book Menu Item Text', 'happycoders-multiple-addresses' ),
+				'type'     => 'text',
+				'desc'     => __( 'The text for the address book menu item in the My Account page.', 'happycoders-multiple-addresses' ),
+				'id'       => 'hc_wcma_my_account_menu_item_text',
+				'default'  => __( 'Multi Address Book', 'happycoders-multiple-addresses' ),
+				'desc_tip' => true,
+			),
+			'section_end_my_account'         => array(
+				'type' => 'sectionend',
+				'id'   => 'hc_wcma_my_account_options_end',
+			),
 			'section_title_display'          => array(
 				'name' => __( 'Checkout Display Options', 'happycoders-multiple-addresses' ),
 				'type' => 'title',
