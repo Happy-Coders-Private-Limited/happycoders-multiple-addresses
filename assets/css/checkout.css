@@ -10,6 +10,9 @@
     margin-bottom: 10px;
     font-size: 1.1em;
 }
+.hc-wcma-checkout-selector .select2 {
+    width: 100% !important; /* Ensure full width for Select2 dropdown */
+}
 .hc-wcma-checkout-selector .form-row {
     margin-bottom: 0; /* Reduce margin if needed */
 }
