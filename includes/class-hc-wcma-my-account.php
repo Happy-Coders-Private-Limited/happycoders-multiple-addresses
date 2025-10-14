@@ -275,7 +275,7 @@ class HC_WCMA_My_Account {
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
 
-				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . htmlspecialchars( wp_json_encode( $address ), ENT_QUOTES, 'UTF-8' ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
+				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . esc_attr( wp_json_encode( $address ) ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
 				echo '<button class="button wp-element-button hc-wcma-delete-button">' . esc_html__( 'Delete', 'happycoders-multiple-addresses' ) . '</button> ';
 				if ( $key !== $default_billing_key ) {
 					echo '<button class="button wp-element-button hc-wcma-set-default-button">' . esc_html__( 'Set as Default', 'happycoders-multiple-addresses' ) . '</button>';
@@ -323,7 +323,7 @@ class HC_WCMA_My_Account {
 				echo wp_kses_post( hc_wcma_format_address_for_display( $address ) );
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
-				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . htmlspecialchars( wp_json_encode( $address ), ENT_QUOTES, 'UTF-8' ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
+				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . esc_attr( wp_json_encode( $address ) ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
 				echo '<button class="button wp-element-button hc-wcma-delete-button">' . esc_html__( 'Delete', 'happycoders-multiple-addresses' ) . '</button> ';
 				if ( $key !== $default_shipping_key ) {
 					echo '<button class="button wp-element-button hc-wcma-set-default-button">' . esc_html__( 'Set as Default', 'happycoders-multiple-addresses' ) . '</button>';
