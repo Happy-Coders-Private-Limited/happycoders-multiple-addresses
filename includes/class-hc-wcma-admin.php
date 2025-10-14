@@ -75,6 +75,18 @@ class HC_WCMA_Admin {
 				'default'  => __( 'Multi Address Book', 'happycoders-multiple-addresses' ),
 				'desc_tip' => true,
 			),
+			'my_account_address_display_style' => array(
+				'name'     => __( 'Address Display Style', 'happycoders-multiple-addresses' ),
+				'type'     => 'select',
+				'desc'     => __( 'Choose how saved addresses are displayed on the My Account page.', 'happycoders-multiple-addresses' ),
+				'id'       => 'hc_wcma_my_account_address_display_style',
+				'options'  => array(
+					'carousel' => __( 'Carousel', 'happycoders-multiple-addresses' ),
+					'list'     => __( 'List', 'happycoders-multiple-addresses' ),
+				),
+				'default'  => 'carousel',
+				'desc_tip' => true,
+			),
 			'section_end_my_account'         => array(
 				'type' => 'sectionend',
 				'id'   => 'hc_wcma_my_account_options_end',

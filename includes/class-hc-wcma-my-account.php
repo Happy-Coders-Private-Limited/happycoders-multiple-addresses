@@ -248,12 +248,22 @@ class HC_WCMA_My_Account {
 
 		echo '<hr/>';
 
+		$display_style = get_option( 'hc_wcma_my_account_address_display_style', 'carousel' );
+
 		echo '<h2>' . esc_html__( 'Saved Billing Addresses', 'happycoders-multiple-addresses' ) . '</h2>';
 		if ( ! empty( $ordered_billing_addresses ) ) {
-			echo '<div class="hc-wcma-address-carousel" id="billing-address-carousel">';
-			echo '<div class="swiper-wrapper">';
+			if ( 'carousel' === $display_style ) {
+				echo '<div class="hc-wcma-address-carousel" id="billing-address-carousel">';
+				echo '<div class="swiper-wrapper">';
+			} else {
+				echo '<div class="hc-wcma-address-list" id="billing-address-list">';
+			}
+
 			foreach ( $ordered_billing_addresses as $key => $address ) {
-				echo '<div class="swiper-slide">';
+				if ( 'carousel' === $display_style ) {
+					echo '<div class="swiper-slide">';
+				}
+
 				echo '<div class="hc-wcma-address-card woocommerce-Address" data-address-key="' . esc_attr( $key ) . '" data-address-type="billing">';
 				echo '<h3>' . esc_html( $address['nickname'] ?? __( 'Billing Address', 'happycoders-multiple-addresses' ) );
 				if ( $key === $default_billing_key ) {
@@ -265,29 +275,44 @@ class HC_WCMA_My_Account {
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
 
-				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address=\'' . esc_attr( wp_json_encode( $address ) ) . '\'>' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
+				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . htmlspecialchars( wp_json_encode( $address ), ENT_QUOTES, 'UTF-8' ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
 				echo '<button class="button wp-element-button hc-wcma-delete-button">' . esc_html__( 'Delete', 'happycoders-multiple-addresses' ) . '</button> ';
 				if ( $key !== $default_billing_key ) {
 					echo '<button class="button wp-element-button hc-wcma-set-default-button">' . esc_html__( 'Set as Default', 'happycoders-multiple-addresses' ) . '</button>';
 				}
 				echo '</div>';
 				echo '</div>';
-				echo '</div>';
+
+				if ( 'carousel' === $display_style ) {
+					echo '</div>';
+				}
 			}
+
 			echo '</div>';
-			echo '<div class="swiper-button-prev billing-swiper-button-prev"></div>';
-			echo '<div class="swiper-button-next billing-swiper-button-next"></div>';
-			echo '</div>';
+
+			if ( 'carousel' === $display_style ) {
+				echo '<div class="swiper-button-prev billing-swiper-button-prev"></div>';
+				echo '<div class="swiper-button-next billing-swiper-button-next"></div>';
+				echo '</div>'; // Closes hc-wcma-address-carousel
+			}
 		} else {
 			wc_print_notice( __( 'You have no saved billing addresses.', 'happycoders-multiple-addresses' ), 'notice' );
 		}
 
 		echo '<h2>' . esc_html__( 'Saved Shipping Addresses', 'happycoders-multiple-addresses' ) . '</h2>';
 		if ( ! empty( $ordered_shipping_addresses ) ) {
-			echo '<div class="hc-wcma-address-carousel" id="shipping-address-carousel">';
-			echo '<div class="swiper-wrapper">';
+			if ( 'carousel' === $display_style ) {
+				echo '<div class="hc-wcma-address-carousel" id="shipping-address-carousel">';
+				echo '<div class="swiper-wrapper">';
+			} else {
+				echo '<div class="hc-wcma-address-list" id="shipping-address-list">';
+			}
+
 			foreach ( $ordered_shipping_addresses as $key => $address ) {
-				echo '<div class="swiper-slide">';
+				if ( 'carousel' === $display_style ) {
+					echo '<div class="swiper-slide">';
+				}
+
 				echo '<div class="hc-wcma-address-card woocommerce-Address" data-address-key="' . esc_attr( $key ) . '" data-address-type="shipping">';
 				echo '<h3>' . esc_html( $address['nickname'] ?? __( 'Shipping Address', 'happycoders-multiple-addresses' ) );
 				if ( $key === $default_shipping_key ) {
@@ -298,19 +323,26 @@ class HC_WCMA_My_Account {
 				echo wp_kses_post( hc_wcma_format_address_for_display( $address ) );
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
-				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address=\'' . esc_attr( wp_json_encode( $address ) ) . '\'>' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
+				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . htmlspecialchars( wp_json_encode( $address ), ENT_QUOTES, 'UTF-8' ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
 				echo '<button class="button wp-element-button hc-wcma-delete-button">' . esc_html__( 'Delete', 'happycoders-multiple-addresses' ) . '</button> ';
 				if ( $key !== $default_shipping_key ) {
 					echo '<button class="button wp-element-button hc-wcma-set-default-button">' . esc_html__( 'Set as Default', 'happycoders-multiple-addresses' ) . '</button>';
 				}
 				echo '</div>';
 				echo '</div>';
-				echo '</div>';
+
+				if ( 'carousel' === $display_style ) {
+					echo '</div>';
+				}
 			}
+
 			echo '</div>';
-			echo '<div class="swiper-button-prev shipping-swiper-button-prev"></div>';
-			echo '<div class="swiper-button-next shipping-swiper-button-next"></div>';
-			echo '</div>';
+
+			if ( 'carousel' === $display_style ) {
+				echo '<div class="swiper-button-prev shipping-swiper-button-prev"></div>';
+				echo '<div class="swiper-button-next shipping-swiper-button-next"></div>';
+				echo '</div>'; // Closes hc-wcma-address-carousel
+			}
 		} else {
 			wc_print_notice( __( 'You have no saved shipping addresses.', 'happycoders-multiple-addresses' ), 'notice' );
 		}

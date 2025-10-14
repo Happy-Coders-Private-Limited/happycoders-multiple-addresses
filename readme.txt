@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.7
+Stable tag: 1.0.9
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -27,7 +27,7 @@ During checkout, customers can quickly select from their saved addresses using a
 *   **Automatic Import:** Seamlessly imports a customer's existing default WooCommerce address into the address book on their first visit.
 *   **Automatic Saving of New Checkout Addresses:** Any new, unique address a customer enters during checkout is automatically saved to their address book and set as the new default for future use.
 *   **Save Multiple Addresses:** Customers can save distinct billing and shipping addresses.
-*   **Address Nicknames:** Easily label and identify saved addresses.
+*   **Address Nicknames & Types:** Easily label and identify saved addresses with custom nicknames and predefined types (Home, Work, Other).
 *   **Set Default Addresses:** Designate default billing and shipping addresses.
 *   **Easy Editing/Deletion:** Customers can manage their saved addresses.
 *   **Checkout Selection:** Choose saved addresses directly on the checkout page.
@@ -40,6 +40,7 @@ During checkout, customers can quickly select from their saved addresses using a
     *   *Classic:* Uses standard WooCommerce hooks.
     *   *Block:* Uses modern JavaScript integration with the WooCommerce Blocks API (`registerCheckoutBlock`).
 *   **Multisite Compatible:** Includes support for Multisite installations, ensuring endpoints and functionality work correctly across the network.
+*   **My Account Address Display Style:** Admin can choose to display saved addresses in the "My Account" page as a carousel or a list.
 
 == Installation ==
 
@@ -148,6 +149,12 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.9] =
+*   New Feature: My Account Address Display Style. Added an option in plugin settings to display saved addresses on the "My Account" page as either a carousel or a list.
+*   Fix: Corrected HTML structure for carousel view to ensure proper Swiper.js functionality.
+*   Fix: Ensured "Edit" button works correctly for both billing and shipping addresses by improving data attribute handling.
+*   Fix: Resolved "An invalid form control" error on address forms by correctly managing required states of nickname fields.
+
 = [1.0.8] =
 *   New Feature: Added an option in the plugin settings to allow administrators to change the text of the "Multi Address Book" menu item on the My Account page.
 
@@ -183,6 +190,12 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.9 =
+This update introduces a new display option for My Account addresses (carousel/list) and includes several bug fixes for carousel functionality, edit button, and form validation.
+
+= 1.0.8 =
+This update adds an option to customize the "Multi Address Book" menu item text on the My Account page.
 
 = 1.0.7 =
 Address Nickname Type support (Home, Work, Other) on My Account and Checkout pages.

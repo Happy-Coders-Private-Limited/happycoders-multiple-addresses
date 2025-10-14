@@ -1,37 +1,46 @@
-.hc-wcma-address-carousel.no-carousel { /* Style if JS carousel fails */
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+/**
+ * My Account Page Styles
+ */
+
+.hc-wcma-address-carousel {
+    position: relative;
+    margin-bottom: 2em;
 }
+
 .hc-wcma-address-card {
     border: 1px solid #ddd;
     padding: 15px;
-    margin-bottom: 15px;
-    position: relative;
+    border-radius: 5px;
+    background: #f9f9f9;
     padding-left: 50px;
-    /* Add width/flex basis if using flexbox fallback */
-    /* flex-basis: calc(33.33% - 10px); */
 }
+
 .hc-wcma-address-card h3 {
     margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
 .hc-wcma-default-badge {
     background-color: #007cba;
     color: white;
+    padding: 4px 8px;
     font-size: 0.8em;
-    padding: 2px 6px;
     border-radius: 3px;
-    margin-left: 5px;
 }
+
 .hc-wcma-actions {
     margin-top: 10px;
     border-top: 1px dashed #eee;
     padding-top: 10px;
 }
-.hc-wcma-address-form p { margin-bottom: 10px; }
-#hc_wcma_form_feedback { margin-top: 15px; }
 
-/* Swiper Carousel Specific Styles */
+.hc-wcma-actions .button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
 .hc-wcma-address-carousel {
     position: relative; /* Needed for absolute positioning of nav buttons */
     padding-bottom: 40px; /* Space for pagination */
@@ -39,83 +48,26 @@
     overflow: hidden; /* Recommended by Swiper */
 }
 
-/* Style individual slides/cards if needed */
-.hc-wcma-address-carousel .swiper-slide {
-    height: auto; /* Allow slides to grow based on content */
-    display: flex; /* Helps with vertical alignment if needed */
-}
- .hc-wcma-address-carousel .swiper-slide .hc-wcma-address-card {
-     width: 100%; /* Make card fill the slide */
-     margin-bottom: 0; /* Remove bottom margin if slide adds space */
-     display: flex; /* Use flexbox for card layout */
-     flex-direction: column;
-     justify-content: space-between; /* Pushes actions to bottom */
- }
-.hc-wcma-address-carousel .swiper-slide .hc-wcma-address-card .hc-wcma-actions {
-     margin-top: auto; /* Push actions to bottom with flexbox */
-     padding-top: 15px;
-     border-top: 1px dashed #eee;
+/* Fallback for when Swiper is not loaded */
+.no-swiper-fallback .swiper-wrapper {
+    display: block;
 }
 
-
-/* Pagination */
-.hc-wcma-address-carousel .swiper-pagination {
-    bottom: 10px !important; /* Adjust position */
-}
-.hc-wcma-address-carousel .swiper-pagination-bullet {
-    background-color: #ccc;
-    opacity: 1;
-}
-.hc-wcma-address-carousel .swiper-pagination-bullet-active {
-    background-color: #007cba; /* Active color */
-}
-
-/* Navigation Buttons */
-.hc-wcma-address-carousel .swiper-button-next,
-.hc-wcma-address-carousel .swiper-button-prev {
-    color: #007cba; /* Arrow color */
-    width: 30px;
-    height: 30px;
-    margin-top: -15px; /* Adjust vertical centering */
-     background-color: rgba(255, 255, 255, 0.8); /* Optional background */
-     border-radius: 50%;
-     box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
- .hc-wcma-address-carousel .swiper-button-next:after,
- .hc-wcma-address-carousel .swiper-button-prev:after {
-    font-size: 16px; /* Adjust arrow size */
-    font-weight: bold;
- }
- /* Position arrows slightly outside or adjust as needed */
-.hc-wcma-address-carousel .swiper-button-prev { left: 5px; }
-.hc-wcma-address-carousel .swiper-button-next { right: 5px; }
-
-
-/* Fallback if Swiper fails */
-.no-swiper-fallback {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    padding-bottom: 0; /* No pagination space needed */
-}
 .no-swiper-fallback .swiper-slide {
-    flex-basis: calc(33.33% - 10px); /* Example fallback layout */
-    margin-bottom: 15px;
-}
- @media (max-width: 1023px) {
-     .no-swiper-fallback .swiper-slide { flex-basis: calc(50% - 8px); }
- }
-  @media (max-width: 639px) {
-     .no-swiper-fallback .swiper-slide { flex-basis: 100%; }
- }
-.no-swiper-fallback .swiper-pagination,
-.no-swiper-fallback .swiper-button-prev,
-.no-swiper-fallback .swiper-button-next {
-    display: none; /* Hide Swiper controls */
+    margin-bottom: 1em;
 }
 
+/* New List View Styles */
+.hc-wcma-address-list {
+    /* Removed grid properties for single column display */
+    margin-bottom: 2em;
+}
 
-/* Edit Modal Styling */
+.hc-wcma-address-list .hc-wcma-address-card {
+    margin-bottom: 1.5em; /* Spacing between cards in list view */
+}
+
+/* Edit Modal Styles */
 #hc_wcma_edit_modal_overlay {
     display: none;
     position: fixed;
@@ -123,67 +75,36 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Darker overlay */
-    z-index: 9998; /* Ensure below modal */
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100000;
 }
 
 #hc_wcma_edit_modal {
     display: none;
     position: fixed;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Actual centering */
-    width: 90%; /* Max width relative to viewport */
-    max-width: 600px; /* Sensible max width */
-
-    height: 85vh; /* Limit height */
-    overflow-y: auto; /* Allow scrolling if content overflows */
-    overflow-x: hidden; 
-
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #fff;
-    padding: 25px;
-    z-index: 9999;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    padding: 20px 30px;
     border-radius: 5px;
-    box-sizing: border-box;
+    z-index: 100001;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-#hc_wcma_edit_modal h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+#hc_wcma_edit_modal_close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
 }
-
-/* Style form fields within the modal for consistency */
-#hc_wcma_edit_modal .woocommerce-form-row {
-    margin-bottom: 1em;
-}
-#hc_wcma_edit_modal .woocommerce-form-row label {
-    font-weight: bold;
-}
-#hc_wcma_edit_modal .woocommerce-input-wrapper {
-     width: 100%; /* Ensure wrapper takes full width */
-}
- #hc_wcma_edit_modal input[type="text"],
- #hc_wcma_edit_modal input[type="email"],
- #hc_wcma_edit_modal input[type="tel"],
- #hc_wcma_edit_modal select,
- #hc_wcma_edit_modal textarea {
-     box-sizing: border-box; /* Include padding/border in width */
-     width: 100%;
-     padding: 8px 12px;
- }
-
-
- #hc_wcma_edit_modal p:last-of-type { /* Spacing for buttons */
-    margin-top: 20px;
- }
 
 #hc_wcma_edit_form_feedback {
-    margin-top: 15px;
-}
-
-body > .select2-container--open { /* Target dropdown attached to body */
-    z-index: 10050; /* Higher than modal and overlay */
+    margin-top: 1em;
 }

@@ -110,36 +110,27 @@ jQuery(function ($) {
 
             if (selectedType === 'billing') {
                 billingFields.show();
-                toggleNicknameFieldsRequired(selectedType, true);
+                toggleNicknameFieldsRequired('billing', true);
+                toggleNicknameFieldsRequired('shipping', false); // Ensure shipping nickname is not required
             } else if (selectedType === 'shipping') {
                 shippingFields.show();
-                toggleNicknameFieldsRequired(selectedType, true);
+                toggleNicknameFieldsRequired('shipping', true);
+                toggleNicknameFieldsRequired('billing', false); // Ensure billing nickname is not required
             } else if (selectedType === 'both') {
                 billingFields.show();
                 toggleNicknameFieldsRequired('billing', true);
                 wrapper.find('.hc_wcma_shipping_same_as_billing_wrapper').show();
                 if (!shippingSameAsBillingCheckbox.is(':checked')) {
-                    toggleNicknameFieldsRequired('shipping', false);
+                    toggleNicknameFieldsRequired('shipping', true); // Shipping nickname is required if not same as billing
                     shippingFields.show();
+                } else {
+                    toggleNicknameFieldsRequired('shipping', false); // Shipping nickname is not required if same as billing
                 }
             }
             // Trigger country change handler in case fields were hidden
             $(document.body).trigger('country_to_state_changed', ['billing', wrapper]);
             $(document.body).trigger('country_to_state_changed', ['shipping', wrapper]);
             
-            if (addressTypeSelect.val() === 'both') {
-                shippingSameAsBillingCheckbox.on('change', function() {
-                    if ($(this).is(':checked')) {
-                        $(this).val('1');
-                        shippingFields.hide(); 
-                        toggleNicknameFieldsRequired('shipping', false);
-                    } else {
-                        $(this).val('0');
-                        toggleNicknameFieldsRequired('shipping', true);
-                        shippingFields.show(); 
-                    }
-                }).trigger('change'); 
-            }  
         }).trigger('change');  
 
               
@@ -154,12 +145,31 @@ jQuery(function ($) {
     updateNicknameOptions();
     $('#hc_wcma_address_type, #shipping_same_as_billing').on('change', updateNicknameOptions);
 
+    // Handle shipping_same_as_billing checkbox change for 'both' address type
+    $('#shipping_same_as_billing').on('change', function() {
+        const addressTypeSelect = $('#hc_wcma_address_type');
+        const shippingFields = $('#hc_wcma_add_address_fields_wrapper').find('.hc_wcma_shipping_fields');
+
+        if (addressTypeSelect.val() === 'both') {
+            if ($(this).is(':checked')) {
+                $(this).val('1');
+                shippingFields.hide();
+                toggleNicknameFieldsRequired('shipping', false);
+            } else {
+                $(this).val('0');
+                toggleNicknameFieldsRequired('shipping', true);
+                shippingFields.show();
+            }
+        }
+    });
+
      // --- Swiper Initialization ---
     if (typeof Swiper === 'function') {
         const swiperOptions = {
             slidesPerView: 1,
             spaceBetween: 15,
             loop: false,
+            watchOverflow: true, // Added to help with display issues
             breakpoints: {
                 640: {
                   slidesPerView: 1,
@@ -319,7 +329,7 @@ jQuery(function ($) {
     });
 
     // --- Delete Address Handling ---
-    $('.hc-wcma-address-carousel').on('click', '.hc-wcma-delete-button', function (e) {
+    $('.hc-wcma-address-carousel, .hc-wcma-address-list').on('click', '.hc-wcma-delete-button', function (e) {
         e.preventDefault();
         const $button = $(this);
         const $card = $button.closest('.hc-wcma-address-card');
@@ -347,7 +357,7 @@ jQuery(function ($) {
     });
 
     // --- Set Default Address Handling ---
-    $('.hc-wcma-address-carousel').on('click', '.hc-wcma-set-default-button', function (e) {
+    $('.hc-wcma-address-carousel, .hc-wcma-address-list').on('click', '.hc-wcma-set-default-button', function (e) {
         e.preventDefault();
         const $button = $(this);
         const $card = $button.closest('.hc-wcma-address-card');
@@ -378,7 +388,7 @@ jQuery(function ($) {
     const $editFeedback = $('#hc_wcma_edit_form_feedback');
 
     // --- Open Edit Modal ---
-    $('.hc-wcma-address-carousel').on('click', '.hc-wcma-edit-button', function(e) {
+    $('.hc-wcma-address-carousel, .hc-wcma-address-list').on('click', '.hc-wcma-edit-button', function(e) {
         e.preventDefault();
         const $button = $(this);
         const $card = $button.closest('.hc-wcma-address-card');
