@@ -3,7 +3,7 @@
  * Plugin Name:       Happy Coders Multi Address for WooCommerce
  * Plugin URI:        https://happycoders.in/happycoders-multiple-addresses
  * Description:       Allows customers to save and manage multiple billing and shipping addresses.
- * Version:           1.0.9
+ * Version:           1.0.10
  * Author:            HappyCoders
  * Author URI:        https://happycoders.in
  * License:           GPL v2 or later
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'HC_WCMA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'HC_WCMA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'HC_WCMA_VERSION', '1.0.9' );
+define( 'HC_WCMA_VERSION', '1.0.10' );
 define( 'HC_WCMA_ENDPOINT_SLUG', 'hc-address-book' );
 
 require_once HC_WCMA_PLUGIN_PATH . 'includes/class-hc-wcma-main.php';
@@ -42,6 +42,16 @@ add_action(
 );
 
 add_action( 'plugins_loaded', array( 'HC_WCMA_Main', 'instance' ) );
+
+/**
+ * Load plugin textdomain.
+ *
+ * @since 1.0.10
+ */
+function hc_wcma_load_textdomain() {
+    load_plugin_textdomain( 'happycoders-multiple-addresses', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'plugins_loaded', 'hc_wcma_load_textdomain' );
 
 /**
  * Add Settings link to the plugin actions row.

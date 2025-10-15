@@ -220,10 +220,10 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     }
 
     const nicknameOptions = [
-        { label: __('Select Nickname', 'happycoders-multiple-addresses'), value: '' },
-        { label: __('Home', 'happycoders-multiple-addresses'), value: 'Home', disabled: existingNicknames[addressType]?.includes('Home') },
-        { label: __('Work', 'happycoders-multiple-addresses'), value: 'Work', disabled: existingNicknames[addressType]?.includes('Work') },
-        { label: __('Other', 'happycoders-multiple-addresses'), value: 'Other' },
+        { label: i18n.select_nickname || __('Select Nickname', 'happycoders-multiple-addresses'), value: '' },
+        { label: i18n.home || __('Home', 'happycoders-multiple-addresses'), value: 'Home', disabled: existingNicknames[addressType]?.includes('Home') },
+        { label: i18n.work || __('Work', 'happycoders-multiple-addresses'), value: 'Work', disabled: existingNicknames[addressType]?.includes('Work') },
+        { label: i18n.other || __('Other', 'happycoders-multiple-addresses'), value: 'Other' },
     ];
 
     // --- Render the component ---
@@ -255,14 +255,14 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                     {(selectedKey === 'new' || isNewCustomer) && (
                         <div className="hc-wcma-nickname-fields">
                             <SelectControl
-                                label={__('Address Nickname Type', 'happycoders-multiple-addresses')}
+                                label={i18n.address_nickname_type || __('Address Nickname Type', 'happycoders-multiple-addresses')}
                                 value={nicknameType}
                                 options={nicknameOptions}
                                 onChange={(value) => setNicknameType(value)}
                             />
                             {nicknameType === 'Other' && (
                                 <TextControl
-                                    label={__('Custom Nickname', 'happycoders-multiple-addresses')}
+                                    label={i18n.custom_nickname || __('Custom Nickname', 'happycoders-multiple-addresses')}
                                     value={nickname}
                                     onChange={(value) => setNickname(value)}
                                 />

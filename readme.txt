@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -149,6 +149,11 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.10] =
+*   Feature: Added full internationalization (i18n) support, allowing the plugin to be translated into other languages.
+*   Feature: Included a `.pot` file to make it easy for users to generate their own translations.
+*   Tweak: Updated the Block Checkout integration to correctly load and display translated strings.
+
 = [1.0.9] =
 *   New Feature: My Account Address Display Style. Added an option in plugin settings to display saved addresses on the "My Account" page as either a carousel or a list.
 *   Fix: Corrected HTML structure for carousel view to ensure proper Swiper.js functionality.
@@ -190,6 +195,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.10 =
+This update adds full internationalization support, allowing the plugin to be translated. It also includes a `.pot` file for easy translation and ensures that the Block Checkout experience is fully translatable.
 
 = 1.0.9 =
 This update introduces a new display option for My Account addresses (carousel/list) and includes several bug fixes for carousel functionality, edit button, and form validation.

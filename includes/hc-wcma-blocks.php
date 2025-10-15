@@ -67,6 +67,8 @@ function hc_wcma_enqueue_checkout_dom_injection_scripts() {
 					);
 			}
 
+			wp_set_script_translations( 'hc-wcma-frontend-integration', 'happycoders-multiple-addresses', HC_WCMA_PLUGIN_PATH . 'languages' );
+
 			// --- Localize necessary data ---
 			$user_id = get_current_user_id();
 			// ... (Get addresses, settings, defaults etc.) ...
@@ -96,7 +98,19 @@ function hc_wcma_enqueue_checkout_dom_injection_scripts() {
 						'shipping' => $default_shipping_key,
 					),
 					'nonce'              => wp_create_nonce( 'wp_rest' ),
-					'i18n'               => array( /* ... translations ... */ ),
+					'i18n'               => array(
+						'default_label'         => __( '(Default)', 'happycoders-multiple-addresses' ),
+						'new_address'           => __( 'Enter a new address', 'happycoders-multiple-addresses' ),
+						'loading'               => __( 'Loading...', 'happycoders-multiple-addresses' ),
+						'select_billing'        => __( '-- Select Billing Address --', 'happycoders-multiple-addresses' ),
+						'select_shipping'       => __( '-- Select Shipping Address --', 'happycoders-multiple-addresses' ),
+						'select_nickname'       => __( 'Select Nickname', 'happycoders-multiple-addresses' ),
+						'home'                  => __( 'Home', 'happycoders-multiple-addresses' ),
+						'work'                  => __( 'Work', 'happycoders-multiple-addresses' ),
+						'other'                 => __( 'Other', 'happycoders-multiple-addresses' ),
+						'address_nickname_type' => __( 'Address Nickname Type', 'happycoders-multiple-addresses' ),
+						'custom_nickname'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
+					),
 					'existing_nicknames' => hc_wcma_get_existing_nicknames( $user_id ),
 				)
 			);

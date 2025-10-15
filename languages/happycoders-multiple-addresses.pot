@@ -1,0 +1,558 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Happy Coders Multi Address for WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-15 04:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.3.14\n"
+"X-Domain: happycoders-multiple-addresses"
+
+#. %1$s: Field label, %2$s: Address type
+#: includes/class-hc-wcma-ajax.php:154
+#, php-format
+msgid "%1$s is a required field for %2$s address."
+msgstr ""
+
+#. %s is the field label
+#: includes/class-hc-wcma-ajax.php:342
+#, php-format
+msgid "%s is a required field."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:236
+#: includes/class-hc-wcma-checkout.php:254 includes/hc-wcma-blocks.php:100
+msgid "(Default)"
+msgstr ""
+
+#: includes/hc-wcma-blocks.php:103
+msgid "-- Select Billing Address --"
+msgstr ""
+
+#: includes/hc-wcma-blocks.php:104
+msgid "-- Select Shipping Address --"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:120
+msgid "-- Select Type --"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:495
+msgid "A new default address has been set."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:115
+msgid "Add New Address"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:249
+msgid "Address added successfully."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:141
+msgid "Address Book Limits"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:71
+msgid "Address Book Menu Item Text"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:495
+msgid "Address deleted."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:79
+msgid "Address Display Style"
+msgstr ""
+
+#: includes/hc-wcma-functions.php:145
+msgid "Address Nickname"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:179 includes/class-hc-wcma-ajax.php:359
+msgid "Address nickname is a required field."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:102 includes/hc-wcma-blocks.php:109
+msgid "Address Nickname Type"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:296 includes/class-hc-wcma-ajax.php:503
+msgid "Address not found."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:256
+msgid "Address saved successfully for one type."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:101
+msgid "Address Selector Style"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:119
+msgid "Address Type"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:417
+msgid "Address updated successfully."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:127
+msgid "Allow customers to enter a new address directly on the checkout page?"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:125
+msgid "Allow New Address Entry On Checkout Page"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Allows customers to save and manage multiple billing and shipping addresses."
+msgstr ""
+
+#. 1: Nickname, 2: Address type
+#: includes/class-hc-wcma-ajax.php:186
+#, php-format
+msgid "An address with the nickname \"%1$s\" already exists for %2$s."
+msgstr ""
+
+#. %s: Nickname
+#: includes/class-hc-wcma-ajax.php:369
+#, php-format
+msgid "An address with the nickname \"%s\" already exists."
+msgstr ""
+
+#: includes/class-hc-wcma-main.php:132
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: includes/class-hc-wcma-main.php:212
+msgid "Are you sure you want to delete this address for the user?"
+msgstr ""
+
+#: includes/class-hc-wcma-main.php:131
+msgid "Are you sure you want to delete this address?"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:120
+msgid "Billing"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:268
+msgid "Billing Address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:166
+#: includes/class-hc-wcma-my-account.php:413
+msgid "Billing Details"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block description"
+msgid "Allows selection of saved billing/shipping addresses on block checkout."
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block keyword"
+msgid "address"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block keyword"
+msgid "checkout"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block keyword"
+msgid "happycoders"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block keyword"
+msgid "selector"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block keyword"
+msgid "woocommerce"
+msgstr ""
+
+#: build/block.json:1 src/block.json:1
+msgctxt "block title"
+msgid "Checkout Address Selector (HC)"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:120
+msgid "Both"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:438
+msgid "Cancel"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:84
+msgid "Carousel"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:95
+msgid "Checkout Display Options"
+msgstr ""
+
+#. %s = address type
+#: includes/class-hc-wcma-checkout.php:232
+#, php-format
+msgid "Choose %s address"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:81
+msgid "Choose how saved addresses are displayed on the My Account page."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:103
+msgid "Choose how the list of saved addresses is presented (dropdown or list)."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:126
+#: includes/class-hc-wcma-my-account.php:367
+msgid "Company"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:500
+msgid "Could not delete address."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:263
+msgid "Could not save address. An unknown error occurred."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:575
+msgid "Could not update default address."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:115 includes/hc-wcma-blocks.php:110
+msgid "Custom Nickname"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:270
+#: includes/class-hc-wcma-my-account.php:319
+msgid "Default"
+msgstr ""
+
+#. %s is the address type
+#: includes/class-hc-wcma-ajax.php:568
+#, php-format
+msgid "Default %s address updated."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:489
+msgid "Default Address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:279
+#: includes/class-hc-wcma-my-account.php:327
+msgid "Delete"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:106
+msgid "Dropdown Select Box"
+msgstr ""
+
+#: includes/hc-wcma-functions.php:146
+msgid "e.g., Home, Work"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:116
+msgid "e.g., Shipping Place"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:278
+#: includes/class-hc-wcma-my-account.php:326
+msgid "Edit"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:407
+msgid "Edit Address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:131
+#: includes/class-hc-wcma-my-account.php:372
+msgid "Email address"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:246
+#: includes/class-hc-wcma-checkout.php:270 includes/class-hc-wcma-main.php:184
+#: includes/hc-wcma-blocks.php:101
+msgid "Enter a new address"
+msgstr ""
+
+#. %s: Address type
+#: includes/class-hc-wcma-ajax.php:240
+#, php-format
+msgid "Failed to save %s address."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:422
+msgid "Failed to save updated address."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:115
+msgid ""
+"For Classic Checkout: When a saved address is selected, show the full "
+"editable form fields or just a formatted address block?"
+msgstr ""
+
+#. Name of the plugin
+msgid "Happy Coders Multi Address for WooCommerce"
+msgstr ""
+
+#. Author of the plugin
+msgid "HappyCoders"
+msgstr ""
+
+#. %s: Link to WooCommerce plugin page
+#: includes/class-hc-wcma-main.php:269
+#, php-format
+msgid ""
+"HappyCoders Multiple Addresses plugin requires %s to be installed and active."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:35
+msgid "HC Multiple Addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:108 includes/hc-wcma-blocks.php:106
+msgid "Home"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://happycoders.in"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://happycoders.in/happycoders-multiple-addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:534
+msgid "Invalid address selected."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:50 includes/class-hc-wcma-ajax.php:278
+#: includes/class-hc-wcma-ajax.php:441 includes/class-hc-wcma-ajax.php:517
+msgid "Invalid security token."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:85
+msgid "List"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:107
+msgid "List (Radio Buttons)"
+msgstr ""
+
+#: includes/hc-wcma-blocks.php:102
+msgid "Loading..."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:147
+msgid "Max Billing Addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:160
+msgid "Max Shipping Addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:149
+msgid "Maximum total number of billing addresses allowed per user."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:162
+msgid "Maximum total number of shipping addresses allowed per user."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:291 includes/class-hc-wcma-ajax.php:453
+#: includes/class-hc-wcma-ajax.php:529
+msgid "Missing address identifier."
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:75 includes/class-hc-wcma-my-account.php:55
+#: includes/class-hc-wcma-my-account.php:107
+msgid "Multi Address Book"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:65
+msgid "My Account Menu"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:131
+msgid "No"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:393
+msgid "No changes detected."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:110 includes/hc-wcma-blocks.php:108
+msgid "Other"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:138
+#: includes/class-hc-wcma-my-account.php:379
+msgid "Phone"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:67
+msgid "Please enter a custom nickname for your billing address."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:78
+msgid "Please enter a custom nickname for your shipping address."
+msgstr ""
+
+#. %s: Country name
+#. %s is the country name
+#: includes/class-hc-wcma-ajax.php:143 includes/class-hc-wcma-ajax.php:331
+#, php-format
+msgid "Please enter a valid postcode / ZIP for %s."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:64
+msgid "Please select a nickname type for your billing address."
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:75
+msgid "Please select a nickname type for your shipping address."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:63
+msgid "Please select an address type."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:192
+msgid "Save Address"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:113
+msgid "Saved Address Display Format"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:253
+msgid "Saved Billing Addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:302
+msgid "Saved Shipping Addresses"
+msgstr ""
+
+#: includes/class-hc-wcma-main.php:182
+msgid "Select a billing address"
+msgstr ""
+
+#: includes/class-hc-wcma-main.php:183
+msgid "Select a shipping address"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:107
+msgid "Select an option..."
+msgstr ""
+
+#: includes/hc-wcma-blocks.php:105
+msgid "Select Nickname"
+msgstr ""
+
+#. %s = address type
+#: includes/class-hc-wcma-checkout.php:228
+#, php-format
+msgid "Select Saved %s Address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:281
+#: includes/class-hc-wcma-my-account.php:329
+msgid "Set as Default"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:143
+msgid ""
+"Set maximum number of addresses users can save. Leave blank or set to 0 for "
+"unlimited."
+msgstr ""
+
+#: happycoders-multiple-addresses.php:73
+msgid "Settings"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:120
+msgid "Shipping"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:317
+msgid "Shipping Address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:177
+msgid "Shipping address is the same as billing address"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:180
+#: includes/class-hc-wcma-my-account.php:424
+msgid "Shipping Details"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:118
+msgid "Show Editable Form Fields"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:119
+msgid "Show Formatted Address Block (Hide Fields)"
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:144 includes/class-hc-wcma-ajax.php:332
+msgid "the selected state"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:73
+msgid "The text for the address book menu item in the My Account page."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:437
+msgid "Update Address"
+msgstr ""
+
+#: includes/class-hc-wcma-checkout.php:109 includes/hc-wcma-blocks.php:107
+msgid "Work"
+msgstr ""
+
+#: includes/class-hc-wcma-admin.php:130
+msgid "Yes"
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:299
+msgid "You have no saved billing addresses."
+msgstr ""
+
+#: includes/class-hc-wcma-my-account.php:347
+msgid "You have no saved shipping addresses."
+msgstr ""
+
+#. %limit% is the numeric limit, %type% is 'billing' or 'shipping'
+#: includes/class-hc-wcma-main.php:143
+msgid "You have reached the maximum (%limit%) saved %type% addresses."
+msgstr ""
+
+#. 1: Limit, 2: Address type
+#: includes/class-hc-wcma-ajax.php:92
+#, php-format
+msgid "You have reached the maximum limit of %1$d saved %2$s addresses."
+msgstr ""
+
+#: includes/class-hc-wcma-ajax.php:54 includes/class-hc-wcma-ajax.php:282
+#: includes/class-hc-wcma-ajax.php:445 includes/class-hc-wcma-ajax.php:521
+msgid "You must be logged in."
+msgstr ""
