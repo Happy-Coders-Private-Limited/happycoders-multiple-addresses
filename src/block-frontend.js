@@ -368,7 +368,7 @@ function mountSingleAddressSelector(addressType) {
     if (!addressesExist && !allowNew) { /* ... skip message ... */ return; }
 
     // --- Find PARENT Block ---
-    const parentSelector = `.wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step__content`;
+    const parentSelector = `.wp-block-woocommerce-checkout-${addressType}-address-block .wc-block-components-checkout-step__content`;
     const parentTarget = document.querySelector(parentSelector);
 
     if (parentTarget) {
@@ -423,40 +423,43 @@ function setEditingState(addressType, isEditing) {
     }
 }
 
-// --- *** Mutation Observer to Detect Billing Block Re-Add *** ---
+// --- *** Mutation Observer to Detect Billing and Shipping Block Re-Add *** ---
 let checkoutObserver = null;
 
 function startCheckoutObserver() {
-    // Target an element guaranteed to contain the checkout blocks
-    const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout'); // Or 'form.woocommerce-checkout' ?
-    if (!checkoutContainer) { 
-        // console.warn('[HCMA Blocks] Checkout container not found for observer.'); 
+    const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout');
+    if (!checkoutContainer) {
         return;
     }
-    if (checkoutObserver) { logWithTimestamp('Checkout observer already running.'); return; } // Prevent multiple observers
+    if (checkoutObserver) {
+        return;
+    }
 
-    // logWithTimestamp('Starting checkout DOM observer...');
     checkoutObserver = new MutationObserver((mutationsList) => {
         let billingBlockAdded = false;
+        let shippingBlockAdded = false;
+
         for (const mutation of mutationsList) {
-             // Check if nodes were added AND if the billing block was among them or their children
-             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                 mutation.addedNodes.forEach(node => {
-                     if (node.nodeType === 1) { 
-                          if (node.matches('.wp-block-woocommerce-checkout-billing-address-block') || node.querySelector('.wp-block-woocommerce-checkout-billing-address-block')) {
-                              billingBlockAdded = true;
-                          }
-                     }
-                  });
-             }
-             if (billingBlockAdded) break; // Stop checking mutations if found
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1) {
+                        if (node.matches('.wp-block-woocommerce-checkout-billing-address-block') || node.querySelector('.wp-block-woocommerce-checkout-billing-address-block')) {
+                            billingBlockAdded = true;
+                        }
+                        if (node.matches('.wp-block-woocommerce-checkout-shipping-address-block') || node.querySelector('.wp-block-woocommerce-checkout-shipping-address-block')) {
+                            shippingBlockAdded = true;
+                        }
+                    }
+                });
+            }
+            if (billingBlockAdded && shippingBlockAdded) break;
         }
 
-        // If the billing block was added in this batch of mutations
         if (billingBlockAdded) {
-            // logWithTimestamp('Billing address block RE-ADDED, attempting to re-mount selector...');
-            // Wait a tiny bit for WC scripts potentially, then remount
-            setTimeout(() => mountSingleAddressSelector('billing'), 150); 
+            setTimeout(() => mountSingleAddressSelector('billing'), 150);
+        }
+        if (shippingBlockAdded) {
+            setTimeout(() => mountSingleAddressSelector('shipping'), 150);
         }
     });
 

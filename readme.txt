@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -149,6 +149,10 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.11] =
+*   Fix: Resolved an issue in the Block Checkout where the shipping address selector would not reappear correctly when switching back from "Pickup" to "Ship".
+*   Fix: Corrected an issue where the shipping address selector was incorrectly placed inside the billing address block on re-render.
+
 = [1.0.10] =
 *   Feature: Added full internationalization (i18n) support, allowing the plugin to be translated into other languages.
 *   Feature: Included a `.pot` file to make it easy for users to generate their own translations.
@@ -195,6 +199,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.11 =
+This update fixes a critical bug in the Block Checkout experience where the shipping address selector would not function correctly when switching between shipping and pickup methods. It is a recommended update for all users, especially those using the Block Checkout.
 
 = 1.0.10 =
 This update adds full internationalization support, allowing the plugin to be translated. It also includes a `.pot` file for easy translation and ensures that the Block Checkout experience is fully translatable.
