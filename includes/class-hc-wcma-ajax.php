@@ -99,6 +99,7 @@ class HC_WCMA_AJAX {
 				}
 			}
 			$fields      = WC()->countries->get_address_fields( '', $prefix );
+			$fields      = hc_wcma_apply_field_settings( $fields, $type );
 			$new_address = array();
 			$address_key = hc_wcma_generate_address_key();
 
@@ -300,6 +301,7 @@ class HC_WCMA_AJAX {
 
 		$prefix          = $address_type . '_';
 		$fields          = WC()->countries->get_address_fields( '', $prefix );
+		$fields          = hc_wcma_apply_field_settings( $fields, $address_type );
 		$updated_address = array();
 		$errors          = array();
 

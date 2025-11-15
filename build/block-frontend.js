@@ -1,1 +1,789 @@
-(()=>{"use strict";var e,t={433:(e,t,o)=>{const s=window.wp.element,n=window.wp.i18n,c=window.wp.data,a=window.wp.components,r=window.wp.apiFetch;var l=o.n(r);const d=window.ReactJSXRuntime,i=window.hc_wcma_block_params||{},p=i.i18n||{},m=({addressType:e="billing"})=>{const t=i.defaultKeys?.[e]||"",[o,r]=(0,s.useState)(t),[m,u]=(0,s.useState)(""),[h,k]=(0,s.useState)(""),[y,g]=(0,s.useState)(!1),[b,_]=(0,s.useState)(!1),f=i.addresses||{},v=f[e]||{},S=Object.keys(v).length>0?Object.values(v):[],j="yes"===i.allow_new,x=i.selector_style||"dropdown",C=i.existing_nicknames||{},O=(0,s.useCallback)((t=>{g(!0);const o={[e+"_address"]:t};return(0,c.dispatch)("wc/store/cart").updateCustomerData(o,!1).then((()=>{g(!1)})).catch((e=>{throw g(!1),e}))}),[c.dispatch,e]),E=(0,s.useCallback)((t=>{if(r(t),g(!0),"new"===t||""===t){O({first_name:"",last_name:"",company:"",address_1:"",address_2:"",city:"",state:"",postcode:"",country:"",phone:"",email:"",nickname:""}).then((()=>{g(!1),w(e,!0)})).catch((()=>{g(!1),w(e,!0)}))}else{const o=f[e]?.[t];if(o){const t={};t.first_name=o.first_name||"",t.last_name=o.last_name||"",t.company=o.company||"",t.address_1=o.address_1||"",t.address_2=o.address_2||"",t.city=o.city||"",t.state=o.state||"",t.postcode=o.postcode||"",t.country=o.country||"",t.phone=o.phone||"",t.email=o.email||"",t.nickname=o.nickname||"",O(t).then((()=>{g(!1),w(e,!1)})).catch((()=>{g(!1),w(e,!0)}))}else w(e,!0),g(!1)}}),[e,f,O]);(0,s.useEffect)((()=>{if(t&&v[t]){r(t);const o=v[t],s={};s.first_name=o.first_name||"",s.last_name=o.last_name||"",s.company=o.company||"",s.address_1=o.address_1||"",s.address_2=o.address_2||"",s.city=o.city||"",s.state=o.state||"",s.postcode=o.postcode||"",s.country=o.country||"",s.phone=o.phone||"",s.email=o.email||"",s.nickname=o.nickname||"",O(s).then((()=>w(e,!1))).catch((()=>w(e,!0)))}else 0===S.length&&_(!0),r(""),w(e,!0)}),[t,e,v,O]),(0,s.useEffect)((()=>{if("new"===o||b){const t={address_type:e,nickname_type:m,nickname:h};l()({path:"/hc-wcma/v1/save-nickname",method:"POST",headers:{"Content-Type":"application/json"},data:t}).then((e=>{e.success||console.error("Error saving nickname:",e.message)})).catch((e=>{console.error("Error saving nickname:",e)}))}}),[m,h,o,e,b]);const M=[];if(S.forEach((e=>{if(!e.key)return;let o=e.nickname||e.address_1||e.city||e.key;e.key===t&&(o+=` ${p.default_label||"(Default)"}`),M.push({label:o,value:e.key})})),j&&M.push({label:p.new_address||"Enter a new address",value:"new"}),M.length<1&&!b)return null;const T=[{label:p.select_nickname||(0,n.__)("Select Nickname","happycoders-multiple-addresses"),value:""},{label:p.home||(0,n.__)("Home","happycoders-multiple-addresses"),value:"Home",disabled:C[e]?.includes("Home")},{label:p.work||(0,n.__)("Work","happycoders-multiple-addresses"),value:"Work",disabled:C[e]?.includes("Work")},{label:p.other||(0,n.__)("Other","happycoders-multiple-addresses"),value:"Other"}];try{return(0,d.jsxs)("div",{className:`hc-wcma-block-checkout-selector hc-wcma-${e}-selector ${y?"is-loading":""} wp-block-hc-wcma-address-selector`,children:[(0,d.jsxs)("div",{style:{marginBottom:"1em",opacity:y?.5:1,pointerEvents:y?"none":"auto"},children:["list"===x?(0,d.jsx)(a.RadioControl,{selected:o,options:M,onChange:E,className:"hc-wcma-address-radio-list"}):(0,d.jsx)(a.SelectControl,{value:o,options:M,onChange:E,className:"hc-wcma-address-select"}),("new"===o||b)&&(0,d.jsxs)("div",{className:"hc-wcma-nickname-fields",children:[(0,d.jsx)(a.SelectControl,{label:p.address_nickname_type||(0,n.__)("Address Nickname Type","happycoders-multiple-addresses"),value:m,options:T,onChange:e=>u(e)}),"Other"===m&&(0,d.jsx)(a.TextControl,{label:p.custom_nickname||(0,n.__)("Custom Nickname","happycoders-multiple-addresses"),value:h,onChange:e=>k(e)})]})]}),y&&(0,d.jsx)("p",{className:"hc-wcma-loading-text",children:p.loading||"Loading..."})]})}catch(e){return(0,d.jsx)("p",{style:{color:"red",border:"1px solid red",padding:"5px"},children:"Error rendering HCMA selector!"})}};function u(){const e=i.addresses||{},t=e.billing&&Object.keys(e.billing).length>0,o=e.shipping&&Object.keys(e.shipping).length>0,n="yes"===i.allow_new;if(t||n){const e=document.querySelector(".wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step__content");if(e){const t=document.createElement("div");if(t.className="hc-wcma-billing-mount-point",e.prepend(t),!t.dataset.reactMounted)try{(0,s.render)((0,d.jsx)(m,{addressType:"billing"}),t),t.dataset.reactMounted="true"}catch(e){console.error("[HCMA Blocks Frontend] Error mounting billing component:",e)}}}else console.log("[HCMA Blocks Frontend] Skipping Billing selector - no addresses and new not allowed.");if(o||n){const e=document.querySelector(".wp-block-woocommerce-checkout-shipping-address-block .wc-block-components-checkout-step__content");if(e){const t=document.createElement("div");if(t.className="hc-wcma-shipping-mount-point",e.prepend(t),!t.dataset.reactMounted)try{(0,s.render)((0,d.jsx)(m,{addressType:"shipping"}),t),t.dataset.reactMounted="true"}catch(e){console.error("[HCMA Blocks Frontend] Error mounting shipping component:",e)}}}else console.log("[HCMA Blocks Frontend] Skipping Shipping selector.");setTimeout(h,100)}function h(){const e=document.querySelectorAll(".wc-block-components-address-card .wc-block-components-address-card__edit");e.length>0&&e.forEach((e=>{e.style.display="none"}))}function k(e){const t=i.addresses||{},o=t[e]&&Object.keys(t[e]).length>0,n="yes"===i.allow_new;if(!o&&!n)return;const c=`.wp-block-woocommerce-checkout-${e}-address-block .wc-block-components-checkout-step__content`,a=document.querySelector(c);if(a){let t=a.querySelector(`.hc-wcma-${e}-mount-point`);if(t)!function(e,...t){const o=new Date,s=`${String(o.getHours()).padStart(2,"0")}:${String(o.getMinutes()).padStart(2,"0")}:${String(o.getSeconds()).padStart(2,"0")}.${String(o.getMilliseconds()).padStart(3,"0")}`;console.log(`[${s}] ${e}`,...t)}(`Mount point already exists for ${e}.`);else{t=document.createElement("div"),t.className=`hc-wcma-${e}-mount-point`;const o=a.querySelector(".wc-block-components-checkout-step__content");o?o.parentNode.insertBefore(t,o):a.prepend(t)}if(!t.dataset.reactMounted)try{(0,s.render)((0,d.jsx)(m,{addressType:e}),t),t.dataset.reactMounted="true",w(e,!1)}catch(t){console.error(`Error mounting ${e} component:`,t)}}}function w(e,t){const o=`#${e}-fields .wc-block-components-address-address-wrapper`,s=document.querySelector(o);s?t?s.classList.add("is-editing"):(s.classList.remove("is-editing"),setTimeout((()=>h()),100)):console.warn(`[HCMA Blocks ${e}] Wrapper '${o}' not found to toggle is-editing.`)}let y=null;function g(){const e=document.querySelector(".wp-block-woocommerce-checkout");e&&(y||(y=new MutationObserver((e=>{let t=!1,o=!1;for(const s of e)if("childList"===s.type&&s.addedNodes.length>0&&s.addedNodes.forEach((e=>{1===e.nodeType&&((e.matches(".wp-block-woocommerce-checkout-billing-address-block")||e.querySelector(".wp-block-woocommerce-checkout-billing-address-block"))&&(t=!0),(e.matches(".wp-block-woocommerce-checkout-shipping-address-block")||e.querySelector(".wp-block-woocommerce-checkout-shipping-address-block"))&&(o=!0))})),t&&o)break;t&&setTimeout((()=>k("billing")),150),o&&setTimeout((()=>k("shipping")),150)})),y.observe(e,{childList:!0,subtree:!0})))}document.addEventListener("DOMContentLoaded",(()=>{setTimeout(u,750),setTimeout(g,1500)}))}},o={};function s(e){var n=o[e];if(void 0!==n)return n.exports;var c=o[e]={exports:{}};return t[e](c,c.exports,s),c.exports}s.m=t,e=[],s.O=(t,o,n,c)=>{if(!o){var a=1/0;for(i=0;i<e.length;i++){for(var[o,n,c]=e[i],r=!0,l=0;l<o.length;l++)(!1&c||a>=c)&&Object.keys(s.O).every((e=>s.O[e](o[l])))?o.splice(l--,1):(r=!1,c<a&&(a=c));if(r){e.splice(i--,1);var d=n();void 0!==d&&(t=d)}}return t}c=c||0;for(var i=e.length;i>0&&e[i-1][2]>c;i--)e[i]=e[i-1];e[i]=[o,n,c]},s.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return s.d(t,{a:t}),t},s.d=(e,t)=>{for(var o in t)s.o(t,o)&&!s.o(e,o)&&Object.defineProperty(e,o,{enumerable:!0,get:t[o]})},s.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{var e={15:0,278:0};s.O.j=t=>0===e[t];var t=(t,o)=>{var n,c,[a,r,l]=o,d=0;if(a.some((t=>0!==e[t]))){for(n in r)s.o(r,n)&&(s.m[n]=r[n]);if(l)var i=l(s)}for(t&&t(o);d<a.length;d++)c=a[d],s.o(e,c)&&e[c]&&e[c][0](),e[c]=0;return s.O(i)},o=globalThis.webpackChunkhappycoders_multiple_addresses=globalThis.webpackChunkhappycoders_multiple_addresses||[];o.forEach(t.bind(null,0)),o.push=t.bind(null,o.push.bind(o))})();var n=s.O(void 0,[278],(()=>s(433)));n=s.O(n)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/block-frontend.js":
+/*!*******************************!*\
+  !*** ./src/block-frontend.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
+
+
+
+
+// Get localized params (check if available)
+
+const params = window.hc_wcma_block_params || {}; // Use params localized in PHP
+const i18n = params.i18n || {};
+// console.log("[HCMA Blocks Frontend] Initializing. Params:", params);
+
+// --- !! VERIFY STORE KEYS & ACTIONS !! ---
+const CART_STORE_KEY = 'wc/store/cart';
+// --- End Verification ---
+
+// --- Frontend React Component ---
+const AddressSelectorFrontend = ({
+  addressType = 'billing'
+}) => {
+  // console.log(`[HCMA Blocks Frontend] Rendering for type: ${addressType}`);
+
+  // --- State & Data ---
+  // Find the specific default key for this instance type
+  const initialDefaultKey = params.defaultKeys?.[addressType] || '';
+  const [selectedKey, setSelectedKey] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initialDefaultKey);
+  const [nicknameType, setNicknameType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [nickname, setNickname] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [loading, setLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [isNewCustomer, setIsNewCustomer] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const allAddresses = params.addresses || {};
+
+  // Ensure savedAddresses is an array, handling potential empty object from PHP
+  const addressesForType = allAddresses[addressType] || {};
+  const savedAddresses = Object.keys(addressesForType).length > 0 ? Object.values(addressesForType) : [];
+  const allowNew = params.allow_new === 'yes';
+  const selectorStyle = params.selector_style || 'dropdown';
+  const existingNicknames = params.existing_nicknames || {};
+
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Initial Default Key:`, initialDefaultKey);
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Current Selected Key (State):`, selectedKey);
+
+  const updateWcAddress = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(addressData => {
+    // console.log(`[HCMA Blocks ${addressType}] updateWcAddress called with data:`, addressData);
+    setLoading(true);
+    const actionPayload = {
+      [addressType + '_address']: addressData
+    };
+    // console.log(`[HCMA Blocks ${addressType}] Dispatching action with payload:`, actionPayload);
+    return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.dispatch)(CART_STORE_KEY).updateCustomerData(actionPayload, false) // Assuming updateCustomerData is correct
+    .then(() => {
+      // console.log(`[HCMA Blocks ${addressType}] Dispatch successful.`);
+      setLoading(false);
+    }).catch(err => {
+      // console.error(`[HCMA Blocks ${addressType}] Dispatch ERROR:`, err);
+      setLoading(false);
+      // Rethrow or handle error appropriately
+      throw err;
+    });
+  }, [_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.dispatch, addressType]); // Add dispatch as dependency
+
+  // --- Handle selection change ---
+  const handleSelectionChange = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(newKey => {
+    setSelectedKey(newKey);
+    // console.log(`[HCMA Block Frontend ${addressType}] Selection changed to: ${newKey}`);
+    setLoading(true);
+    if (newKey === 'new' || newKey === '') {
+      // console.log(`[HCMA Block Frontend ${addressType}] Clearing address in store.`);
+      const clearAddress = {
+        first_name: '',
+        last_name: '',
+        company: '',
+        address_1: '',
+        address_2: '',
+        city: '',
+        state: '',
+        postcode: '',
+        country: '',
+        phone: '',
+        nickname: '' // Set nickname if provided
+      };
+      if (addressType === 'billing') {
+        clearAddress.email = '';
+      }
+      updateWcAddress(clearAddress).then(() => {
+        setLoading(false);
+        setEditingState(addressType, true);
+      }) // Show form on success
+      .catch(() => {
+        setLoading(false);
+        setEditingState(addressType, true);
+      }); // Show form on error too
+    } else {
+      const selectedAddress = allAddresses[addressType]?.[newKey];
+      if (selectedAddress) {
+        // console.log(`[HCMA Block Frontend ${addressType}] Found saved address:`, selectedAddress);
+        // --- Format address for store ---
+        const addressForStore = {
+          first_name: selectedAddress.first_name || '',
+          last_name: selectedAddress.last_name || '',
+          company: selectedAddress.company || '',
+          address_1: selectedAddress.address_1 || '',
+          address_2: selectedAddress.address_2 || '',
+          city: selectedAddress.city || '',
+          state: selectedAddress.state || '',
+          postcode: selectedAddress.postcode || '',
+          country: selectedAddress.country || '',
+          phone: selectedAddress.phone || '',
+          nickname: selectedAddress.nickname || ''
+        };
+        if (addressType === 'billing') {
+          addressForStore.email = selectedAddress.email || '';
+        }
+        updateWcAddress(addressForStore).then(() => {
+          setLoading(false);
+          setEditingState(addressType, false);
+        }) // Show card on success
+        .catch(() => {
+          setLoading(false);
+          setEditingState(addressType, true);
+        });
+        // TODO: Signal parent block to HIDE fields if needed
+      } else {
+        // console.error(`[HCMA Block Frontend ${addressType}] Could not find address data for key:`, newKey);
+        setEditingState(addressType, true);
+        setLoading(false);
+      }
+    }
+  }, [addressType, allAddresses, updateWcAddress]); // Dependencies
+
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // console.log(`[HCMA Blocks ${addressType}] Initial load effect. Default Key:`, initialDefaultKey);
+    // Check if initialDefaultKey exists and is valid in the saved addresses
+    if (initialDefaultKey && addressesForType[initialDefaultKey]) {
+      //  console.log(`[HCMA Blocks ${addressType}] Valid default key found. Setting state and dispatching update.`);
+      setSelectedKey(initialDefaultKey); // Set dropdown state
+
+      // Format the default address for the store
+      const defaultAddressData = addressesForType[initialDefaultKey];
+      const addressForStore = {
+        first_name: defaultAddressData.first_name || '',
+        last_name: defaultAddressData.last_name || '',
+        company: defaultAddressData.company || '',
+        address_1: defaultAddressData.address_1 || '',
+        address_2: defaultAddressData.address_2 || '',
+        city: defaultAddressData.city || '',
+        state: defaultAddressData.state || '',
+        postcode: defaultAddressData.postcode || '',
+        country: defaultAddressData.country || '',
+        phone: defaultAddressData.phone || '',
+        nickname: defaultAddressData.nickname || ''
+      };
+      if (addressType === 'billing') {
+        addressForStore.email = defaultAddressData.email || '';
+      }
+
+      // Dispatch the update to overwrite WC's default (e.g., last order address)
+      updateWcAddress(addressForStore).then(() => setEditingState(addressType, false)) // Show form on success
+      .catch(() => setEditingState(addressType, true));
+    } else {
+      // No valid default key, ensure form is shown initially
+      // console.log(`[HCMA Blocks ${addressType}] No valid default key found. Ensuring form is visible.`);
+      if (savedAddresses.length === 0) {
+        setIsNewCustomer(true);
+      }
+      setSelectedKey(''); // Ensure dropdown shows '-- Select --'
+      setEditingState(addressType, true);
+    }
+    // Run only once on initial mount (or if initialDefaultKey/address data somehow changes)
+  }, [initialDefaultKey, addressType, addressesForType, updateWcAddress]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // Only run if a new address is being added
+    if (selectedKey === 'new' || isNewCustomer) {
+      const data = {
+        address_type: addressType,
+        nickname_type: nicknameType,
+        nickname: nickname
+      };
+
+      // Use fetch to send the data to the new endpoint
+      _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_4___default()({
+        path: '/hc-wcma/v1/save-nickname',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      }).then(response => {
+        if (!response.success) {
+          console.error('Error saving nickname:', response.message);
+        } else {
+          // console.log('Nickname saved:', response);
+        }
+      }).catch(error => {
+        console.error('Error saving nickname:', error);
+      });
+    }
+  }, [nicknameType, nickname, selectedKey, addressType, isNewCustomer]);
+
+  // --- Prepare options ---
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Preparing options. Saved Addresses Count:`, savedAddresses.length);
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Allow New:`, allowNew);
+
+  const options = [];
+  // const selectLabel = addressType === 'billing' ? (i18n.select_billing || '-- Select Billing Address --') : (i18n.select_shipping || '-- Select Shipping Address --');
+  // options.push({ label: selectLabel, value: '' });
+  // Add saved addresses
+  savedAddresses.forEach(addr => {
+    // Use addr.key which PHP added
+    if (!addr.key) {
+      //  console.warn(`[HCMA Blocks Frontend ${addressType}] Address missing 'key':`, addr);
+      return; // Skip if key is missing
+    }
+    let label = addr.nickname || addr.address_1 || addr.city || addr.key; // Improved label fallback
+    if (addr.key === initialDefaultKey) {
+      label += ` ${i18n.default_label || '(Default)'}`;
+    }
+    options.push({
+      label: label,
+      value: addr.key
+    });
+  });
+
+  // Conditionally add "Enter New Address" option
+  if (allowNew) {
+    options.push({
+      label: i18n.new_address || 'Enter a new address',
+      value: 'new'
+    });
+  }
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Final options count:`, options.length);
+
+  // --- Check if component should render ---
+  if (options.length < 1 && !isNewCustomer) {
+    // console.log(`[HCMA Blocks Frontend ${addressType}] Conditions not met for display (options.length=${options.length}, allowNew=${allowNew}). Returning null.`);
+    return null; // Render nothing if no actual addresses to choose from
+  }
+  const nicknameOptions = [{
+    label: i18n.select_nickname || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Nickname', 'happycoders-multiple-addresses'),
+    value: ''
+  }, {
+    label: i18n.home || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Home', 'happycoders-multiple-addresses'),
+    value: 'Home',
+    disabled: existingNicknames[addressType]?.includes('Home')
+  }, {
+    label: i18n.work || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Work', 'happycoders-multiple-addresses'),
+    value: 'Work',
+    disabled: existingNicknames[addressType]?.includes('Work')
+  }, {
+    label: i18n.other || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Other', 'happycoders-multiple-addresses'),
+    value: 'Other'
+  }];
+
+  // --- Render the component ---
+  // console.log(`[HCMA Blocks Frontend ${addressType}] Rendering Select/Radio control. Selected Key: ${selectedKey}`);
+  try {
+    return (
+      /*#__PURE__*/
+      // Added CSS class from block.json name for styling wrapper
+      (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        className: `hc-wcma-block-checkout-selector hc-wcma-${addressType}-selector ${loading ? 'is-loading' : ''} wp-block-hc-wcma-address-selector`,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          style: {
+            marginBottom: '1em',
+            opacity: loading ? 0.5 : 1,
+            pointerEvents: loading ? 'none' : 'auto'
+          },
+          children: [selectorStyle === 'list' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl
+          // label={selectLabel} // Label often redundant if header exists
+          , {
+            selected: selectedKey,
+            options: options,
+            onChange: handleSelectionChange,
+            className: "hc-wcma-address-radio-list"
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl
+          // label={selectLabel} // Label often redundant if header exists
+          , {
+            value: selectedKey,
+            options: options,
+            onChange: handleSelectionChange,
+            className: "hc-wcma-address-select"
+            // Help text if needed: __experimental__help={ __('Select a saved address or enter a new one.', 'happycoders-multiple-addresses')}
+          }), (selectedKey === 'new' || isNewCustomer) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            className: "hc-wcma-nickname-fields",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+              label: i18n.address_nickname_type || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Address Nickname Type', 'happycoders-multiple-addresses'),
+              value: nicknameType,
+              options: nicknameOptions,
+              onChange: value => setNicknameType(value)
+            }), nicknameType === 'Other' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+              label: i18n.custom_nickname || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom Nickname', 'happycoders-multiple-addresses'),
+              value: nickname,
+              onChange: value => setNickname(value)
+            })]
+          })]
+        }), loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+          className: "hc-wcma-loading-text",
+          children: i18n.loading || 'Loading...'
+        })]
+      })
+    );
+  } catch (error) {
+    // console.error(`[HCMA Blocks Frontend ${addressType}] Error during render:`, error);
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+      style: {
+        color: 'red',
+        border: '1px solid red',
+        padding: '5px'
+      },
+      children: "Error rendering HCMA selector!"
+    }); // Render an error message
+  }
+};
+function mountAddressSelectors() {
+  // We need the localized data to know which addresses exist
+  const addresses = params.addresses || {};
+  const billingAddressesExist = addresses.billing && Object.keys(addresses.billing).length > 0;
+  const shippingAddressesExist = addresses.shipping && Object.keys(addresses.shipping).length > 0;
+  const allowNew = params.allow_new === 'yes';
+
+  // --- Mount Billing Selector ---
+  // Only mount if there are addresses or 'new' is allowed
+  if (billingAddressesExist || allowNew) {
+    // Find the TARGET PARENT block where the billing selector should go
+    const billingParentTarget = document.querySelector('.wp-block-woocommerce-checkout-billing-address-block .wc-block-components-checkout-step__content'); // Adjust selector if needed!
+
+    if (billingParentTarget) {
+      // Create a NEW container div for React each time
+      const billingMountPoint = document.createElement('div');
+      billingMountPoint.className = 'hc-wcma-billing-mount-point'; // Add class for styling/identification
+      // Prepend it inside the target parent
+      billingParentTarget.prepend(billingMountPoint);
+      // console.log('[HCMA Blocks Frontend] Attempting to mount BILLING component into:', billingParentTarget);
+
+      // Check if already mounted to prevent errors on HMR etc.
+      if (!billingMountPoint.dataset.reactMounted) {
+        try {
+          (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AddressSelectorFrontend, {
+            addressType: "billing"
+          }), billingMountPoint);
+          billingMountPoint.dataset.reactMounted = 'true';
+          //   console.log('[HCMA Blocks Frontend] Billing component mounted.');
+        } catch (error) {
+          console.error('[HCMA Blocks Frontend] Error mounting billing component:', error);
+        }
+      }
+    } else {
+      //   console.warn('[HCMA Blocks Frontend] Billing parent target not found.');
+    }
+  } else {
+    console.log('[HCMA Blocks Frontend] Skipping Billing selector - no addresses and new not allowed.');
+  }
+
+  // --- Mount Shipping Selector ---
+  // Only mount if there are addresses or 'new' is allowed AND shipping is needed? (Need shipping status)
+  // TODO: Get shipping visibility status from WC Blocks data store if possible
+  const shouldMountShipping = shippingAddressesExist || allowNew; // Add check for needsShipping later
+
+  if (shouldMountShipping) {
+    const shippingParentTarget = document.querySelector('.wp-block-woocommerce-checkout-shipping-address-block .wc-block-components-checkout-step__content'); // Adjust selector if needed!
+
+    if (shippingParentTarget) {
+      const shippingMountPoint = document.createElement('div');
+      shippingMountPoint.className = 'hc-wcma-shipping-mount-point';
+      shippingParentTarget.prepend(shippingMountPoint);
+      //   console.log('[HCMA Blocks Frontend] Attempting to mount SHIPPING component into:', shippingParentTarget);
+
+      if (!shippingMountPoint.dataset.reactMounted) {
+        try {
+          (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AddressSelectorFrontend, {
+            addressType: "shipping"
+          }), shippingMountPoint);
+          shippingMountPoint.dataset.reactMounted = 'true';
+          //    console.log('[HCMA Blocks Frontend] Shipping component mounted.');
+        } catch (error) {
+          console.error('[HCMA Blocks Frontend] Error mounting shipping component:', error);
+        }
+      }
+    } else {
+      //    console.warn('[HCMA Blocks Frontend] Shipping parent target not found.');
+    }
+  } else {
+    console.log('[HCMA Blocks Frontend] Skipping Shipping selector.');
+  }
+  setTimeout(hideWcEditButtons, 100);
+} // End mountAddressSelectors
+
+function hideWcEditButtons() {
+  // console.log('[HCMA Blocks Frontend] Attempting to hide WC Edit buttons...');
+  const editButtons = document.querySelectorAll('.wc-block-components-address-card .wc-block-components-address-card__edit');
+  if (editButtons.length > 0) {
+    editButtons.forEach(button => {
+      button.style.display = 'none';
+    });
+    //  console.log(`[HCMA Blocks Frontend] Hide ${editButtons.length} WC Edit button(s).`);
+  } else {
+    // console.log('[HCMA Blocks Frontend] No WC Edit buttons found to hide.');
+  }
+}
+function mountSingleAddressSelector(addressType) {
+  // logWithTimestamp(`Attempting to mount selector for type: ${addressType}`);
+  const addresses = params.addresses || {};
+  const addressesExist = addresses[addressType] && Object.keys(addresses[addressType]).length > 0;
+  const allowNew = params.allow_new === 'yes';
+  if (!addressesExist && !allowNew) {
+    /* ... skip message ... */return;
+  }
+
+  // --- Find PARENT Block ---
+  const parentSelector = `.wp-block-woocommerce-checkout-${addressType}-address-block .wc-block-components-checkout-step__content`;
+  const parentTarget = document.querySelector(parentSelector);
+  if (parentTarget) {
+    // Find or Create Mount Point
+    let mountPoint = parentTarget.querySelector(`.hc-wcma-${addressType}-mount-point`);
+    if (!mountPoint) {
+      mountPoint = document.createElement('div');
+      mountPoint.className = `hc-wcma-${addressType}-mount-point`;
+      // --- Inject relative to a specific inner element if possible ---
+      // Example: Inject before the checkout step content div
+      const contentDiv = parentTarget.querySelector('.wc-block-components-checkout-step__content');
+      if (contentDiv) {
+        contentDiv.parentNode.insertBefore(mountPoint, contentDiv); // Insert before content
+        //  logWithTimestamp(`Prepended mount point for ${addressType} before content div.`);
+      } else {
+        parentTarget.prepend(mountPoint); // Fallback to prepending to parent
+        //  logWithTimestamp(`Prepended mount point for ${addressType} to parent.`);
+      }
+    } else {
+      logWithTimestamp(`Mount point already exists for ${addressType}.`);
+    }
+
+    // Mount React component
+    if (!mountPoint.dataset.reactMounted) {
+      try {
+        (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AddressSelectorFrontend, {
+          addressType: addressType
+        }), mountPoint);
+        mountPoint.dataset.reactMounted = 'true';
+        setEditingState(addressType, false);
+        //  logWithTimestamp(`${addressType} component mounted.`);
+      } catch (error) {
+        console.error(`Error mounting ${addressType} component:`, error);
+      }
+    } else {/* ... already mounted log ... */}
+  } else {/* ... parent not found log ... */}
+}
+
+// --- Helper: Toggle Editing Class ---
+function setEditingState(addressType, isEditing) {
+  // --- !! VERIFY THIS SELECTOR !! ---
+  const wrapperSelector = `#${addressType}-fields .wc-block-components-address-address-wrapper`;
+  const wrapper = document.querySelector(wrapperSelector);
+  if (wrapper) {
+    if (isEditing) {
+      wrapper.classList.add('is-editing');
+      // console.log(`[HCMA Blocks ${addressType}] Added 'is-editing' class`);
+    } else {
+      wrapper.classList.remove('is-editing');
+      // console.log(`[HCMA Blocks ${addressType}] Removed 'is-editing' class`);
+      setTimeout(() => hideWcEditButtons(addressType), 100); // Hide WC edit button when showing card
+    }
+  } else {
+    console.warn(`[HCMA Blocks ${addressType}] Wrapper '${wrapperSelector}' not found to toggle is-editing.`);
+  }
+}
+
+// --- *** Mutation Observer to Detect Billing and Shipping Block Re-Add *** ---
+let checkoutObserver = null;
+function startCheckoutObserver() {
+  const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout');
+  if (!checkoutContainer) {
+    return;
+  }
+  if (checkoutObserver) {
+    return;
+  }
+  checkoutObserver = new MutationObserver(mutationsList => {
+    let billingBlockAdded = false;
+    let shippingBlockAdded = false;
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            if (node.matches('.wp-block-woocommerce-checkout-billing-address-block') || node.querySelector('.wp-block-woocommerce-checkout-billing-address-block')) {
+              billingBlockAdded = true;
+            }
+            if (node.matches('.wp-block-woocommerce-checkout-shipping-address-block') || node.querySelector('.wp-block-woocommerce-checkout-shipping-address-block')) {
+              shippingBlockAdded = true;
+            }
+          }
+        });
+      }
+      if (billingBlockAdded && shippingBlockAdded) break;
+    }
+    if (billingBlockAdded) {
+      setTimeout(() => mountSingleAddressSelector('billing'), 150);
+    }
+    if (shippingBlockAdded) {
+      setTimeout(() => mountSingleAddressSelector('shipping'), 150);
+    }
+  });
+  checkoutObserver.observe(checkoutContainer, {
+    childList: true,
+    subtree: true
+  });
+}
+function logWithTimestamp(message, ...args) {
+  const now = new Date();
+  // Format time as HH:MM:SS.milliseconds (e.g., 14:05:21.123)
+  const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+
+  // Use console.log, passing the formatted prefix and any additional arguments
+  console.log(`[${time}] ${message}`, ...args);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  // console.log('[HCMA Blocks Frontend] DOMContentLoaded fired. Waiting slightly to mount...');
+  setTimeout(mountAddressSelectors, 750); // Wait 500ms for WC Blocks to potentially render
+  setTimeout(startCheckoutObserver, 1500);
+});
+
+// --- HMR (Hot Module Replacement) Support for Development ---
+if (false) {}
+
+/***/ }),
+
+/***/ "./src/style.scss":
+/*!************************!*\
+  !*** ./src/style.scss ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "@wordpress/api-fetch":
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["apiFetch"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"block-frontend": 0,
+/******/ 			"./style-block-frontend": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkhappycoders_multiple_addresses"] = globalThis["webpackChunkhappycoders_multiple_addresses"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./style-block-frontend"], () => (__webpack_require__("./src/block-frontend.js")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=block-frontend.js.map

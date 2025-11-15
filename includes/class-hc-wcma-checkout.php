@@ -33,6 +33,23 @@ class HC_WCMA_Checkout {
 				wp_nonce_field( 'hc_wcma_checkout_action', 'hc_wcma_checkout_nonce' );
 			}
 		);
+		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'apply_custom_field_settings' ) );
+	}
+
+	/**
+	 * Applies the custom field settings from the admin panel to the checkout fields.
+	 *
+	 * @param array $fields The original checkout fields.
+	 * @return array The modified checkout fields.
+	 */
+	public static function apply_custom_field_settings( $fields ) {
+		if ( isset( $fields['billing'] ) ) {
+			$fields['billing'] = hc_wcma_apply_field_settings( $fields['billing'], 'billing' );
+		}
+		if ( isset( $fields['shipping'] ) ) {
+			$fields['shipping'] = hc_wcma_apply_field_settings( $fields['shipping'], 'shipping' );
+		}
+		return $fields;
 	}
 
 	/**

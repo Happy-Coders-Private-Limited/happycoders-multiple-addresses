@@ -148,6 +148,18 @@ function hc_wcma_get_address_fields( $type = 'billing' ) {
 		'class'       => array( 'form-row-wide' ),
 		'priority'    => 5,
 	);
+
+	// Explicitly add phone field and determine its required status from WooCommerce settings.
+	$phone_field_setting = get_option( 'woocommerce_checkout_phone_field', 'required' );
+	if ( 'hidden' !== $phone_field_setting ) {
+		$clean_fields['phone'] = array(
+			'label'       => __( 'Phone', 'woocommerce' ),
+			'required'    => ( 'required' === $phone_field_setting ),
+			'class'       => array( 'form-row-wide', 'woocommerce-validated' ),
+			'type'        => 'tel',
+			'priority'    => 100,
+		);
+	}
 	return $clean_fields;
 }
 
@@ -214,4 +226,95 @@ function hc_wcma_get_existing_nicknames( $user_id ) {
 	}
 
 	return $nicknames;
+}
+
+/**
+ * Applies the saved field settings to an array of address fields.
+ *
+ * @since 1.0.12
+ * @param array  $fields The array of address fields.
+ * @param string $type   The address type ('billing' or 'shipping').
+ * @return array The modified array of address fields.
+ */
+function hc_wcma_apply_field_settings( $fields, $type ) {
+	$field_settings = array(
+		'company'   => get_option( 'woocommerce_checkout_company_field', 'optional' ),
+		'address_2' => get_option( 'woocommerce_checkout_address_2_field', 'optional' ),
+		'phone'     => get_option( 'woocommerce_checkout_phone_field', 'required' ),
+	);
+
+	$default_labels = array(
+		'company'   => __( 'Company', 'woocommerce' ),
+		'address_2' => __( 'Apartment, suite, unit, etc. (optional)', 'woocommerce' ),
+		'phone'     => __( 'Phone', 'woocommerce' ),
+	);
+
+	foreach ( $field_settings as $field_key => $setting ) {
+		$field_name = $type . '_' . $field_key;
+
+		// If the field is hidden, ensure it's removed.
+		if ( 'hidden' === $setting ) {
+			unset( $fields[ $field_name ] );
+			continue;
+		}
+
+		// If the field doesn't exist, add it.
+		if ( ! isset( $fields[ $field_name ] ) ) {
+			$fields[ $field_name ] = array(
+				'label' => $default_labels[ $field_key ] ?? '',
+			);
+		}
+
+		// Set the required status.
+		$fields[ $field_name ]['required'] = ( 'required' === $setting );
+	}
+
+	return $fields;
+}
+
+/**
+ * Checks if a saved address is missing any required fields.
+ *
+ * @since 1.0.12
+ * @param array  $address The address array.
+ * @param string $type    The address type ('billing' or 'shipping').
+ * @return bool True if complete, false if incomplete.
+ */
+function hc_wcma_is_address_complete( $address, $type ) {
+	$all_fields = WC()->countries->get_address_fields( $address['country'] ?? '', $type . '_' );
+	$all_fields = hc_wcma_apply_field_settings( $all_fields, $type );
+
+	foreach ( $all_fields as $key => $field ) {
+		if ( ! empty( $field['required'] ) ) {
+			$clean_key = str_replace( $type . '_', '', $key );
+			if ( empty( $address[ $clean_key ] ) ) {
+				return false; // Found a missing required field
+			}
+		}
+	}
+	return true;
+}
+
+/**
+ * Formats an address for display, showing all non-empty fields.
+ *
+ * @since 1.0.12
+ * @param array $address The address array.
+ * @return string The formatted address HTML.
+ */
+function hc_wcma_format_address_for_display_full( $address ) {
+	$output = '';
+	$name   = trim( ( $address['first_name'] ?? '' ) . ' ' . ( $address['last_name'] ?? '' ) );
+	if ( $name ) {
+		$output .= '<strong>' . esc_html( $name ) . '</strong>';
+	}
+
+	$order = array( 'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'email', 'phone' );
+
+	foreach ( $order as $field_key ) {
+		if ( ! empty( $address[ $field_key ] ) ) {
+			$output .= '<br/>' . esc_html( $address[ $field_key ] );
+		}
+	}
+	return $output;
 }

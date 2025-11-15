@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -149,6 +149,12 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.12] =
+*   Fix: Corrected validation error message for phone number field in My Account forms.
+*   Feature: Added "Incomplete" badge to addresses in My Account if required fields are missing.
+*   Feature: Display all filled address details in My Account address cards.
+*   Fix: Ensured phone number is correctly saved for new shipping addresses in Block Checkout, respecting WooCommerce phone field settings.
+
 = [1.0.11] =
 *   Fix: Resolved an issue in the Block Checkout where the shipping address selector would not reappear correctly when switching back from "Pickup" to "Ship".
 *   Fix: Corrected an issue where the shipping address selector was incorrectly placed inside the billing address block on re-render.
@@ -199,6 +205,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.12 =
+This update includes fixes for phone number validation messages in My Account forms, adds an "Incomplete" badge for addresses with missing required fields, and enhances the display of address details in My Account address cards. It also addresses a critical issue where the phone number was not being saved for new shipping addresses entered via the Block Checkout, ensuring the phone field is correctly processed and saved according to your WooCommerce settings.
 
 = 1.0.11 =
 This update fixes a critical bug in the Block Checkout experience where the shipping address selector would not function correctly when switching between shipping and pickup methods. It is a recommended update for all users, especially those using the Block Checkout.

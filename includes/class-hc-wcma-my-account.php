@@ -122,6 +122,9 @@ class HC_WCMA_My_Account {
 		$billing_fields  = WC()->countries->get_address_fields( '', 'billing_' );
 		$shipping_fields = WC()->countries->get_address_fields( '', 'shipping_' );
 
+		$billing_fields  = hc_wcma_apply_field_settings( $billing_fields, 'billing' );
+		$shipping_fields = hc_wcma_apply_field_settings( $shipping_fields, 'shipping' );
+
 		$company_field_props = array(
 			'label'    => __( 'Company', 'happycoders-multiple-addresses' ),
 			'class'    => array( 'form-row-wide' ),
@@ -269,9 +272,12 @@ class HC_WCMA_My_Account {
 				if ( $key === $default_billing_key ) {
 					echo '<span class="hc-wcma-default-badge">' . esc_html__( 'Default', 'happycoders-multiple-addresses' ) . '</span>';
 				}
+				if ( ! hc_wcma_is_address_complete( $address, 'billing' ) ) {
+					echo '<span class="hc-wcma-incomplete-badge">' . esc_html__( 'Incomplete', 'happycoders-multiple-addresses' ) . '</span>';
+				}
 				echo '</h3>';
 				echo '<address>';
-				echo wp_kses_post( hc_wcma_format_address_for_display( $address ) );
+				echo wp_kses_post( hc_wcma_format_address_for_display_full( $address ) );
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
 
@@ -318,9 +324,12 @@ class HC_WCMA_My_Account {
 				if ( $key === $default_shipping_key ) {
 					echo '<span class="hc-wcma-default-badge">' . esc_html__( 'Default', 'happycoders-multiple-addresses' ) . '</span>';
 				}
+				if ( ! hc_wcma_is_address_complete( $address, 'shipping' ) ) {
+					echo '<span class="hc-wcma-incomplete-badge">' . esc_html__( 'Incomplete', 'happycoders-multiple-addresses' ) . '</span>';
+				}
 				echo '</h3>';
 				echo '<address>';
-				echo wp_kses_post( hc_wcma_format_address_for_display( $address ) );
+				echo wp_kses_post( hc_wcma_format_address_for_display_full( $address ) );
 				echo '</address>';
 				echo '<div class="hc-wcma-actions">';
 				echo '<button class="button wp-element-button hc-wcma-edit-button" data-address="' . esc_attr( wp_json_encode( $address ) ) . '">' . esc_html__( 'Edit', 'happycoders-multiple-addresses' ) . '</button> ';
@@ -362,6 +371,9 @@ class HC_WCMA_My_Account {
 	public static function render_edit_modal() {
 		$billing_fields  = WC()->countries->get_address_fields( '', 'billing_' );
 		$shipping_fields = WC()->countries->get_address_fields( '', 'shipping_' );
+
+		$billing_fields  = hc_wcma_apply_field_settings( $billing_fields, 'billing' );
+		$shipping_fields = hc_wcma_apply_field_settings( $shipping_fields, 'shipping' );
 
 		$company_field_props = array(
 			'label'    => __( 'Company', 'happycoders-multiple-addresses' ),

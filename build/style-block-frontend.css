@@ -1,1 +1,32 @@
-.hc-wcma-block-checkout-selector select{font-size:18px!important}.hc-wcma-nickname-fields{margin-top:1em}.hc-wcma-nickname-fields .components-base-control{margin-bottom:1em}.hc-wcma-nickname-fields .components-base-control__field{margin-bottom:0}.hc-wcma-nickname-fields .components-select-control__input,.hc-wcma-nickname-fields .components-text-control__input{border:1px solid #ccc;border-radius:4px;font-size:16px;line-height:1.5;padding:8px 12px;width:100%}.hc-wcma-nickname-fields .components-base-control__label{display:block;font-weight:600;margin-bottom:.5em}
+/*!***************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/style.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************/
+.hc-wcma-block-checkout-selector select {
+  font-size: 18px !important;
+}
+
+.hc-wcma-nickname-fields {
+  margin-top: 1em;
+}
+.hc-wcma-nickname-fields .components-base-control {
+  margin-bottom: 1em;
+}
+.hc-wcma-nickname-fields .components-base-control__field {
+  margin-bottom: 0;
+}
+.hc-wcma-nickname-fields .components-select-control__input,
+.hc-wcma-nickname-fields .components-text-control__input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.hc-wcma-nickname-fields .components-base-control__label {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+/*# sourceMappingURL=style-block-frontend.css.map*/

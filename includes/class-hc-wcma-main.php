@@ -202,17 +202,6 @@ final class HC_WCMA_Main {
 	public function enqueue_admin_scripts( string $hook_suffix ): void {
 		if ( 'user-edit.php' === $hook_suffix || 'profile.php' === $hook_suffix ) {
 			wp_enqueue_style( 'hc-wcma-admin', HC_WCMA_PLUGIN_URL . 'assets/css/admin.css', array(), $this->version );
-			wp_enqueue_script( 'hc-wcma-admin-js', HC_WCMA_PLUGIN_URL . 'assets/js/admin.js', array( 'jquery' ), $this->version, true );
-			wp_localize_script(
-				'hc-wcma-admin-js',
-				'hc_wcma_admin_params',
-				array(
-					'nonce' => wp_create_nonce( 'hc_wcma_admin_nonce' ),
-					'i18n'  => array(
-						'delete_confirm' => __( 'Are you sure you want to delete this address for the user?', 'happycoders-multiple-addresses' ),
-					),
-				)
-			);
 		}
 	}
 

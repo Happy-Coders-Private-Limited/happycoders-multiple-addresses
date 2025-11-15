@@ -66,19 +66,24 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
         if (newKey === 'new' || newKey === '') {
             // console.log(`[HCMA Block Frontend ${addressType}] Clearing address in store.`);
-            const clearAddress = { /* ... map fields EXACTLY as required by updateAddressAction ... */ };
-            clearAddress.first_name = '';
-            clearAddress.last_name = '';
-            clearAddress.company = '';
-            clearAddress.address_1 = '';
-            clearAddress.address_2 = '';
-            clearAddress.city = '';
-            clearAddress.state = '';
-            clearAddress.postcode = '';
-            clearAddress.country = '';
-            clearAddress.phone = '';
-            clearAddress.email = '';
-            clearAddress.nickname = ''; // Set nickname if provided
+             const clearAddress = {
+                first_name: '',
+                last_name: '',
+                company: '',
+                address_1: '',
+                address_2: '',
+                city: '',
+                state: '',
+                postcode: '',
+                country: '',
+                phone: '',
+                nickname: '', // Set nickname if provided
+            };
+            
+            if (addressType === 'billing') {
+                clearAddress.email = '';
+            }
+            
             updateWcAddress(clearAddress)
                 .then(() => { setLoading(false); setEditingState(addressType, true); }) // Show form on success
                 .catch(() => { setLoading(false); setEditingState(addressType, true) }); // Show form on error too
@@ -88,21 +93,24 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
             if (selectedAddress) {
                 // console.log(`[HCMA Block Frontend ${addressType}] Found saved address:`, selectedAddress);
                 // --- Format address for store ---
-                const addressForStore = { /* ... map fields EXACTLY as required by updateAddressAction ... */ };
-                addressForStore.first_name = selectedAddress.first_name || '';
-                addressForStore.last_name = selectedAddress.last_name || '';
-                addressForStore.company = selectedAddress.company || '';
-                addressForStore.address_1 = selectedAddress.address_1 || '';
-                addressForStore.address_2 = selectedAddress.address_2 || '';
-                addressForStore.city = selectedAddress.city || '';
-                addressForStore.state = selectedAddress.state || '';
-                addressForStore.postcode = selectedAddress.postcode || '';
-                addressForStore.country = selectedAddress.country || '';
-                addressForStore.phone = selectedAddress.phone || '';
-                addressForStore.email = selectedAddress.email || '';
-                addressForStore.nickname = selectedAddress.nickname || '';
-                // --- End Formatting ---
-                // console.log(`[HCMA Block Frontend ${addressType}] Dispatching update to store:`, addressForStore);
+                 const addressForStore = {
+                    first_name: selectedAddress.first_name || '',
+                    last_name: selectedAddress.last_name || '',
+                    company: selectedAddress.company || '',
+                    address_1: selectedAddress.address_1 || '',
+                    address_2: selectedAddress.address_2 || '',
+                    city: selectedAddress.city || '',
+                    state: selectedAddress.state || '',
+                    postcode: selectedAddress.postcode || '',
+                    country: selectedAddress.country || '',
+                    phone: selectedAddress.phone || '',
+                    nickname: selectedAddress.nickname || '',
+                };
+                
+                if (addressType === 'billing') {
+                    addressForStore.email = selectedAddress.email || '';
+                }
+                
                 updateWcAddress(addressForStore)
                     .then(() => { setLoading(false); setEditingState(addressType, false) }) // Show card on success
                     .catch(() => { setLoading(false); setEditingState(addressType, true) });
@@ -124,20 +132,24 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
 
             // Format the default address for the store
             const defaultAddressData = addressesForType[initialDefaultKey];
-            const addressForStore = { /* ... map fields from defaultAddressData ... */ };
-            addressForStore.first_name = defaultAddressData.first_name || '';
-            addressForStore.last_name = defaultAddressData.last_name || '';
-            addressForStore.company = defaultAddressData.company || '';
-            addressForStore.address_1 = defaultAddressData.address_1 || '';
-            addressForStore.address_2 = defaultAddressData.address_2 || '';
-            addressForStore.city = defaultAddressData.city || '';
-            addressForStore.state = defaultAddressData.state || '';
-            addressForStore.postcode = defaultAddressData.postcode || '';
-            addressForStore.country = defaultAddressData.country || '';
-            addressForStore.phone = defaultAddressData.phone || '';
-            addressForStore.email = defaultAddressData.email || '';
-            addressForStore.nickname = defaultAddressData.nickname || '';
-
+            const addressForStore = {
+                first_name: defaultAddressData.first_name || '',
+                last_name: defaultAddressData.last_name || '',
+                company: defaultAddressData.company || '',
+                address_1: defaultAddressData.address_1 || '',
+                address_2: defaultAddressData.address_2 || '',
+                city: defaultAddressData.city || '',
+                state: defaultAddressData.state || '',
+                postcode: defaultAddressData.postcode || '',
+                country: defaultAddressData.country || '',
+                phone: defaultAddressData.phone || '',
+                nickname: defaultAddressData.nickname || '',
+            };
+            
+            if (addressType === 'billing') {
+                addressForStore.email = defaultAddressData.email || '';
+            }
+            
             // Dispatch the update to overwrite WC's default (e.g., last order address)
             updateWcAddress(addressForStore)
                 .then(() => setEditingState(addressType, false)) // Show form on success

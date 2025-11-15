@@ -99,7 +99,7 @@ jQuery(function ($) {
                          }, 100);
                     }
                 } else {
-                    $field.val(value);
+                    $field.val(value).trigger('change');
                 }
             }
         });
