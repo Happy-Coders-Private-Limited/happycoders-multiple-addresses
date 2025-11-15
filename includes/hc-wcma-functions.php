@@ -153,7 +153,7 @@ function hc_wcma_get_address_fields( $type = 'billing' ) {
 	$phone_field_setting = get_option( 'woocommerce_checkout_phone_field', 'required' );
 	if ( 'hidden' !== $phone_field_setting ) {
 		$clean_fields['phone'] = array(
-			'label'       => __( 'Phone', 'woocommerce' ),
+			'label'       => __( 'Phone', 'happycoders-multiple-addresses' ),
 			'required'    => ( 'required' === $phone_field_setting ),
 			'class'       => array( 'form-row-wide', 'woocommerce-validated' ),
 			'type'        => 'tel',
@@ -244,9 +244,9 @@ function hc_wcma_apply_field_settings( $fields, $type ) {
 	);
 
 	$default_labels = array(
-		'company'   => __( 'Company', 'woocommerce' ),
-		'address_2' => __( 'Apartment, suite, unit, etc. (optional)', 'woocommerce' ),
-		'phone'     => __( 'Phone', 'woocommerce' ),
+		'company'   => __( 'Company', 'happycoders-multiple-addresses' ),
+		'address_2' => __( 'Apartment, suite, unit, etc. (optional)', 'happycoders-multiple-addresses' ),
+		'phone'     => __( 'Phone', 'happycoders-multiple-addresses' ),
 	);
 
 	foreach ( $field_settings as $field_key => $setting ) {

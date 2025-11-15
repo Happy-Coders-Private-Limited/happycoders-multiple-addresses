@@ -207,7 +207,7 @@ The source files for the block integration can be found in the `/src` directory.
 == Upgrade Notice ==
 
 = 1.0.12 =
-This update includes fixes for phone number validation messages in My Account forms, adds an "Incomplete" badge for addresses with missing required fields, and enhances the display of address details in My Account address cards. It also addresses a critical issue where the phone number was not being saved for new shipping addresses entered via the Block Checkout, ensuring the phone field is correctly processed and saved according to your WooCommerce settings.
+This update fixes phone validation, adds an "Incomplete" badge to addresses with missing fields, and enhances address card displays. A critical bug is fixed where phone numbers for new shipping addresses in Block Checkout were not being saved, ensuring they are now processed correctly.
 
 = 1.0.11 =
 This update fixes a critical bug in the Block Checkout experience where the shipping address selector would not function correctly when switching between shipping and pickup methods. It is a recommended update for all users, especially those using the Block Checkout.
