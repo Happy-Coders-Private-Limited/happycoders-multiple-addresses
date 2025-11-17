@@ -433,9 +433,12 @@ class HC_WCMA_Checkout {
 			if ( method_exists( $order, $getter_method ) ) {
 				$value = $order->{$getter_method}();
 				if ( 'email' === $key ) {
-					$new_address[ $key ] = sanitize_email( $value ); } elseif ( 'phone' === $key ) {
-					$new_address[ $key ] = wc_sanitize_phone_number( $value ); } else {
-						$new_address[ $key ] = sanitize_text_field( $value ); }
+					$new_address[ $key ] = sanitize_email( $value ); 
+				} elseif ( 'phone' === $key ) {
+					$new_address[ $key ] = wc_sanitize_phone_number( $value ); 
+				} else {
+					$new_address[ $key ] = sanitize_text_field( $value ); 
+				}
 			}
 		}
 
@@ -445,10 +448,12 @@ class HC_WCMA_Checkout {
 
 		$temp_new_address = $new_address;
 		unset( $temp_new_address['nickname'] );
+		unset( $temp_new_address['nickname_type'] );
 
 		foreach ( $current_addresses as $existing_address ) {
 			$temp_existing_address = $existing_address;
 			unset( $temp_existing_address['nickname'] );
+			unset( $temp_existing_address['nickname_type'] );
 			if ( $temp_new_address === $temp_existing_address ) {
 				return;
 			}

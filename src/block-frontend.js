@@ -10,8 +10,66 @@ const params = window.hc_wcma_block_params || {}; // Use params localized in PHP
 const i18n = params.i18n || {};
 // console.log("[HCMA Blocks Frontend] Initializing. Params:", params);
 
+// Validation function for address completeness
+const validateAddressCompleteness = (address, addressType) => {
+    const requiredFields = {
+        billing: ['first_name', 'last_name', 'address_1', 'city', 'postcode', 'country'],
+        shipping: ['first_name', 'last_name', 'address_1', 'city', 'postcode', 'country']
+    };
+    
+    // console.log(`[HCMA Blocks Validation] Address Type: ${addressType}, Initial Required Fields:`, requiredFields[addressType]);
+    
+    // Add email for billing if required
+    if (addressType === 'billing') {
+        requiredFields.billing.push('email');
+    }
+    
+    // Add phone if it's required (check WooCommerce phone field setting)
+    if (params.phone_required === '1') {
+        requiredFields[addressType].push('phone');
+    }
+    
+    // Add company if it's required (check WooCommerce company field setting)
+    if (params.company_required === '1') {
+        requiredFields[addressType].push('company');
+    }
+    
+    // Add address_2 if it's required (check WooCommerce address_2 field setting)
+    if (params.address_2_required === '1') {
+        requiredFields[addressType].push('address_2');
+    }
+    
+    // console.log(`[HCMA Blocks Validation] Address Type: ${addressType},Updated Required Fields:`, requiredFields[addressType]);
+    
+    const missingFields = [];
+    const fieldLabels = {
+        first_name: __('First Name', 'happycoders-multiple-addresses'),
+        last_name: __('Last Name', 'happycoders-multiple-addresses'),
+        company: __('Company', 'happycoders-multiple-addresses'),
+        address_1: __('Address Line 1', 'happycoders-multiple-addresses'),
+        address_2: __('Address Line 2', 'happycoders-multiple-addresses'),
+        city: __('City', 'happycoders-multiple-addresses'),
+        postcode: __('Postal Code', 'happycoders-multiple-addresses'),
+        country: __('Country', 'happycoders-multiple-addresses'),
+        email: __('Email', 'happycoders-multiple-addresses'),
+        phone: __('Phone', 'happycoders-multiple-addresses')
+    };
+    
+    requiredFields[addressType].forEach(field => {
+        if (!address[field] || address[field].trim() === '') {
+            missingFields.push(fieldLabels[field] || field);
+        }
+    });
+    
+    return {
+        isComplete: missingFields.length === 0,
+        missingFields: missingFields
+    };
+};
+
 // --- !! VERIFY STORE KEYS & ACTIONS !! ---
 const CART_STORE_KEY = 'wc/store/cart';
+const VALIDATION_STORE_KEY = 'wc/store/validation';
 // --- End Verification ---
 
 // --- Frontend React Component ---
@@ -26,7 +84,57 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
     const [nickname, setNickname] = useState('');
     const [loading, setLoading] = useState(false);
     const [isNewCustomer, setIsNewCustomer] = useState(false);
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [showValidationError, setShowValidationError] = useState(false);
+    const [hasValidationError, setHasValidationError] = useState(false);
     const allAddresses = params.addresses || {};
+    
+    // Function to set/clear WooCommerce validation error
+    const setCheckoutValidationError = useCallback((hasError, missingFields = []) => {
+        console.log(`[HCMA ${addressType}] Validation error state:`, hasError, missingFields);
+        
+        // For now, only use our custom validation display and global notice
+        // WooCommerce validation store integration is causing issues
+        showGlobalValidationError(hasError, missingFields);
+        
+        // TODO: Re-implement WC validation integration properly in future version
+    }, [addressType]);
+
+    // Fallback function to show global validation error
+    const showGlobalValidationError = useCallback((hasError, missingFields = []) => {
+        const checkoutContainer = document.querySelector('.wp-block-woocommerce-checkout');
+        if (!checkoutContainer) return;
+        
+        const errorId = `hc-wcma-global-error-${addressType}`;
+        let errorElement = document.getElementById(errorId);
+        
+        if (hasError && missingFields.length > 0) {
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = errorId;
+                errorElement.className = 'wc-block-components-notice-banner is-error';
+                errorElement.style.cssText = `
+                    background-color: #ffeaea;
+                    border: 1px solid #ff6b6b;
+                    border-radius: 4px;
+                    padding: 16px;
+                    margin: 16px 0;
+                    color: #d32f2f;
+                `;
+                checkoutContainer.insertBefore(errorElement, checkoutContainer.firstChild);
+            }
+            
+            const errorMessage = sprintf(
+                __('Your saved %s address is incomplete. Missing: %s. Please update it or enter a new address.', 'happycoders-multiple-addresses'),
+                addressType,
+                missingFields.join(', ')
+            );
+            errorElement.innerHTML = `<strong>${errorMessage}</strong>`;
+            errorElement.style.display = 'block';
+        } else if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+    }, [addressType]);
 
     // Ensure savedAddresses is an array, handling potential empty object from PHP
     const addressesForType = allAddresses[addressType] || {};
@@ -63,6 +171,11 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
         setSelectedKey(newKey);
         // console.log(`[HCMA Block Frontend ${addressType}] Selection changed to: ${newKey}`);
         setLoading(true);
+        setShowValidationError(false);
+        setValidationErrors([]);
+        setHasValidationError(false);
+        setCheckoutValidationError(false);
+        showGlobalValidationError(false); // Clear global error
 
         if (newKey === 'new' || newKey === '') {
             // console.log(`[HCMA Block Frontend ${addressType}] Clearing address in store.`);
@@ -92,6 +205,21 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
             const selectedAddress = allAddresses[addressType]?.[newKey];
             if (selectedAddress) {
                 // console.log(`[HCMA Block Frontend ${addressType}] Found saved address:`, selectedAddress);
+                
+                // Validate address completeness before proceeding
+                const validation = validateAddressCompleteness(selectedAddress, addressType);
+                // console.log(`[HCMA Block Frontend ${addressType}] Address validation result:`, validation);
+                if (!validation.isComplete) {
+                    console.warn(`[HCMA Block Frontend ${addressType}] Selected address is incomplete. Missing fields:`, validation.missingFields);
+                    setValidationErrors(validation.missingFields);
+                    setShowValidationError(true);
+                    setHasValidationError(true);
+                    setCheckoutValidationError(true, validation.missingFields);
+                    setLoading(false);
+                    // setEditingState(addressType, true);
+                    // return;
+                }
+                
                 // --- Format address for store ---
                  const addressForStore = {
                     first_name: selectedAddress.first_name || '',
@@ -109,6 +237,16 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                 
                 if (addressType === 'billing') {
                     addressForStore.email = selectedAddress.email || '';
+                }
+                
+                // Only clear validation errors if address is actually complete
+                if (validation.isComplete) {
+                    // console.log(`[HCMA Block Frontend ${addressType}] Address is complete. Clearing validation errors.`);
+                    setShowValidationError(false);
+                    setValidationErrors([]);
+                    setHasValidationError(false);
+                    setCheckoutValidationError(false);
+                    showGlobalValidationError(false);
                 }
                 
                 updateWcAddress(addressForStore)
@@ -130,8 +268,28 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
             //  console.log(`[HCMA Blocks ${addressType}] Valid default key found. Setting state and dispatching update.`);
             setSelectedKey(initialDefaultKey); // Set dropdown state
 
-            // Format the default address for the store
+            // Validate the default address completeness
             const defaultAddressData = addressesForType[initialDefaultKey];
+            const validation = validateAddressCompleteness(defaultAddressData, addressType);
+            
+            if (!validation.isComplete) {
+                // console.warn(`[HCMA Blocks ${addressType}] Default address is incomplete. Missing fields:`, validation.missingFields);
+                setValidationErrors(validation.missingFields);
+                setShowValidationError(true);
+                setHasValidationError(true);
+                setCheckoutValidationError(true, validation.missingFields);
+                // setEditingState(addressType, true);
+                // return;
+            } else {
+                // console.log(`[HCMA Blocks ${addressType}] Default address is complete. Clearing validation errors.`);
+                // Explicitly clear any existing validation errors
+                setValidationErrors([]);
+                setShowValidationError(false);
+                setHasValidationError(false);
+                setCheckoutValidationError(false);
+            }
+
+            // Format the default address for the store
             const addressForStore = {
                 first_name: defaultAddressData.first_name || '',
                 last_name: defaultAddressData.last_name || '',
@@ -282,6 +440,49 @@ const AddressSelectorFrontend = ({ addressType = 'billing' }) => {
                         </div>
                     )}
                 </div>
+                
+                {/* Validation Error Display */}
+                {showValidationError && validationErrors.length > 0 && (
+                    <div className="hc-wcma-validation-error" style={{
+                        backgroundColor: '#ffeaea',
+                        border: '2px solid #ff6b6b',
+                        borderRadius: '6px',
+                        padding: '16px',
+                        marginTop: '16px',
+                        marginBottom: '16px',
+                        color: '#d32f2f',
+                        fontSize: '14px',
+                        fontWeight: 'normal',
+                        boxShadow: '0 2px 4px rgba(255, 107, 107, 0.1)',
+                        position: 'relative',
+                        zIndex: 1000
+                    }}>
+                        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>
+                            {sprintf(
+                                __('The selected %s address is incomplete. Please update the address in your account or enter a new address.', 'happycoders-multiple-addresses'),
+                                addressType
+                            )}
+                        </p>
+                        <p style={{ margin: '0 0 8px 0' }}>
+                            <strong>{__('Missing required fields:', 'happycoders-multiple-addresses')}</strong>
+                        </p>
+                        <ul style={{ margin: '0', paddingLeft: '20px' }}>
+                            {validationErrors.map((field, index) => (
+                                <li key={index}>{field}</li>
+                            ))}
+                        </ul>
+                        <p style={{ margin: '8px 0 0 0', fontSize: '0.9em' }} 
+                           dangerouslySetInnerHTML={{
+                               __html: sprintf(
+                                   __('Please visit your %sAccount page%s to update this address, or select "Enter a new address".', 'happycoders-multiple-addresses'),
+                                   '<a href="' + (params.my_account_url || '/my-account/hc-address-book/') + '" style="color: #1976d2;">',
+                                   '</a>'
+                               )
+                           }}
+                        />
+                    </div>
+                )}
+                
                 {loading && <p className="hc-wcma-loading-text">{i18n.loading || 'Loading...'}</p>}
             </div>
         );

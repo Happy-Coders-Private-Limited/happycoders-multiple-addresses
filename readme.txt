@@ -4,7 +4,7 @@ Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 Requires PHP: 7.4
 WC requires at least: 6.0
 WC tested up to: 10.0.0
@@ -149,6 +149,14 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.13] =
+* **Enhanced Block Checkout Validation** - Added comprehensive validation for incomplete saved addresses in block checkout
+* **Improved Error Messaging** - Shows specific missing required fields when addresses are incomplete
+* **WooCommerce Integration** - Integrated with WooCommerce's checkout validation system to prevent order placement with incomplete addresses
+* **User Experience** - Added clear guidance on how to fix incomplete addresses with direct links to account page
+* **Real-time Validation** - Validates addresses on selection and page load for immediate feedback
+* **Fallback Error Display** - Multiple error display methods ensure users always see validation messages
+
 = [1.0.12] =
 *   Fix: Corrected validation error message for phone number field in My Account forms.
 *   Feature: Added "Incomplete" badge to addresses in My Account if required fields are missing.
@@ -205,6 +213,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.13 =
+Important update: Enhanced block checkout validation prevents orders with incomplete addresses. Shows specific missing fields and provides clear guidance to users.
 
 = 1.0.12 =
 This update fixes phone validation, adds an "Incomplete" badge to addresses with missing fields, and enhances address card displays. A critical bug is fixed where phone numbers for new shipping addresses in Block Checkout were not being saved, ensuring they are now processed correctly.

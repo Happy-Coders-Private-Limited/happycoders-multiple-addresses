@@ -112,6 +112,10 @@ function hc_wcma_enqueue_checkout_dom_injection_scripts() {
 						'custom_nickname'       => __( 'Custom Nickname', 'happycoders-multiple-addresses' ),
 					),
 					'existing_nicknames' => hc_wcma_get_existing_nicknames( $user_id ),
+					'phone_required'     => ( get_option( 'woocommerce_checkout_phone_field', 'required' ) === 'required' ),
+					'company_required'   => ( get_option( 'woocommerce_checkout_company_field', 'required' ) === 'required' ),
+					'address_2_required' => ( get_option( 'woocommerce_checkout_address_2_field', 'required' ) === 'required' ),
+					'my_account_url'     => wc_get_account_endpoint_url( HC_WCMA_ENDPOINT_SLUG ),
 				)
 			);
 
