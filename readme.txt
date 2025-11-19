@@ -3,11 +3,11 @@ Contributors: happycoders, kombiahrk, muthupandi2002, imgopi2002, sureshkumar22
 Donate link: https://happycoders.in
 Tags: woocommerce, multiple addresses, billing address, shipping address, checkout
 Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 1.0.13
+Tested up to: 6.8.1
+Stable tag: 1.0.14
 Requires PHP: 7.4
 WC requires at least: 6.0
-WC tested up to: 10.0.0
+WC tested up to: 10.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -149,6 +149,10 @@ The source files for the block integration can be found in the `/src` directory.
 
 == Changelog ==
 
+= [1.0.14] =
+* **Fix** - Resolved a fatal error `Call to a member function get() on null` in `class-hc-wcma-checkout.php` by adding a null check for `WC()->session`.
+* **Fix** - Resolved a fatal error `Call to a member function get_billing_country() on null` in `hc-wcma-functions.php` by adding a null check for `WC()->customer` and falling back to the base country.
+
 = [1.0.13] =
 * **Enhanced Block Checkout Validation** - Added comprehensive validation for incomplete saved addresses in block checkout
 * **Improved Error Messaging** - Shows specific missing required fields when addresses are incomplete
@@ -213,6 +217,9 @@ The source files for the block integration can be found in the `/src` directory.
 *   Feature: Admin management of user addresses.
 
 == Upgrade Notice ==
+
+= 1.0.14 =
+This is a critical update that fixes two fatal errors that could occur in specific contexts like REST API calls. It is highly recommended to update immediately to ensure plugin stability.
 
 = 1.0.13 =
 Important update: Enhanced block checkout validation prevents orders with incomplete addresses. Shows specific missing fields and provides clear guidance to users.

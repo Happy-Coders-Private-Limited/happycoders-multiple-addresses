@@ -135,7 +135,8 @@ function hc_wcma_generate_address_key() {
  * @return array Array of address fields.
  */
 function hc_wcma_get_address_fields( $type = 'billing' ) {
-	$fields       = WC()->countries->get_address_fields( WC()->customer->get_billing_country(), $type . '_' );
+	$country = WC()->customer && WC()->customer->get_billing_country() ? WC()->customer->get_billing_country() : WC()->countries->get_base_country();
+	$fields  = WC()->countries->get_address_fields( $country, $type . '_' );
 	$clean_fields = array();
 	foreach ( $fields as $key => $field_data ) {
 		$clean_key                  = str_replace( $type . '_', '', $key );

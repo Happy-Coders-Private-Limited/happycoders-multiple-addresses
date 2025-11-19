@@ -1,6 +1,6 @@
 {
   "name": "happycoders-multiple-addresses",
-  "version": "1.0.0",
+  "version": "1.0.14",
   "description": "Adds multiple address functionality and block checkout integration for WooCommerce.",
   "main": "index.js",
   "scripts": {

@@ -302,7 +302,10 @@ class HC_WCMA_Checkout {
 	 * 	
 	 */
 	private static function hc_wcma_get_session_or_post( $session_key, $post_key ) {
-		$value = WC()->session->get( $session_key );
+		$value = null;
+		if ( WC()->session ) {
+			$value = WC()->session->get( $session_key );
+		}
 		if ( ! empty( $value ) ) {
 			return $value;
 		}
@@ -358,10 +361,12 @@ class HC_WCMA_Checkout {
 		}
 
 		// Clear the session data.
-		WC()->session->set( 'hc_wcma_billing_nickname_type', '' );
-		WC()->session->set( 'hc_wcma_billing_nickname', '' );
-		WC()->session->set( 'hc_wcma_shipping_nickname_type', '' );
-		WC()->session->set( 'hc_wcma_shipping_nickname', '' );
+		if ( WC()->session ) {
+			WC()->session->set( 'hc_wcma_billing_nickname_type', '' );
+			WC()->session->set( 'hc_wcma_billing_nickname', '' );
+			WC()->session->set( 'hc_wcma_shipping_nickname_type', '' );
+			WC()->session->set( 'hc_wcma_shipping_nickname', '' );
+		}
 
 		self::process_order_address( $customer_id, $order, 'billing', $stored_billing_nickname_type, $stored_billing_nickname_custom );
 
